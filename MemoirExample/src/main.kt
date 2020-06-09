@@ -22,6 +22,7 @@
 import rockabilly.memoir.EMOJI_FAILING_TEST
 import rockabilly.memoir.EMOJI_PASSING_TEST
 import rockabilly.memoir.Memoir
+import rockabilly.memoir.ShowThrowable
 import java.io.File
 import java.io.PrintWriter
 
@@ -36,6 +37,8 @@ fun main(args: Array<String>) {
     memoir.Info("This is a test")
     memoir.Debug("Debug message here!")
     memoir.Error("Uh oh!")
+
+    memoir.testException()
 
     memoir.testStyle("decaf_green")
 
@@ -96,4 +99,14 @@ fun Memoir.testStyle(style: String) {
     styleTest.Info("Also this")
     styleTest.Info("This check passed", EMOJI_PASSING_TEST)
     this.ShowMemoir(styleTest, style = style)
+}
+
+fun Memoir.testException() {
+    try {
+        throw NullPointerException("Who da punk?!?!?")
+    } catch (thisProblem: Throwable) {
+        val fakeExceptionForDemo = Exception("Just a fake exception to test this thing!")
+        thisProblem.initCause(fakeExceptionForDemo)
+        this.ShowThrowable(thisProblem)
+    }
 }

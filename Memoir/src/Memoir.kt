@@ -36,6 +36,10 @@ private fun defaultHeader(title: String): String {
     return "<h1>$title</h1>\r\n<hr>\r\n<small><i>Powered by the Memoir Logging System...</i></small>\r\n\r\n"
 }
 
+internal fun highlight(message: String, style: String = "highlighted"): String {
+    return "<p class=\"$style outlined\">&nbsp;$message&nbsp;</p>"
+}
+
 class MemoirConcludedException: Exception(ALREADY_CONCLUDED_MESSAGE) { }
 
 class Memoir (val title: String = UNSET_STRING, val forPlainText: PrintWriter? = null, val forHTML: PrintWriter? = null, val Header: (String)->String = ::defaultHeader) {
@@ -67,7 +71,6 @@ class Memoir (val title: String = UNSET_STRING, val forPlainText: PrintWriter? =
     internal val encapsulationTag: String
         get() = "lvl-${UUID.randomUUID()}"
 
-    // TODO
     fun Conclude(): String {
         if (!isConcluded) {
             EchoPlainText("", EMOJI_TEXT_MEMOIR_CONCLUDE)
@@ -122,10 +125,6 @@ class Memoir (val title: String = UNSET_STRING, val forPlainText: PrintWriter? =
         }
 
         content.append("<tr><td class=\"min\"><small>$date</small></td><td>&nbsp;</td><td class=\"min\"><small>$time</small></td><td>&nbsp;</td><td><h2>$emoji</h2></td><td>$message</td></tr>\r\n")
-    }
-
-    private fun highlight(message: String, style: String = "highlighted"): String {
-        return "<p class=\"$style outlined\">&nbsp;$message&nbsp;</p>"
     }
 
     fun Info(message: String, emoji: String = EMOJI_TEXT_BLANK_LINE) {
