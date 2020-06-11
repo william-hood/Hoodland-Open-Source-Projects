@@ -19,10 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-import rockabilly.memoir.EMOJI_FAILING_TEST
-import rockabilly.memoir.EMOJI_PASSING_TEST
-import rockabilly.memoir.Memoir
-import rockabilly.memoir.ShowThrowable
+import rockabilly.memoir.*
 import java.io.File
 import java.io.PrintWriter
 
@@ -89,6 +86,8 @@ fun main(args: Array<String>) {
 
     memoir.ShowMemoir(subLog)
 
+    memoir.ShowObject(System.out, "System.out")
+
     memoir.Conclude()
 }
 
@@ -108,5 +107,6 @@ fun Memoir.testException() {
         val fakeExceptionForDemo = Exception("Just a fake exception to test this thing!")
         thisProblem.initCause(fakeExceptionForDemo)
         this.ShowThrowable(thisProblem)
+        //this.ShowObject(thisProblem, "thisProblem")
     }
 }

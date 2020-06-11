@@ -40,6 +40,7 @@ const val UNSET_STRING = "(unknown)"
 
 const val ALREADY_CONCLUDED_MESSAGE = "An attempt was made to write to a memoir that was already concluded.\r\n<li>Once a Memoir has been concluded it can no longer be written to.\r\n<li>Passing a Memoir to the ShowMemoir() method will automatically conclude it."
 const val MAX_OBJECT_FIELDS_TO_DISPLAY = 10
+const val MAX_SHOW_OBJECT_RECURSION = 10
 const val MEMOIR_LOG_STYLING = """
     <style>
         html {
