@@ -108,6 +108,7 @@ class Memoir (val title: String = UNSET_STRING, val forPlainText: PrintWriter? =
         }
 
         printWriter_PlainText.println("$dateTime $emoji\t$message")
+        printWriter_PlainText.flush()
     }
 
     // Parameter order differs from the C# version
