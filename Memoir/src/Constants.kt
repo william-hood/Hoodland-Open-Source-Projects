@@ -92,7 +92,7 @@ const val MEMOIR_LOG_STYLING = """
         }
 
         .neutral {
-            background-image: linear-gradient(to bottom right, WhiteSmoke, Gainsboro);
+            background-image: linear-gradient(to bottom right, White, LightGrey);
         }
 
         .old_parchment {
@@ -100,7 +100,7 @@ const val MEMOIR_LOG_STYLING = """
         }
 
         .plate {
-            background-image: radial-gradient(Gainsboro, LightSlateGray);
+            background-image: radial-gradient(GhostWhite, LightSteelBlue);
         }
 
         .exception {
@@ -153,6 +153,10 @@ const val MEMOIR_LOG_STYLING = """
             border: none;
             height: 0.3em;
             background-color: black;
+        }
+        
+        .centered {
+            text-align: center;
         }
 
         .highlighted {

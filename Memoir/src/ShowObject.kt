@@ -28,12 +28,14 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 
-/*
-private fun shouldRecurse(candidate: Object): Boolean {
-    return true // TODO: Stub for now
+private fun shouldRecurse(candidate: Any?): Boolean {
+    if (candidate == null) return false
+    if (candidate is String) return false
+    if (candidate::class.javaPrimitiveType != null) return false
+
+    return true
 }
 
-*/
 private fun shouldRender(it: KProperty1<Any, *>): Boolean {
     //if (! it.isAccessible) return false
     if (it.visibility == null) return false
@@ -42,28 +44,47 @@ private fun shouldRender(it: KProperty1<Any, *>): Boolean {
     return true
 }
 
-fun Memoir.ShowObject(target: Any, targetVariableName: String = "(name not given)", recurseLevel: Int = 0): String {
+val nameless = "(name not given)"
+fun Memoir.ShowObject(target: Any?, targetVariableName: String = nameless, recurseLevel: Int = 0): String {
     if (recurseLevel > MAX_SHOW_OBJECT_RECURSION) {
         return "<div class=\"outlined\">$EMOJI_INCONCLUSIVE_TEST Too Many Levels In $EMOJI_INCONCLUSIVE_TEST</div>"
     }
 
+    if (target == null) {
+        return "<div class=\"outlined\">(Object is Null)</div>"
+    }
+
     val timeStamp = LocalDateTime.now()
-    val result = StringBuilder("<div class=\"object neutral\">\r\n")
+    val result = StringBuilder("\r\n<div class=\"object plate centered\">\r\n")
+
+    if (recurseLevel > 0) {
+        val identifier = UUID.randomUUID().toString()
+        result.append("<label for=\"$identifier\">\r\n<input id=\"$identifier\" class=\"gone\" type=\"checkbox\">\r\n")
+    }
 
     val targetClass = target::class as KClass<Any>
-    val title = "${targetClass.simpleName} $targetVariableName"
-    this.EchoPlainText("Showing object $title (details in HTML log)", EMOJI_OBJECT, timeStamp)
-    result.append("<center><h2>$title</h2>\r\n")
+    val title = "${targetClass.simpleName} ($targetVariableName)"
+    this.EchoPlainText("Showing ${targetClass.simpleName}: $targetVariableName (details in HTML log)", EMOJI_OBJECT, timeStamp)
 
-    // C#: fieldcount = renderableFields(target)
+    result.append("<h2>${targetClass.simpleName}</h2>\r\n<small>")
+    if (targetVariableName != nameless) { result.append('"') }
+    result.append(targetVariableName)
+    if (targetVariableName != nameless) { result.append('"') }
+    result.append("</small><br>\r\n")
+
+    if (recurseLevel > 0) {
+        result.append("<div class=\"${this.encapsulationTag}\">\r\n")
+    }
+
     val content = java.lang.StringBuilder("<br><table class=\"gridlines\">\r\n")
+
     // TODO: If targetClass is an array { } else
     var visibleProperties = 0
     targetClass.memberProperties.forEach {
         if (shouldRender(it)) {
             try {
                 // This one line is the real reason for the try/catch block. It's possible we just don't have access and shouldRender() returned a false positive.
-                var value = it.get(target).toString()
+                var value = it.get(target)
 
                 // At this point we've succeeded and can increment
                 visibleProperties++
@@ -73,16 +94,19 @@ fun Memoir.ShowObject(target: Any, targetVariableName: String = "(name not given
                 content.append(it.name)
                 content.append("</td><td>")
 
-                // If ShouldRecurse() then do so
-                // Attempt Base64 decode if appropriate
-                // else
-                content.append(value)
+                if (shouldRecurse(value)) {
+                    content.append(this.ShowObject(value, it.name, recurseLevel + 1))
+                } else {
+                    // Attempt Base64 decode if appropriate
+                    // else
+                    content.append(value.toString())
+                }
                 content.append("</td></tr>\r\n")
             } catch (dontCare: Throwable) { }
         }
     }
 
-    content.append("\r\n</table><br></div>")
+    content.append("\r\n</table><br>")
 
     val fieldCount = targetClass.memberProperties.count()
 
@@ -102,7 +126,7 @@ fun Memoir.ShowObject(target: Any, targetVariableName: String = "(name not given
         }
     }
 
-    result.append("<small><i>$visibilityDescription visible</i></small>")
+    result.append("<br><small><i>$visibilityDescription visible</i></small><br>")
 
     if (fieldCount > MAX_OBJECT_FIELDS_TO_DISPLAY) {
         val identifier2 = UUID.randomUUID().toString()
@@ -113,9 +137,17 @@ fun Memoir.ShowObject(target: Any, targetVariableName: String = "(name not given
         result.append(content.toString());
     }
 
-    result.append("\r\n</div></center>")
+    if (recurseLevel > 0) {
+        result.append("\r\n</div></label>")
+    }
+
+    result.append("\r\n</div>")
 
     val rendition = result.toString()
-    this.WriteToHTML(rendition)
+
+    if (recurseLevel < 1) {
+        this.WriteToHTML(rendition)
+    }
+
     return rendition
 }

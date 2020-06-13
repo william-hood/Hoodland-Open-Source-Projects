@@ -44,6 +44,15 @@ fun main(args: Array<String>) {
     val memoir = Memoir("Kotlin Memoir Test", stdout, outputFile.printWriter())
 
     try {
+        memoir.testStyle("old_parchment")
+
+        val check = TestStruct()
+        val inner = TestStruct()
+        check.child = inner
+
+        memoir.ShowObject(inner, "isolated")
+        memoir.ShowObject(check, "check")
+
         memoir.Info("This is a test")
         memoir.Debug("Debug message here!")
         memoir.Error("Uh oh!")
@@ -98,12 +107,6 @@ fun main(args: Array<String>) {
         subLog.Info("Fourth line of the sub log")
 
         memoir.ShowMemoir(subLog)
-
-        val check = TestStruct()
-        val inner = TestStruct()
-        check.child = inner
-
-        memoir.ShowObject(check, "check")
     } catch (thisProblem: Throwable) {
         memoir.ShowThrowable(thisProblem)
     } finally {

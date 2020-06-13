@@ -153,7 +153,7 @@ class Memoir (val title: String = UNSET_STRING, val forPlainText: PrintWriter? =
 
     private fun wrapAsSublog(memoirTitle: String, memoirContent: String, style: String = "neutral"): String {
         val identifier = UUID.randomUUID().toString()
-        return "\r\n\r\n<div class=\"memoir $style\">\r\n<label for=\"$identifier\">\r\n<input id=\"$identifier\" class=\"gone\" type=\"checkbox\">\r\n<h2>$memoirTitle</h2>\r\n<div class=\"$encapsulationTag\">\r\n$memoirContent\r\n</div></label>"
+        return "\r\n\r\n<div class=\"memoir $style\">\r\n<label for=\"$identifier\">\r\n<input id=\"$identifier\" class=\"gone\" type=\"checkbox\">\r\n<h2>$memoirTitle</h2>\r\n<div class=\"$encapsulationTag\">\r\n$memoirContent\r\n</div></label></div>"
     }
 
     fun ShowMemoir(subordinate: Memoir, emoji: String = EMOJI_MEMOIR, style: String = "neutral") {
