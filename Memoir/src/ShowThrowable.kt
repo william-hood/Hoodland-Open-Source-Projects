@@ -26,61 +26,66 @@ import java.util.*
 
 private const val DEFAULT_STACKTRACE = "(no stacktrace)"
 
-fun Memoir.ShowThrowable(target: Throwable, isNested: Boolean = false): String {
-    val timeStamp = LocalDateTime.now()
+fun Memoir.ShowThrowable(target: Throwable, timeStamp: LocalDateTime = LocalDateTime.now(), plainTextIndent: String = ""): String {
     val result = StringBuilder("<div class=\"object exception\">\r\n")
     val name = target.javaClass.simpleName
     val htmlStackTrace = StringBuilder(DEFAULT_STACKTRACE)
-    val plainTextStackTrace = StringBuilder(DEFAULT_STACKTRACE)
+    //val plainTextStackTrace = StringBuilder(DEFAULT_STACKTRACE)
     var hasStackTrace = false
+
+    var loggedTextEmoji = EMOJI_ERROR
+    // This IS nested if there is a plaintext indent.
+    if (plainTextIndent.length > 0) {
+        loggedTextEmoji = EMOJI_CAUSED_BY
+    }
+
+    this.EchoPlainText("", timeStamp = timeStamp)
+    this.EchoPlainText("$plainTextIndent$name", loggedTextEmoji, timeStamp)
+    this.EchoPlainText("$plainTextIndent$target.message", timeStamp = timeStamp)
 
     // Build the stacktrace  strings
     if (target.stackTrace != null) {
         if (target.stackTrace.size > 0) {
             hasStackTrace = true
             htmlStackTrace.clear()
-            plainTextStackTrace.clear()
 
             for (thisElement in target.stackTrace) {
-                if (plainTextStackTrace.length > 0) {
-                    plainTextStackTrace.append("\r\n\r\n")
-                }
-
                 if (htmlStackTrace.length > 0) {
                     htmlStackTrace.append("<br>")
                 }
 
-                plainTextStackTrace.append("* ")
+                val plainTextLine = StringBuilder()
+                plainTextLine.append("* ")
                 htmlStackTrace.append("<b>&bull; ")
 
                 if (thisElement.moduleName != null) {
                     val moduleName = "${thisElement.moduleName}: "
-                    plainTextStackTrace.append(moduleName)
+                    plainTextLine.append(moduleName)
                     htmlStackTrace.append(moduleName)
                 }
 
                 val fileAndLine = "${thisElement.fileName} line ${thisElement.lineNumber}"
-                plainTextStackTrace.append("$fileAndLine ")
+                plainTextLine.append("$fileAndLine ")
                 htmlStackTrace.append("$fileAndLine</b> ")
 
                 val methodLocation = "in method ${thisElement.methodName}()"
-                plainTextStackTrace.append("$methodLocation ")
+                plainTextLine.append("$methodLocation ")
                 htmlStackTrace.append("$methodLocation ")
 
                 if (thisElement.className != null) {
                     if (thisElement.className != "MainKt") {
                         val className = "of class ${thisElement.className}"
-                        plainTextStackTrace.append(className)
+                        plainTextLine.append(className)
                         htmlStackTrace.append(className)
                     }
                 }
 
-                plainTextStackTrace.append("\r\n")
+                this.EchoPlainText("$plainTextIndent$plainTextLine", timeStamp = timeStamp)
             }
+        } else {
+
         }
     }
-
-    this.EchoPlainText("$name\r\n\r\n${target.message}\r\n$plainTextStackTrace")
 
     if (hasStackTrace || (target.cause != null)) {
         val indicator = StringBuilder("show ")
@@ -97,10 +102,10 @@ fun Memoir.ShowThrowable(target: Throwable, isNested: Boolean = false): String {
         }
 
         val identifier = UUID.randomUUID().toString()
-        result.append("<label for=\"$identifier\">\r\n<h2>$name</h2>\r\n${target.message}<br><br><input id=\"$identifier\" type=\"checkbox\"><small><i>($indicator)</i></small>\r\n<div class=\"${this.encapsulationTag}\">\r\n<br><small><i>\r\n$htmlStackTrace\r\n</i></small>\r\n")
+        result.append("<label for=\"$identifier\">\r\n<h2>$name</h2>\r\n<small><i>${target.message}</i></small><br><br><input id=\"$identifier\" type=\"checkbox\"><small><i>($indicator)</i></small>\r\n<div class=\"${this.encapsulationTag}\">\r\n<br><small><i>\r\n$htmlStackTrace\r\n</i></small>\r\n")
 
         if (target.cause != null) {
-            result.append("<br>\r\n<table><tr><td>&nbsp;</td><td>Caused by $EMOJI_CAUSED_BY</td><td>&nbsp;</td><td>${this.ShowThrowable(target.cause!!, true)}</td></tr></table>")
+            result.append("<br>\r\n<table><tr><td>&nbsp;</td><td><small><b>Cause</b></small>&nbsp;$EMOJI_CAUSED_BY</td><td>&nbsp;</td><td>${this.ShowThrowable(target.cause!!, timeStamp, "$plainTextIndent   ")}</td></tr></table>")
         }
 
         result.append("</div>\r\n</label>")
@@ -110,7 +115,10 @@ fun Memoir.ShowThrowable(target: Throwable, isNested: Boolean = false): String {
 
     result.append("</div>")
 
-    if (! isNested) this.WriteToHTML(result.toString(), EMOJI_ERROR, timeStamp)
+    // This is not nested if there is no plaintext indent.
+    if (plainTextIndent.length < 1) this.WriteToHTML(result.toString(), EMOJI_ERROR, timeStamp)
 
+    this.EchoPlainText("$plainTextIndent$EMOJI_TEXT_MEMOIR_CONCLUDE", timeStamp = timeStamp)
+    this.EchoPlainText("", timeStamp = timeStamp)
     return result.toString()
 }

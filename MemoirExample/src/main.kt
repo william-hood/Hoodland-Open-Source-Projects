@@ -22,6 +22,18 @@
 import rockabilly.memoir.*
 import java.io.File
 import java.io.PrintWriter
+import java.lang.StringBuilder
+
+
+// https://ktor.io/servers/features/content-negotiation/serialization-converter.html
+// JSON Pretty print
+internal class TestStruct() {
+    var name = "Hi"
+    var value = 7
+    var otherValue = 42.9
+    var child: TestStruct? = null
+    private var troll = "nya-nya!"
+}
 
 val stdout = PrintWriter(System.out)
 
@@ -31,64 +43,72 @@ fun main(args: Array<String>) {
 
     val memoir = Memoir("Kotlin Memoir Test", stdout, outputFile.printWriter())
 
-    memoir.Info("This is a test")
-    memoir.Debug("Debug message here!")
-    memoir.Error("Uh oh!")
+    try {
+        memoir.Info("This is a test")
+        memoir.Debug("Debug message here!")
+        memoir.Error("Uh oh!")
 
-    memoir.testException()
+        memoir.testException()
 
-    memoir.testStyle("decaf_green")
+        memoir.testStyle("decaf_green")
 
-    memoir.Info("This is a test")
-    memoir.Info("This is a test")
+        memoir.Info("This is a test")
+        memoir.Info("This is a test")
 
-    memoir.testStyle("decaf_orange")
+        memoir.testStyle("decaf_orange")
 
-    memoir.Info("This is a test")
-    memoir.Info("This is a test")
+        memoir.Info("This is a test")
+        memoir.Info("This is a test")
 
-    memoir.testStyle("decaf_green_light_roast")
+        memoir.testStyle("decaf_green_light_roast")
 
-    memoir.Info("This is a test")
-    memoir.Info("This is a test")
+        memoir.Info("This is a test")
+        memoir.Info("This is a test")
 
-    memoir.testStyle("decaf_orange_light_roast")
+        memoir.testStyle("decaf_orange_light_roast")
 
-    memoir.Info("This is a test")
-    memoir.Info("This is a test")
+        memoir.Info("This is a test")
+        memoir.Info("This is a test")
 
-    memoir.testStyle("desert_horizon")
+        memoir.testStyle("desert_horizon")
 
-    memoir.Info("This is a test")
-    memoir.Info("This is a test")
-    memoir.Info("This is a test")
-    memoir.Info("This is a test")
+        memoir.Info("This is a test")
+        memoir.Info("This is a test")
+        memoir.Info("This is a test")
+        memoir.Info("This is a test")
 
-    val subLog = Memoir("Sub Log", stdout)
-    subLog.Info("First line of the sub log")
-    subLog.Info("Second line of the sub log")
+        val subLog = Memoir("Sub Log", stdout)
+        subLog.Info("First line of the sub log")
+        subLog.Info("Second line of the sub log")
 
-    val justSomeTest = Memoir("Test Something", stdout)
-    justSomeTest.Info("This happened")
-    justSomeTest.Info("Then this")
-    justSomeTest.Info("Also this")
+        val justSomeTest = Memoir("Test Something", stdout)
+        justSomeTest.Info("This happened")
+        justSomeTest.Info("Then this")
+        justSomeTest.Info("Also this")
 
-    // TODO HTTP TRANSACTION LOGGING TEST
+        // TODO HTTP TRANSACTION LOGGING TEST
 
-    justSomeTest.Info("This check passed", EMOJI_PASSING_TEST)
-    justSomeTest.Info("So did this", EMOJI_PASSING_TEST)
-    justSomeTest.Info("But not this", EMOJI_FAILING_TEST)
+        justSomeTest.Info("This check passed", EMOJI_PASSING_TEST)
+        justSomeTest.Info("So did this", EMOJI_PASSING_TEST)
+        justSomeTest.Info("But not this", EMOJI_FAILING_TEST)
 
-    subLog.ShowMemoir(justSomeTest, EMOJI_FAILING_TEST, "failing_test_result")
+        subLog.ShowMemoir(justSomeTest, EMOJI_FAILING_TEST, "failing_test_result")
 
-    subLog.Debug("Third line of the sub log")
-    subLog.Info("Fourth line of the sub log")
+        subLog.Debug("Third line of the sub log")
+        subLog.Info("Fourth line of the sub log")
 
-    memoir.ShowMemoir(subLog)
+        memoir.ShowMemoir(subLog)
 
-    memoir.ShowObject(System.out, "System.out")
+        val check = TestStruct()
+        val inner = TestStruct()
+        check.child = inner
 
-    memoir.Conclude()
+        memoir.ShowObject(check, "check")
+    } catch (thisProblem: Throwable) {
+        memoir.ShowThrowable(thisProblem)
+    } finally {
+        memoir.Conclude()
+    }
 }
 
 fun Memoir.testStyle(style: String) {
@@ -107,6 +127,6 @@ fun Memoir.testException() {
         val fakeExceptionForDemo = Exception("Just a fake exception to test this thing!")
         thisProblem.initCause(fakeExceptionForDemo)
         this.ShowThrowable(thisProblem)
-        //this.ShowObject(thisProblem, "thisProblem")
+        this.ShowObject(thisProblem, "thisProblem")
     }
 }

@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 private const val STARTING_CONTENT = "<table>\r\n"
-private val PLAINTEXT_DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+private val PLAINTEXT_DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd\tHH:mm:ss.SSS")
 private val HTML_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 private val HTML_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
 
@@ -107,7 +107,7 @@ class Memoir (val title: String = UNSET_STRING, val forPlainText: PrintWriter? =
             dateTime = timeStamp.format(PLAINTEXT_DATETIME_FORMATTER)
         }
 
-        printWriter_PlainText.println("$dateTime $emoji\t$message")
+        printWriter_PlainText.println("$dateTime\t$emoji\t$message")
         printWriter_PlainText.flush()
     }
 

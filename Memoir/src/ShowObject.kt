@@ -23,16 +23,24 @@ package rockabilly.memoir
 
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.reflect.KClass
+import kotlin.reflect.KProperty1
+import kotlin.reflect.KVisibility
+import kotlin.reflect.full.memberProperties
 
 /*
 private fun shouldRecurse(candidate: Object): Boolean {
     return true // TODO: Stub for now
 }
 
-private fun shouldRender(thisField: FieldInfo): Boolean {
-
-}
 */
+private fun shouldRender(it: KProperty1<Any, *>): Boolean {
+    //if (! it.isAccessible) return false
+    if (it.visibility == null) return false
+    if (it.visibility != KVisibility.PUBLIC) return false
+
+    return true
+}
 
 fun Memoir.ShowObject(target: Any, targetVariableName: String = "(name not given)", recurseLevel: Int = 0): String {
     if (recurseLevel > MAX_SHOW_OBJECT_RECURSION) {
@@ -42,34 +50,60 @@ fun Memoir.ShowObject(target: Any, targetVariableName: String = "(name not given
     val timeStamp = LocalDateTime.now()
     val result = StringBuilder("<div class=\"object neutral\">\r\n")
 
-    val targetClass = target::class
+    val targetClass = target::class as KClass<Any>
     val title = "${targetClass.simpleName} $targetVariableName"
-    this.EchoPlainText(title, EMOJI_OBJECT, timeStamp)
-    val identifier = UUID.randomUUID().toString()
-    result.append("<label for=\"identifier\">\r\n<input id=\"identifier\" class=\"gone\" type=\"checkbox\">\r\n<center><h2>$title</h2></center>\r\n<div class=\"${this.encapsulationTag}\">\r\n")
+    this.EchoPlainText("Showing object $title (details in HTML log)", EMOJI_OBJECT, timeStamp)
+    result.append("<center><h2>$title</h2>\r\n")
 
     // C#: fieldcount = renderableFields(target)
-    val content = java.lang.StringBuilder("<center><table class=\"gridlines\">\r\n")
+    val content = java.lang.StringBuilder("<br><table class=\"gridlines\">\r\n")
     // TODO: If targetClass is an array { } else
-    targetClass.members.forEach {
-        // C#: If shouldRender(thisMember)
-        content.append("<tr><td>");
-        content.append(it.returnType.toString());
-        content.append("</td><td>");
-        content.append(it.name);
-        content.append("</td><td>");
+    var visibleProperties = 0
+    targetClass.memberProperties.forEach {
+        if (shouldRender(it)) {
+            try {
+                // This one line is the real reason for the try/catch block. It's possible we just don't have access and shouldRender() returned a false positive.
+                var value = it.get(target).toString()
 
-        val value = it.toString() // Stub
+                // At this point we've succeeded and can increment
+                visibleProperties++
+                content.append("<tr><td>")
+                content.append(it.returnType.toString())
+                content.append("</td><td>")
+                content.append(it.name)
+                content.append("</td><td>")
 
-        // If ShouldRecurse() then do so
-        // Attempt Base64 decode if appropriate
-        // else
-        content.append(value)
-        content.append("</td></tr>\r\n")
+                // If ShouldRecurse() then do so
+                // Attempt Base64 decode if appropriate
+                // else
+                content.append(value)
+                content.append("</td></tr>\r\n")
+            } catch (dontCare: Throwable) { }
+        }
     }
-    content.append("\r\n</table></center><br></div>");
 
-    val fieldCount = targetClass.members.count()
+    content.append("\r\n</table><br></div>")
+
+    val fieldCount = targetClass.memberProperties.count()
+
+    var visibilityDescription = UNSET_STRING
+    if (visibleProperties < 1) {
+        content.clear()
+        visibilityDescription = "None of the $fieldCount members are"
+    } else {
+        if (fieldCount == 1) {
+            visibilityDescription = "The only member is"
+        } else {
+            if (visibleProperties == fieldCount) {
+                visibilityDescription = "All of the $fieldCount members are"
+            } else {
+                visibilityDescription = "$visibleProperties of the $fieldCount members are"
+            }
+        }
+    }
+
+    result.append("<small><i>$visibilityDescription visible</i></small>")
+
     if (fieldCount > MAX_OBJECT_FIELDS_TO_DISPLAY) {
         val identifier2 = UUID.randomUUID().toString()
         result.append("<label for=\"$identifier2\">\r\n<input id=\"$identifier2\" type=\"checkbox\">\r\n(show $fieldCount fields)\r\n<div class=\"${this.encapsulationTag}\">\r\n")
@@ -79,12 +113,9 @@ fun Memoir.ShowObject(target: Any, targetVariableName: String = "(name not given
         result.append(content.toString());
     }
 
-    result.append("\r\n</label></div>")
+    result.append("\r\n</div></center>")
 
     val rendition = result.toString()
     this.WriteToHTML(rendition)
     return rendition
 }
-
-// https://ktor.io/servers/features/content-negotiation/serialization-converter.html
-// JSON Pretty print
