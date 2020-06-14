@@ -33,6 +33,7 @@ internal class TestStruct() {
     var otherValue = 42.9
     var child: TestStruct? = null
     private var troll = "nya-nya!"
+    var rogue = mapOf("LOTR" to "Sauron", "Star Wars" to "Darth Vader", "It" to "Pennywise")
 }
 
 val stdout = PrintWriter(System.out)
@@ -44,14 +45,23 @@ fun main(args: Array<String>) {
     val memoir = Memoir("Kotlin Memoir Test", stdout, outputFile.printWriter())
 
     try {
+        val arrayCheck = intArrayOf(1, 5, 7, 9, 42, 781)
+        memoir.Show(arrayCheck, "arrayCheck")
+        val peopleToAge = mapOf("Alice" to 20, "Bob" to 21, "George" to 68)
+        memoir.Show(peopleToAge, "peopleToAge")
+
         memoir.testStyle("old_parchment")
 
         val check = TestStruct()
         val inner = TestStruct()
         check.child = inner
 
-        memoir.ShowObject(inner, "isolated")
-        memoir.ShowObject(check, "check")
+        memoir.Show(check, "check")
+
+        val arrayOfObjects = Array<TestStruct>(3, {i -> check})
+        arrayOfObjects[1] = inner
+
+        memoir.Show(arrayOfObjects, "arrayOfObjects")
 
         memoir.Info("This is a test")
         memoir.Debug("Debug message here!")
@@ -130,6 +140,5 @@ fun Memoir.testException() {
         val fakeExceptionForDemo = Exception("Just a fake exception to test this thing!")
         thisProblem.initCause(fakeExceptionForDemo)
         this.ShowThrowable(thisProblem)
-        this.ShowObject(thisProblem, "thisProblem")
     }
 }

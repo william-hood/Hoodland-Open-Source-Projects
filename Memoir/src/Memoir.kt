@@ -156,17 +156,20 @@ class Memoir (val title: String = UNSET_STRING, val forPlainText: PrintWriter? =
         return "\r\n\r\n<div class=\"memoir $style\">\r\n<label for=\"$identifier\">\r\n<input id=\"$identifier\" class=\"gone\" type=\"checkbox\">\r\n<h2>$memoirTitle</h2>\r\n<div class=\"$encapsulationTag\">\r\n$memoirContent\r\n</div></label></div>"
     }
 
-    fun ShowMemoir(subordinate: Memoir, emoji: String = EMOJI_MEMOIR, style: String = "neutral") {
+    fun ShowMemoir(subordinate: Memoir, emoji: String = EMOJI_MEMOIR, style: String = "neutral", recurseLevel: Int = 0) : String {
         val timeStamp = LocalDateTime.now()
         val subordinateContent = subordinate.Conclude()
-        WriteToHTML(wrapAsSublog(subordinate.titleName, subordinateContent, style), emoji, timeStamp)
+        val result = wrapAsSublog(subordinate.titleName, subordinateContent, style)
+
+        if (recurseLevel < 1) {
+            WriteToHTML(result, emoji, timeStamp)
+        }
+
+        return result
     }
 
     // TODO: attemptBase64Decode
 
     // TODO: JSON Pretty-print
 
-    // TODO ShowException (Throwable???)
-
-    // Decide if a single Show method or many??? Maybe keep the many but allow a "show()" to make an intelligent choice???
 }

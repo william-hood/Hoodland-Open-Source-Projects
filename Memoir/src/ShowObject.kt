@@ -28,23 +28,6 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 
-private fun shouldRecurse(candidate: Any?): Boolean {
-    if (candidate == null) return false
-    if (candidate is String) return false
-    if (candidate::class.javaPrimitiveType != null) return false
-
-    return true
-}
-
-private fun shouldRender(it: KProperty1<Any, *>): Boolean {
-    //if (! it.isAccessible) return false
-    if (it.visibility == null) return false
-    if (it.visibility != KVisibility.PUBLIC) return false
-
-    return true
-}
-
-val nameless = "(name not given)"
 fun Memoir.ShowObject(target: Any?, targetVariableName: String = nameless, recurseLevel: Int = 0): String {
     if (recurseLevel > MAX_SHOW_OBJECT_RECURSION) {
         return "<div class=\"outlined\">$EMOJI_INCONCLUSIVE_TEST Too Many Levels In $EMOJI_INCONCLUSIVE_TEST</div>"
@@ -55,31 +38,11 @@ fun Memoir.ShowObject(target: Any?, targetVariableName: String = nameless, recur
     }
 
     val timeStamp = LocalDateTime.now()
-    val result = StringBuilder("\r\n<div class=\"object plate centered\">\r\n")
-
-    if (recurseLevel > 0) {
-        val identifier = UUID.randomUUID().toString()
-        result.append("<label for=\"$identifier\">\r\n<input id=\"$identifier\" class=\"gone\" type=\"checkbox\">\r\n")
-    }
-
     val targetClass = target::class as KClass<Any>
-    val title = "${targetClass.simpleName} ($targetVariableName)"
-    this.EchoPlainText("Showing ${targetClass.simpleName}: $targetVariableName (details in HTML log)", EMOJI_OBJECT, timeStamp)
-
-    result.append("<h2>${targetClass.simpleName}</h2>\r\n<small>")
-    if (targetVariableName != nameless) { result.append('"') }
-    result.append(targetVariableName)
-    if (targetVariableName != nameless) { result.append('"') }
-    result.append("</small><br>\r\n")
-
-    if (recurseLevel > 0) {
-        result.append("<div class=\"${this.encapsulationTag}\">\r\n")
-    }
-
+    val result = this.beginShow(timeStamp, targetClass.simpleName.toString(), targetVariableName, "plate", recurseLevel)
     val content = java.lang.StringBuilder("<br><table class=\"gridlines\">\r\n")
-
-    // TODO: If targetClass is an array { } else
     var visibleProperties = 0
+
     targetClass.memberProperties.forEach {
         if (shouldRender(it)) {
             try {
@@ -93,14 +56,7 @@ fun Memoir.ShowObject(target: Any?, targetVariableName: String = nameless, recur
                 content.append("</td><td>")
                 content.append(it.name)
                 content.append("</td><td>")
-
-                if (shouldRecurse(value)) {
-                    content.append(this.ShowObject(value, it.name, recurseLevel + 1))
-                } else {
-                    // Attempt Base64 decode if appropriate
-                    // else
-                    content.append(value.toString())
-                }
+                content.append(this.Show(value, it.name, recurseLevel + 1))
                 content.append("</td></tr>\r\n")
             } catch (dontCare: Throwable) { }
         }

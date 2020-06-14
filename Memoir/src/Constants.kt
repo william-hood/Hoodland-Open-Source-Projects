@@ -132,6 +132,8 @@ const val MEMOIR_LOG_STYLING = """
         th,
         td {
             padding: 0.1em 0em;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         td.min {
