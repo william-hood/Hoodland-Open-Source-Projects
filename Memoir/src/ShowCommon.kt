@@ -94,6 +94,11 @@ fun Memoir.Show(target: Any?, targetVariableName: String = nameless, recurseLeve
 
     }
 
+    if (target is String) {
+        //ProcessString(target)
+        //May have to <pre> the result
+    }
+
     if (shouldRecurse(target)) { return this.ShowObject(target, targetVariableName, recurseLevel) }
 
     // Maybe attempt Base 64 decode and JSON pretty print here...?
