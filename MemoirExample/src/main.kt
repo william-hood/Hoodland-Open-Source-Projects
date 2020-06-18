@@ -24,9 +24,6 @@ import java.io.File
 import java.io.PrintWriter
 import java.lang.StringBuilder
 
-
-// https://ktor.io/servers/features/content-negotiation/serialization-converter.html
-// JSON Pretty print
 internal class TestStruct() {
     var name = "Hi"
     var value = 7

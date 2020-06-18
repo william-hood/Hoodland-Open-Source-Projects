@@ -95,12 +95,12 @@ fun Memoir.Show(target: Any?, targetVariableName: String = nameless, recurseLeve
     }
 
     if (target is String) {
-        //ProcessString(target)
+        // Attempt Base64 decode and JSON pretty-print
+        return ProcessString(target)
         //May have to <pre> the result
     }
 
     if (shouldRecurse(target)) { return this.ShowObject(target, targetVariableName, recurseLevel) }
 
-    // Maybe attempt Base 64 decode and JSON pretty print here...?
     return target.toString()
 }
