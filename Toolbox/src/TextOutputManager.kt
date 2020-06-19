@@ -28,8 +28,7 @@ import java.io.PrintWriter
 
 class TextOutputManager {
     // Creates a file with header only if the first call to write is made.
-    // Delimited data to use???
-    // Need method to properly flush and close.
+    // Need method to properly flush and close. ???
     private var internalPrintWriter: PrintWriter? = null
     private var expectedFileName: String = UnsetString
     private var shouldAppend = false

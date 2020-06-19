@@ -64,8 +64,7 @@ class SubnameFactory() {
     private fun prepend(result: String): String {
         var prefix = ""
         if (places > 0) {
-            if (result.length < places) prefix = StringEnhancers.createFromBasisChar(placeholder,
-                    places - result.length)
+            if (result.length < places) prefix = createStringFromBasisCharacter(placeholder, places - result.length)
         }
         return prefix + result
     }
