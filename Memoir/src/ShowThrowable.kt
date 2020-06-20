@@ -83,7 +83,7 @@ fun Memoir.ShowThrowable(target: Throwable, timeStamp: LocalDateTime = LocalDate
                 this.EchoPlainText("$plainTextIndent$plainTextLine", timeStamp = timeStamp)
             }
         } else {
-
+            // TODO: Confirm if this is a deliberate NO-OP
         }
     }
 
