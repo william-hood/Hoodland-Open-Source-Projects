@@ -21,13 +21,12 @@
 
 package rockabilly.koarsegrind
 
-import rockabilly.memoir.Memoir
-import rockabilly.memoir.ShowThrowable
-import rockabilly.memoir.UNSET_STRING
+import rockabilly.memoir.*
 import rockabilly.toolbox.forceParentDirectoryExistence
 import rockabilly.toolbox.stdout
 import java.io.File
 import java.io.PrintWriter
+import kotlin.concurrent.thread
 
 enum class TestPriority {
     HappyPath, Critical, Normal, Ancillary
@@ -45,7 +44,8 @@ internal const val inProgressName = "(test in progress)"
 internal const val SETUP = "setup"
 internal const val CLEANUP = "cleanup"
 
-abstract class Test (Name: String, DetailedDescription: String = "(no details)", ID: String = "", vararg Categories: String) {
+private const val UNSET_DESCRIPTION = "(no details)"
+abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTION, ID: String = "", vararg Categories: String) {
     // Client code must implement or override
     open fun Setup(): Boolean { return true }
     open fun Cleanup(): Boolean { return true }
@@ -99,19 +99,23 @@ abstract class Test (Name: String, DetailedDescription: String = "(no details)",
          }
 
     // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
-    // Basically this needs to be thread safe
+    // Basically this needs to be thread safe.
     internal val Progress: Float
     get() {
-        var result: Float = 0.toFloat()
-        if (wasSetup) result += 0.33.toFloat()
-        if (wasRun) result += 0.34.toFloat()
-        if (wasCleanedUp) result += 0.33.toFloat()
-        return result
+        // According to https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/synchronized.html
+        // "Deprecated: Synchronization on any object is not supported on every platform and will be removed from the common standard library soon."
+        synchronized(this) {
+            var result: Float = 0.toFloat()
+            if (wasSetup) result += 0.33.toFloat()
+            if (wasRun) result += 0.34.toFloat()
+            if (wasCleanedUp) result += 0.33.toFloat()
+            return result
+        }
     }
 
     // For some reason in the C# version this was open/virtual
     fun AddResult(thisResult: TestResult) {
-        Log.ShowTestResult((thisResult))
+        topLevelMemoir!!.ShowTestResult((thisResult)) // Should be Log instead of topLevelMemoir???
         Results.add(thisResult)
     }
 
@@ -211,9 +215,9 @@ abstract class Test (Name: String, DetailedDescription: String = "(no details)",
         if (additionalMessage.length > 0) { message.append(" ") }
         message.append(additionalMessage)
 
-        // This is a direct translation from C#. Spacing looks suspicious... ??? Also, it insisted on topLevelMemoir instead of the Log property???
-        Log.Error("$IdentifiedName$CLEANUP: An unanticipated failure occurred$additionalMessage.")
-        Log.ShowThrowable(thisFailure)
+        // This is a direct translation from C#. Spacing looks suspicious... ???
+        topLevelMemoir!!.Error("$IdentifiedName$CLEANUP: An unanticipated failure occurred$additionalMessage.") // Should be Log instead of topLevelMemoir???
+        topLevelMemoir!!.ShowThrowable(thisFailure)
     }
 
     private val indicateSetup: Memoir
@@ -225,11 +229,13 @@ abstract class Test (Name: String, DetailedDescription: String = "(no details)",
     private val indicateBody: Memoir
         get() = Memoir("$echelonName $IdentifiedName", stdout)
 
+    // C# version used topLevelMemoir. This would not work during Setup() or Cleanup()
     fun WaitSeconds(howMany: Long) {
         Log.Info("Waiting $howMany seconds...", INFO_ICON)
         Thread.sleep(1000 * howMany)
     }
 
+    // C# version used topLevelMemoir. This would not work during Setup() or Cleanup()
     fun WaitMilliseconds(howMany: Long) {
         Log.Info("Waiting $howMany milliseconds...", INFO_ICON)
         Thread.sleep(howMany)
@@ -245,7 +251,6 @@ abstract class Test (Name: String, DetailedDescription: String = "(no details)",
     }
 
     // This was virtual/open in the C# version
-    // TODO: Not yet finished.  Needs some functions in the CoarseGrind object in C#
     fun RunTest(rootDirectory: String) {
         if (KILL_SWITCH) {
             // Decline to run
@@ -258,9 +263,70 @@ abstract class Test (Name: String, DetailedDescription: String = "(no details)",
 
             forceParentDirectoryExistence(expectedFileName)
             topLevelMemoir = Memoir(name, stdout, PrintWriter(expectedFileName), ::LogHeader)
-            topLevelMemoir!!.SkipLine()
 
-            // Left off Test.cs Line 194 - if (detailedDescription != default(string))
+            if (detailedDescription != UNSET_DESCRIPTION) {
+                topLevelMemoir!!.WriteToHTML("<small><i>$detailedDescription</i></small>", EMOJI_TEXT_BLANK_LINE)
+            }
+
+            topLevelMemoir!!.SkipLine()
+            val before = SetupEnforcement(this)
+
+            // SETUP
+            try {
+                setupMemoir = indicateSetup
+                try {
+                    setupResult = Setup()
+                } finally {
+                    wasSetup = true
+                    if (setupMemoir!!.wasUsed) {
+                        var style = "decaf_orange_light_roast"
+                        if (setupResult) { style = "decaf_green_light_roast" }
+                        topLevelMemoir!!.ShowMemoir(setupMemoir!!, EMOJI_SETUP, style)
+                    }
+                }
+            } catch (thisFailure: Throwable) {
+                setupResult = false
+                AddResult(GetResultForPreclusionInSetup(thisFailure))
+            } finally {
+                if (!SetupEnforcement(this).matches(before)) {
+                    setupResult = false
+                    AddResult(TestResult(TestStatus.Inconclusive, "PROGRAMMING ERROR: It is illegal to change the identifier, name, or priority in Setup.  This must happen in the constructor. Setup may also not add Test Results."))
+                }
+            }
+
+            // RUN THE ACTUAL TEST
+            if (setupResult && (! KILL_SWITCH)) {
+                try {
+                    executionThread = thread(start = true) { PerformTest() }
+                    executionThread!!.join()
+                } catch (thisFailure: Throwable) {
+                    AddResult(GetResultForFailure(thisFailure))
+                } finally {
+                    wasRun = true
+                    executionThread = null
+                }
+            } else {
+                AddResult(TestResult(TestStatus.Inconclusive, "Declining to perform test case $IdentifiedName because setup method failed."))
+            }
+
+            // CLEANUP
+            cleanupMemoir = indicateCleanup
+            try {
+                cleanupResult = Cleanup()
+                wasCleanedUp = true
+            } catch (thisFailure: Throwable) {
+                ReportFailureInCleanup(thisFailure)
+            } finally {
+                var style = "decaf_orange_light_roast"
+                if (cleanupResult) { style = "decaf_green_light_roast" }
+                topLevelMemoir!!.ShowMemoir(cleanupMemoir!!, EMOJI_CLEANUP, style)
+            }
+
+            val overall = OverallStatus.toString()
+            val emoji = OverallStatus.memoirIcon
+            topLevelMemoir!!.WriteToHTML("<h2>Overall Status: $overall</h2>", emoji)
+            topLevelMemoir!!.EchoPlainText("Overall Status: $overall", emoji)
+            topLevelMemoir!!.Conclude()
         }
     }
 }
