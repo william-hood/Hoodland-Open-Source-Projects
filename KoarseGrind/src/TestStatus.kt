@@ -84,3 +84,9 @@ enum class TestStatus {
 fun Memoir.ShowTestStatus(thisStatus: TestStatus, message: String) {
     this.Info(message, thisStatus.memoirIcon)
 }
+
+fun String.toTestStatus(): TestStatus {
+    if (this.toUpperCase().startsWith("P")) { return TestStatus.Pass }
+    if (this.toUpperCase().startsWith("F")) { return TestStatus.Fail }
+    return TestStatus.Inconclusive
+}

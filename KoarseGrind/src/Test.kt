@@ -22,11 +22,22 @@
 package rockabilly.koarsegrind
 
 import rockabilly.memoir.Memoir
+import rockabilly.memoir.ShowThrowable
 import rockabilly.memoir.UNSET_STRING
+import rockabilly.toolbox.forceParentDirectoryExistence
+import rockabilly.toolbox.stdout
 import java.io.File
+import java.io.PrintWriter
 
 enum class TestPriority {
     HappyPath, Critical, Normal, Ancillary
+}
+
+fun String.toTestPriority(): TestPriority {
+    if (this.toUpperCase().startsWith("N")) { return TestPriority.Normal }
+    if (this.toUpperCase().startsWith("A")) { return TestPriority.Ancillary }
+    if (this.toUpperCase().startsWith("C")) { return TestPriority.Critical }
+    return TestPriority.HappyPath
 }
 
 internal const val INFO_ICON = "ℹ️"
@@ -61,6 +72,10 @@ abstract class Test (Name: String, DetailedDescription: String = "(no details)",
     private var detailedDescription = DetailedDescription
     private var categories: Array<out String> = Categories
 
+    // TODO: Assert enforcer
+    // TODO: Require enforcer
+    // TODO: Consider enforcer
+
     // If there's ever some reason to call it something other than a test, change this.
     open protected val echelonName = "Test"
 
@@ -78,9 +93,9 @@ abstract class Test (Name: String, DetailedDescription: String = "(no details)",
     val Log: Memoir
      get() = // https://stackoverflow.com/questions/4065518/java-how-to-get-the-caller-function-name/46590924
          when (Thread.currentThread().stackTrace[1].methodName) { // slot [2]???
-             "Setup" -> this!!.setupMemoir!!
-             "Cleanup" -> this!!.cleanupMemoir!!
-             else -> this!!.topLevelMemoir!!
+             "Setup" -> this.setupMemoir!!
+             "Cleanup" -> this.cleanupMemoir!!
+             else -> this.topLevelMemoir!!
          }
 
     // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
@@ -96,7 +111,7 @@ abstract class Test (Name: String, DetailedDescription: String = "(no details)",
 
     // For some reason in the C# version this was open/virtual
     fun AddResult(thisResult: TestResult) {
-        topLevelMemoir?.ShowTestResult((thisResult))
+        Log.ShowTestResult((thisResult))
         Results.add(thisResult)
     }
 
@@ -121,6 +136,10 @@ abstract class Test (Name: String, DetailedDescription: String = "(no details)",
             if (identifier.length < 1) return name
             return "$identifier - $name"
         }
+
+    // Is virtual/open in C#
+    val PrefixedName: String
+        get() = "$OverallStatus - $IdentifiedName"
 
     // Is virtual/open in C#
     val LogFileName: String
@@ -165,15 +184,83 @@ abstract class Test (Name: String, DetailedDescription: String = "(no details)",
             return result
         }
 
+    private fun getResultForIncident(status: TestStatus, section: String, failure: Throwable): TestResult {
+        var reportedSection = section
+        if (section.length > 0) {
+            reportedSection = "($section)"
+        }
+
+        val result = TestResult(status, "$IdentifiedName$section: An unanticipated failure occurred.")
+        result.Failures.add(failure)
+        return result
+    }
+
+
+    // Is virtual/open in C#
+    fun GetResultForFailure(thisFailure: Throwable, section: String = "") = getResultForIncident(TestStatus.Fail, section, thisFailure)
+
+    // Is virtual/open in C#
+    fun GetResultForPreclusionInSetup(thisPreclusion: Throwable) = getResultForIncident(TestStatus.Inconclusive, SETUP, thisPreclusion)
+
+    // Is virtual/open in C#
+    fun GetResultForPreclusion(thisPreclusion: Throwable) = getResultForIncident(TestStatus.Inconclusive, "", thisPreclusion)
+
+    // Is virtual/open in C#
+    fun ReportFailureInCleanup(thisFailure: Throwable, additionalMessage: String = "") {
+        var message = StringBuilder()
+        if (additionalMessage.length > 0) { message.append(" ") }
+        message.append(additionalMessage)
+
+        // This is a direct translation from C#. Spacing looks suspicious... ??? Also, it insisted on topLevelMemoir instead of the Log property???
+        Log.Error("$IdentifiedName$CLEANUP: An unanticipated failure occurred$additionalMessage.")
+        Log.ShowThrowable(thisFailure)
+    }
+
+    private val indicateSetup: Memoir
+        get() = Memoir("Setup - $echelonName $IdentifiedName", stdout)
+
+    private val indicateCleanup: Memoir
+        get() = Memoir("Cleanup - $echelonName $IdentifiedName", stdout)
+
+    private val indicateBody: Memoir
+        get() = Memoir("$echelonName $IdentifiedName", stdout)
+
+    fun WaitSeconds(howMany: Long) {
+        Log.Info("Waiting $howMany seconds...", INFO_ICON)
+        Thread.sleep(1000 * howMany)
+    }
+
+    fun WaitMilliseconds(howMany: Long) {
+        Log.Info("Waiting $howMany milliseconds...", INFO_ICON)
+        Thread.sleep(howMany)
+    }
+
+    fun Interrupt() {
+        try {
+            executionThread?.interrupt()
+            // C# version was followed by executionThread.Abort() three times in a row.
+        } catch (dontCare: Exception) {
+            // Deliberate NO-OP
+        }
+    }
+
     // This was virtual/open in the C# version
+    // TODO: Not yet finished.  Needs some functions in the CoarseGrind object in C#
     fun RunTest(rootDirectory: String) {
-        if (false /*CoarseGrind.KILL_SWITCH*/) {
+        if (KILL_SWITCH) {
             // Decline to run
+            // Deliberate NO-OP
         } else {
             var setupResult = true
             var cleanupResult = true
             parentArtifactsDirectory = rootDirectory
+            val expectedFileName = ArtifactsDirectory + File.separatorChar + LogFileName
 
+            forceParentDirectoryExistence(expectedFileName)
+            topLevelMemoir = Memoir(name, stdout, PrintWriter(expectedFileName), ::LogHeader)
+            topLevelMemoir!!.SkipLine()
+
+            // Left off Test.cs Line 194 - if (detailedDescription != default(string))
         }
     }
 }

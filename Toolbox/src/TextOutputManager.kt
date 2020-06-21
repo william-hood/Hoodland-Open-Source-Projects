@@ -25,6 +25,7 @@ import java.io.FileWriter
 import java.io.IOException
 import java.io.PrintWriter
 
+val stdout = PrintWriter(System.out)
 
 class TextOutputManager {
     // Creates a file with header only if the first call to write is made.

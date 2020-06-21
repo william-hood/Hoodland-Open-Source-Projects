@@ -62,8 +62,12 @@ enum class TestConditionalType {
 class TestResult (status: TestStatus = TestStatus.Inconclusive, description: String = "(no description provided)", vararg associatedFailures: Throwable) {
     var Description = description
     var Status = status
-    val Failures = associatedFailures
+    val Failures = ArrayList<Throwable>()
     val Artifacts = ArrayList<Any>()
+
+    init {
+        associatedFailures.toCollection(Failures)
+    }
 
     val hasArtifacts: Boolean
         get() = this.Artifacts.count() > 0
