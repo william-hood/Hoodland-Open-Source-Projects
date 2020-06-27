@@ -195,6 +195,8 @@ fun StringArrayContainsCaseInspecific(
     return false
 }
 
+// Ported this from the legacy code. In Kotlin it might make more sense
+// to use File(<complete-path>).deleteRecursively()
 fun hardDelete(fullPath: String) {
     val check = File(fullPath)
     if (check.isDirectory) {
