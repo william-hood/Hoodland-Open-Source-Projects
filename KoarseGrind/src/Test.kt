@@ -43,8 +43,8 @@ internal const val INFO_ICON = "ℹ️"
 internal const val inProgressName = "(test in progress)"
 internal const val SETUP = "setup"
 internal const val CLEANUP = "cleanup"
+internal const val UNSET_DESCRIPTION = "(no details)"
 
-private const val UNSET_DESCRIPTION = "(no details)"
 abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTION, ID: String = "", vararg Categories: String) {
     // Client code must implement or override
     open fun Setup(): Boolean { return true }

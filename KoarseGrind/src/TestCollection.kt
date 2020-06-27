@@ -32,12 +32,15 @@ import kotlin.math.round
 
 private const val FOLDER_FOR_ALL_TESTS = "All Tests"
 
-internal class TestCollection(suiteName: String): ArrayList<Test>() {
+public object TestCollection: ArrayList<Test>() {
+    init {
+    System.err.println("Ran Init: ${this::class.simpleName}")
+    }
     private var currentTest: Test? = null
     private var currentArtifactsDirectory = UNSET_STRING
     private var executionThread: Thread? = null
     private var currentCount = Int.MAX_VALUE
-    val name = suiteName // Shouldn't need a getter because this is a val
+    var name = UNSET_DESCRIPTION
 
     fun Reset() {
         currentCount = Int.MAX_VALUE
@@ -86,7 +89,7 @@ internal class TestCollection(suiteName: String): ArrayList<Test>() {
         }
     }
 
-    fun RunTestCollection(exclusions: MatchList, rootDirectory: String) {
+    fun Run(/*exclusions: MatchList, */rootDirectory: String  = "$DEFAULT_PARENT_FOLDER${File.separatorChar}DateTimeHere ${name}") {
         currentArtifactsDirectory = rootDirectory
         val expectedFileName = currentArtifactsDirectory + File.separatorChar + "All tests.html"
         forceParentDirectoryExistence(expectedFileName)
@@ -100,21 +103,23 @@ internal class TestCollection(suiteName: String): ArrayList<Test>() {
                 break
             } else {
                 currentTest = this[currentCount]
-                if (exclusions.matchesCaseInspecific(currentTest!!.IdentifiedName)) {
+                /*
+                if (false)//(exclusions.matchesCaseInspecific(currentTest!!.IdentifiedName)) {
                     // Decline to run
                     break
                 } else {
-                    try {
-                        executionThread = thread(start = true) { currentTest!!.RunTest(currentArtifactsDirectory) } // C# used the public Run() function
-                        executionThread!!.join()
-                    } catch (thisFailure: Throwable) {
-                        // Uncertain why specifically calling GetResultForPreclusionInSetup()
-                        currentTest!!.AddResult(currentTest!!.GetResultForPreclusionInSetup(thisFailure))
-                    } finally {
-                        executionThread = null
-                        overlog.ShowMemoir(currentTest!!.topLevelMemoir!!, currentTest!!.OverallStatus.memoirIcon, currentTest!!.OverallStatus.memoirStyle)
-                        this.copyResultsToCategories(overlog)
-                    }
+                }
+                */
+                try {
+                    executionThread = thread(start = true) { currentTest!!.RunTest(currentArtifactsDirectory) } // C# used the public Run() function
+                    executionThread!!.join()
+                } catch (thisFailure: Throwable) {
+                    // Uncertain why specifically calling GetResultForPreclusionInSetup()
+                    currentTest!!.AddResult(currentTest!!.GetResultForPreclusionInSetup(thisFailure))
+                } finally {
+                    executionThread = null
+                    overlog.ShowMemoir(currentTest!!.topLevelMemoir!!, currentTest!!.OverallStatus.memoirIcon, currentTest!!.OverallStatus.memoirStyle)
+                    this.copyResultsToCategories(overlog)
                 }
             }
         }
@@ -189,7 +194,7 @@ internal class TestCollection(suiteName: String): ArrayList<Test>() {
             val textFile = TextOutputManager(fullyQulaifiedSummaryTextFileName)
             textFile.println(OverallStatus.toString())
             textFile.flush()
-            textFile.close()
+            textFile.close() // Shouldn't need a getter because this is a val
         } catch (thisFailure: Throwable) {
             memoir.Error("Did not successfully create the overall status text file $fullyQulaifiedSummaryTextFileName")
             memoir.ShowThrowable(thisFailure)

@@ -22,7 +22,6 @@
 import rockabilly.memoir.*
 import java.io.File
 import java.io.PrintWriter
-import java.lang.StringBuilder
 
 internal class TestStruct() {
     var name = "Hi"

@@ -19,15 +19,16 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package rockabilly.toolbox
+package rockabilly.koarsegrind
 
-class ImpossibleCodePathException : Exception(
-        "A point in the code was reached that should not be possible to get to.")
-
-class ImproperObjectConstructionException(message: String) : Exception(
-        "An object was created in a way that precludes actual use: $message")
-/* This is redundant in Kotlin which provides NotImplementedError
-class NotImplementedException(message: String) : Exception (message) {
-    constructor() : this("A point in the code was reached for functionality that has not yet been implemented.")
+// A manufactured test has to be produced by a test factory in order to be included in the test run.
+public abstract class ManufacturedTest(Name: String, DetailedDescription: String = UNSET_DESCRIPTION, ID: String = "", vararg Categories: String) : Test(Name, DetailedDescription, ID, *Categories) {
 }
-*/
+
+abstract class TestFactory {
+    val Products = ArrayList<ManufacturedTest>()
+    init { populateProducts() }
+
+    // Use this to instantiate manufactured tests and put them into the Products ArrayList
+    abstract fun populateProducts()
+}
