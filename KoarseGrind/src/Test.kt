@@ -63,6 +63,11 @@ abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTI
     internal var wasRun = false
     internal var wasCleanedUp = false
 
+    // Assertions
+    protected val Assert = Enforcer(TestConditionalType.Assertion, this)
+    protected val Require = Enforcer(TestConditionalType.Requirement, this)
+    protected val Consider = Enforcer(TestConditionalType.Consideration, this)
+
     //Should this be internal???
     val Results = ArrayList<TestResult>()
 
@@ -249,6 +254,10 @@ abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTI
         } catch (dontCare: Exception) {
             // Deliberate NO-OP
         }
+    }
+
+    fun MakeSubjective() {
+        AddResult(TestResult(TestStatus.Subjective, "This test case requires analysis by appropriate personnel to determine pass/fail status"))
     }
 
     // This was virtual/open in the C# version

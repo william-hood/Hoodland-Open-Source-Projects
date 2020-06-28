@@ -32,10 +32,15 @@ class ExampleTest2: Test(
     override fun PerformTest() {
         Log.Info("Reality check2")
         Log.Debug("Did it actually work2???")
-        Results.add(TestResult(TestStatus.Pass, "Whelp2, 'Guess I'll just brute-force the dang thing as passing!"))
+
+        Assert.ShouldBeTrue(true, "Whelp, 'Guess I'll just brute-force the dang thing as passing!")
+        Require.ShouldBeEqual(true, false, "Actually, this should make it inconclusive.")
     }
 }
 
 fun main(args: Array<String>) {
     TestProgram.Run("Koarse Grind Demo")
 }
+
+// TODO: Verify Manufactured Tests Work
+// TODO: Implement Rockabilly Descriptions
