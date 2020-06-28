@@ -22,6 +22,7 @@
 package rockabilly.koarsegrind
 
 import rockabilly.memoir.*
+import rockabilly.toolbox.UnsetString
 import rockabilly.toolbox.forceParentDirectoryExistence
 import rockabilly.toolbox.stdout
 import java.io.File
@@ -55,7 +56,7 @@ abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTI
     internal var topLevelMemoir: Memoir? = null
     internal var setupMemoir: Memoir? = null
     internal var cleanupMemoir: Memoir? = null
-    private var parentArtifactsDirectory = UNSET_STRING
+    private var parentArtifactsDirectory = UnsetString
     var Priority = TestPriority.Normal
     private var executionThread: Thread? = null
     internal var wasSetup = false
@@ -317,9 +318,11 @@ abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTI
             } catch (thisFailure: Throwable) {
                 ReportFailureInCleanup(thisFailure)
             } finally {
-                var style = "decaf_orange_light_roast"
-                if (cleanupResult) { style = "decaf_green_light_roast" }
-                topLevelMemoir!!.ShowMemoir(cleanupMemoir!!, EMOJI_CLEANUP, style)
+                if (cleanupMemoir!!.wasUsed) {
+                    var style = "decaf_orange_light_roast"
+                    if (cleanupResult) { style = "decaf_green_light_roast" }
+                    topLevelMemoir!!.ShowMemoir(cleanupMemoir!!, EMOJI_CLEANUP, style)
+                }
             }
 
             val overall = OverallStatus.toString()

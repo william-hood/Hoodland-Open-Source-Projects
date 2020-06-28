@@ -28,14 +28,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.AbstractMap.SimpleEntry
 
+val stdout = PrintWriter(System.out)
 
 private const val quickDateFormatString = "yyyy-MM-dd kk-mm-ss.SSS"
-private val quickDateFormat = SimpleDateFormat(
-        quickDateFormatString)
+private val quickDateFormat = SimpleDateFormat(quickDateFormatString)
 
-fun getTimeStamp(): String? {
-    return quickDateFormat.format(Date())
-}
+val QuickTimeStamp: String
+    get() = quickDateFormat.format(Date())
 
 @Throws(FileNotFoundException::class)
 fun openForReading(filePath: String?): BufferedReader? {

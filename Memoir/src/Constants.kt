@@ -36,7 +36,7 @@ const val EMOJI_OBJECT = "🔲"
 const val EMOJI_CAUSED_BY = "→"
 const val EMOJI_OUTGOING = "↗️"
 const val EMOJI_INCOMING = "↩️"
-const val UNSET_STRING = "(unknown)"
+const val UNKNOWN = "(unknown)"
 
 const val ALREADY_CONCLUDED_MESSAGE = "An attempt was made to write to a memoir that was already concluded.\r\n<li>Once a Memoir has been concluded it can no longer be written to.\r\n<li>Passing a Memoir to the ShowMemoir() method will automatically conclude it."
 const val MAX_OBJECT_FIELDS_TO_DISPLAY = 10

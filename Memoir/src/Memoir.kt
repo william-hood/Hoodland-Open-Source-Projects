@@ -41,7 +41,7 @@ internal fun highlight(message: String, style: String = "highlighted"): String {
 
 class MemoirConcludedException: Exception(ALREADY_CONCLUDED_MESSAGE) { }
 
-class Memoir (val title: String = UNSET_STRING, val forPlainText: PrintWriter? = null, val forHTML: PrintWriter? = null, val Header: (String)->String = ::defaultHeader) {
+class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null, val forHTML: PrintWriter? = null, val Header: (String)->String = ::defaultHeader) {
     private val printWriter_HTML: PrintWriter? = forHTML
     private val printWriter_PlainText: PrintWriter? = forPlainText
     private val content = StringBuilder(STARTING_CONTENT)

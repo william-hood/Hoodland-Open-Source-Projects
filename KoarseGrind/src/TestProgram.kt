@@ -23,6 +23,7 @@ import rockabilly.koarsegrind.ManufacturedTest
 import rockabilly.koarsegrind.Test
 import rockabilly.koarsegrind.TestCollection
 import rockabilly.koarsegrind.TestFactory
+import rockabilly.memoir.UNKNOWN
 import java.io.File
 import kotlin.reflect.full.isSubclassOf
 
@@ -31,7 +32,8 @@ import kotlin.reflect.full.isSubclassOf
 private val testLoader = Thread.currentThread().getContextClassLoader()
 
 object TestProgram {
-    fun Run() {
+    // This may have to be changed to take the same arguments as TestCollection
+    fun Run(name: String = UNKNOWN) {
         val packages = testLoader.definedPackages
         packages.forEach {
             val resources = testLoader.getResources(it.name.replace('.', File.separatorChar)).asIterator()
@@ -40,10 +42,11 @@ object TestProgram {
             }
         }
 
-        TestCollection.Run()
+        TestCollection.Run(name)
     }
 
 
+    // TODO: Properly handle Jar files
     private fun recursiveIdentify(candidate: File) {
         if (candidate.exists()) {
             val check = candidate.listFiles()
@@ -73,35 +76,3 @@ object TestProgram {
         }
     }
 }
-
-    /*
-
-    fun Run(SuiteName: String = UNSET_DESCRIPTION, outputFolder: String? = null, vararg specificTestIds: String) {
-        TestCollection.name = this::class.simpleName.toString()
-        var outputRoot = "$DEFAULT_PARENT_FOLDER${File.separatorChar}DateTimeHere ${availableTests.name}"
-
-        if (outputFolder != null) {
-            outputRoot = outputFolder + File.separatorChar + availableTests.name
-        }
-
-        val check = java.lang.ClassLoader.getSystemClassLoader().
-        val testFinder: ServiceLoader<Test> = ServiceLoader.load(Test::class.java, java.lang.ClassLoader.getSystemClassLoader())
-        testFinder.forEach {
-            if (it != null) {
-                if (! (it is ManufacturedTest)) {
-                    availableTests.add(it)
-                }
-            }
-        }
-
-        val factoryFinder: ServiceLoader<TestFactory> = ServiceLoader.load(TestFactory::class.java)
-        factoryFinder.forEach {
-            if (it != null) {
-                availableTests.addAll(it.Products)
-            }
-        }
-
-        availableTests.RunTestCollection(MatchList(), outputRoot)
-    }
-}
-     */

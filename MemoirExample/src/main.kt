@@ -20,6 +20,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import rockabilly.memoir.*
+import rockabilly.toolbox.stdout
 import java.io.File
 import java.io.PrintWriter
 
@@ -31,8 +32,6 @@ internal class TestStruct() {
     private var troll = "nya-nya!"
     var rogue = mapOf("LOTR" to "Sauron", "Star Wars" to "Darth Vader", "It" to "Pennywise")
 }
-
-val stdout = PrintWriter(System.out)
 
 fun main(args: Array<String>) {
     val homeFolder = System.getProperty("user.home")

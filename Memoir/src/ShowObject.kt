@@ -66,7 +66,7 @@ fun Memoir.ShowObject(target: Any?, targetVariableName: String = nameless, recur
 
     val fieldCount = targetClass.memberProperties.count()
 
-    var visibilityDescription = UNSET_STRING
+    var visibilityDescription = UNKNOWN
     if (visibleProperties < 1) {
         content.clear()
         visibilityDescription = "None of the $fieldCount members are"

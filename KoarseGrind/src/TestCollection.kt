@@ -23,7 +23,7 @@ package rockabilly.koarsegrind
 
 import rockabilly.memoir.Memoir
 import rockabilly.memoir.ShowThrowable
-import rockabilly.memoir.UNSET_STRING
+import rockabilly.memoir.UNKNOWN
 import rockabilly.toolbox.*
 import java.io.File
 import java.io.PrintWriter
@@ -37,10 +37,9 @@ public object TestCollection: ArrayList<Test>() {
     System.err.println("Ran Init: ${this::class.simpleName}")
     }
     private var currentTest: Test? = null
-    private var currentArtifactsDirectory = UNSET_STRING
+    private var currentArtifactsDirectory = UnsetString
     private var executionThread: Thread? = null
     private var currentCount = Int.MAX_VALUE
-    var name = UNSET_DESCRIPTION
 
     fun Reset() {
         currentCount = Int.MAX_VALUE
@@ -48,12 +47,12 @@ public object TestCollection: ArrayList<Test>() {
         currentTest = null
         executionThread?.interrupt() // C# code tried to Abort() three times in a row if not null
         executionThread = null
-        currentArtifactsDirectory = UNSET_STRING
+        currentArtifactsDirectory = UnsetString
     }
 
     val CurrentTest: String
         get() {
-            if (currentTest == null) { return UNSET_STRING }
+            if (currentTest == null) { return UNKNOWN }
             return currentTest!!.IdentifiedName
         }
 
@@ -79,7 +78,7 @@ public object TestCollection: ArrayList<Test>() {
     // I'm changing this to require a memoir so it can be logged properly.
     private fun copyResultsToCategories(memoir: Memoir) {
         try {
-            copyCompletely(currentTest!!.ArtifactsDirectory, currentArtifactsDirectory + File.pathSeparatorChar + currentTest!!.PrefixedName)
+            copyCompletely(currentTest!!.ArtifactsDirectory, currentArtifactsDirectory + File.separatorChar + currentTest!!.PrefixedName)
         } catch (loggedThrowable: Throwable) {
             memoir.Error("Koarse Grind was unable to copy the current test results to their permanent location")
             memoir.ShowThrowable(loggedThrowable)
@@ -89,7 +88,13 @@ public object TestCollection: ArrayList<Test>() {
         }
     }
 
-    fun Run(/*exclusions: MatchList, */rootDirectory: String  = "$DEFAULT_PARENT_FOLDER${File.separatorChar}DateTimeHere ${name}") {
+    // TODO: Alter this to provide for
+    //         * You want certain/batch of files excluded. Maybe by category
+    //         * You only want to run centain IDs or categories
+    //
+    // Properly doing this might require a custom data structure that a test-runner program would pass in.
+    //
+    fun Run(name: String, rootDirectory: String  = "$DEFAULT_PARENT_FOLDER${File.separatorChar}$QuickTimeStamp ${name}") {
         currentArtifactsDirectory = rootDirectory
         val expectedFileName = currentArtifactsDirectory + File.separatorChar + "All tests.html"
         forceParentDirectoryExistence(expectedFileName)
