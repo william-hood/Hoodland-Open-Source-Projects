@@ -44,7 +44,7 @@ fun openForReading(filePath: String?): BufferedReader? {
     // FileShare.Read);
 }
 
-fun readLineFromInputStream(rawInputStream: BufferedInputStream): String? {
+fun readLineFromInputStream(rawInputStream: BufferedInputStream): String {
     val result = StringBuilder()
     var lastRead: Int = Int.MIN_VALUE
     while (lastRead != -1) {
