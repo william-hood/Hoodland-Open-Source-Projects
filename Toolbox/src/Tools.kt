@@ -29,6 +29,7 @@ import java.util.*
 import java.util.AbstractMap.SimpleEntry
 
 val stdout = PrintWriter(System.out)
+val stderr = PrintWriter(System.err)
 
 private const val quickDateFormatString = "yyyy-MM-dd kk-mm-ss.SSS"
 private val quickDateFormat = SimpleDateFormat(quickDateFormatString)
@@ -62,7 +63,7 @@ fun readLineFromInputStream(rawInputStream: BufferedInputStream): String {
 
 // Based on http://stackoverflow.com/questions/5713857/bufferedinputstream-to-string-conversion
 const val BUFFER_SIZE = 1024
-fun readEntireInputStream(rawInputStream: BufferedInputStream): String? {
+fun readEntireInputStream(rawInputStream: BufferedInputStream): String {
     val buffer = ByteArray(BUFFER_SIZE)
     var bytesRead = 0
     val result = StringBuilder()

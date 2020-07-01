@@ -22,16 +22,15 @@
 package rockabilly.transceiver
 
 import rockabilly.toolbox.CarriageReturnLineFeed
-import rockabilly.toolbox.StringIsEmpty
 import rockabilly.toolbox.divider
-import rockabilly.toolbox.readLineFromInputStream
 import java.io.BufferedInputStream
 import java.io.DataOutputStream
 import java.io.IOException
+import java.util.*
 
 
-class HttpStringPayload : HttpHeadersList(), HttpPayload<StringBuilder?> {
-    override var content: StringBuilder? = StringBuilder()
+class HttpBinaryPayload : HttpHeadersList(), HttpPayload<ByteArray?> {
+    override var content: ByteArray? = null
 
     @Throws(IOException::class)
     override fun toOutgoingStream(outputStream: DataOutputStream?) {
@@ -41,7 +40,7 @@ class HttpStringPayload : HttpHeadersList(), HttpPayload<StringBuilder?> {
 			outputStream.writeBytes("\r\n");
 		}
 		*/
-        outputStream!!.writeBytes(content.toString())
+        outputStream!!.write(content)
     }
 
     override fun toString(): String {
@@ -52,31 +51,61 @@ class HttpStringPayload : HttpHeadersList(), HttpPayload<StringBuilder?> {
             result.append(CarriageReturnLineFeed)
             result.append(CarriageReturnLineFeed)
         }
-        result.append("TEXT CONTENT:")
+        result.append("BINARY CONTENT: ")
         if (content == null) {
-            result.append(" (null)")
-        } else if (content!!.length < 1) {
-            result.append(" (empty)")
+            result.append("(null)")
         } else {
-            result.append(CarriageReturnLineFeed)
-            result.append(content.toString())
+            result.append(content!!.size)
+            result.append(" bytes")
         }
         return result.toString()
     }
 
-    @Throws(IOException::class, HttpMessageParseException::class)
-    override fun populateFromInputStream(rawInputStream: BufferedInputStream, multipartBoundary: String?) {
-        var thisLine = "DO NOT USE DEFAULT STRING"
-        while (!StringIsEmpty(thisLine.trim { it <= ' ' })) {
-            thisLine = readLineFromInputStream(rawInputStream)
-            if (thisLine.trim { it <= ' ' } == multipartBoundary) return
-            content!!.append(thisLine)
+    private fun takeContent(buffer: ArrayList<Byte>, length: Int) {
+        var length = length
+        if (length == Int.MIN_VALUE) length = buffer.size
+        content = ByteArray(length)
+        for (index in 0 until length) {
+            content!![index] = buffer[index]
         }
     }
 
-    override val isEmpty: Boolean
-        get() = content!!.length < 1
+    @Throws(IOException::class, HttpMessageParseException::class)
+    override fun populateFromInputStream(rawInputStream: BufferedInputStream, multipartBoundary: String?) {
+        var delimiterIndex = 0
+        val delimiter = multipartBoundary!!.toByteArray()
+        val buffer = ArrayList<Byte>()
+        var current: Int = Int.MIN_VALUE
+        while (current != -1) {
+            current = if (rawInputStream.available() < 1) {
+                -1
+            } else {
+                rawInputStream.read()
+            }
+            if (current != -1) {
+                val currentByte = current.toByte()
+                buffer.add(currentByte)
+                if (currentByte == delimiter[delimiterIndex]) {
+                    delimiterIndex++
+                    if (delimiterIndex > delimiter.size) {
+                        // we have a match This is a multipart boundary
+                        takeContent(buffer, buffer.size - delimiter.size)
+                    }
+                } else {
+                    delimiterIndex = 0
+                }
+            }
+        }
+        takeContent(buffer, Int.MIN_VALUE)
+    }
 
+    override val isEmpty: Boolean
+        get() {
+            if (content == null) return true
+            return if (content!!.size < 1) true else false
+        }
+
+    //Need to subtract 1???
     override val contentLength: Int
-        get() = content!!.length - 1
+        get() = content!!.size //Need to subtract 1???
 }

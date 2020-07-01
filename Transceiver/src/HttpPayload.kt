@@ -31,8 +31,8 @@ interface HttpPayload<T> {
     fun toOutgoingStream(outputStream: DataOutputStream?)
 
     @Throws(IOException::class, HttpMessageParseException::class)
-    fun populateFromInputStream(inputStream: BufferedInputStream?, multipartBoundary: String?)
-    var content: T
+    fun populateFromInputStream(inputStream: BufferedInputStream, multipartBoundary: String?)
+    var content: T?
     val contentLength: Int
     val isEmpty: Boolean
 }
