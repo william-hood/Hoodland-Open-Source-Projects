@@ -18,15 +18,9 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-
 package rockabilly.descriptions
 
-abstract class FieldDescription<T> {
-    var basisValue: T? = null
-
-    abstract fun setExplicitValue(value: T)
-    abstract val describedValue: T?
-    abstract fun hasSpecificHappyValue(): Boolean
-    abstract val isExplicit: Boolean
-    abstract val isDefault: Boolean
+abstract class ObjectDescription<T> {
+    @get:Throws(NoValueException::class, InappropriateDescriptionException::class)
+    abstract val describedObject: T
 }

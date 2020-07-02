@@ -21,12 +21,17 @@
 
 package rockabilly.descriptions
 
-abstract class FieldDescription<T> {
-    var basisValue: T? = null
+import rockabilly.descriptions.LimitsDescription
+import java.math.BigInteger
 
-    abstract fun setExplicitValue(value: T)
-    abstract val describedValue: T?
-    abstract fun hasSpecificHappyValue(): Boolean
-    abstract val isExplicit: Boolean
-    abstract val isDefault: Boolean
+abstract class BigIntegerLimitsDescription : LimitsDescription<BigInteger?>() {
+    @Throws(InappropriateDescriptionException::class)
+    fun isWithinLimits(candidate: BigInteger): Boolean {
+        return candidate.compareTo(upperLimit) <= 0 && candidate
+                .compareTo(lowerLimit) >= 0
+    }
+
+    @get:Throws(InappropriateDescriptionException::class)
+    override val isZeroInLimits: Boolean
+        get() = isWithinLimits(BigInteger.ZERO)
 }

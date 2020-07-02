@@ -18,15 +18,24 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-
 package rockabilly.descriptions
 
-abstract class FieldDescription<T> {
-    var basisValue: T? = null
+import java.time.LocalDate
 
-    abstract fun setExplicitValue(value: T)
-    abstract val describedValue: T?
-    abstract fun hasSpecificHappyValue(): Boolean
-    abstract val isExplicit: Boolean
-    abstract val isDefault: Boolean
+abstract class DateLimitsDescription {
+    @get:Throws(InappropriateDescriptionException::class)
+    abstract val upperLimit: LocalDate
+
+    @get:Throws(InappropriateDescriptionException::class)
+    abstract val lowerLimit: LocalDate
+
+    @Throws(InappropriateDescriptionException::class)
+    fun isWithinLimits(candidate: LocalDate): Boolean {
+        if (candidate.toEpochDay() <= lowerLimit.toEpochDay()) return false
+        return if (candidate.toEpochDay() >= upperLimit.toEpochDay()) false else true
+    }
+
+    @get:Throws(InappropriateDescriptionException::class)
+    val isPresentInLimits: Boolean
+        get() = isWithinLimits(LocalDate.now())
 }

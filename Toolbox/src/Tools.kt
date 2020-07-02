@@ -156,7 +156,7 @@ fun randomInt(min: Int, max: Int): Int {
     return min + Random().nextInt(max - min)
 }
 
-fun randomInteger(min: Int, max: Int): Int? {
+fun randomInteger(min: Int, max: Int): Int {
     return randomInt(min, max)
 }
 

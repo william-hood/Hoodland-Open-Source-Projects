@@ -18,15 +18,38 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-
 package rockabilly.descriptions
 
-abstract class FieldDescription<T> {
-    var basisValue: T? = null
+import rockabilly.descriptions.StringFieldTargets
+import rockabilly.toolbox.SubnameFactory
 
-    abstract fun setExplicitValue(value: T)
-    abstract val describedValue: T?
-    abstract fun hasSpecificHappyValue(): Boolean
-    abstract val isExplicit: Boolean
-    abstract val isDefault: Boolean
+class StringFieldSubnameDescription : StringFieldDescription {
+    constructor(BasisValue: String) : super(BasisValue) {
+        subname = SubnameFactory()
+    }
+
+    constructor(InitialIndex: Long) : super() {
+        subname = SubnameFactory(InitialIndex)
+    }
+
+    constructor(BasisValue: String, InitialIndex: Long) : super(BasisValue) {
+        subname = SubnameFactory(InitialIndex)
+    }
+
+    var subname: SubnameFactory? = null
+
+    @get:Throws(NoValueException::class, InappropriateDescriptionException::class)
+    override val describedValue: String?
+        get() {
+            if (target === StringFieldTargets.HAPPY_PATH
+                    || target === StringFieldTargets.EXPLICIT) {
+                val tmp = StringBuilder()
+                if (basisValue != null) {
+                    tmp.append(basisValue)
+                }
+                tmp.append(subname!!.nextSubname)
+                return tmp.toString()
+            }
+            return super.describedValue
+        }
 }

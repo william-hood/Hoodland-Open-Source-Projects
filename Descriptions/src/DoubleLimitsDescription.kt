@@ -18,15 +18,15 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-
 package rockabilly.descriptions
 
-abstract class FieldDescription<T> {
-    var basisValue: T? = null
+abstract class DoubleLimitsDescription : LimitsDescription<Double>() {
+    @Throws(InappropriateDescriptionException::class)
+    override fun isWithinLimits(candidate: Double): Boolean {
+        return candidate <= upperLimit && candidate >= lowerLimit
+    }
 
-    abstract fun setExplicitValue(value: T)
-    abstract val describedValue: T?
-    abstract fun hasSpecificHappyValue(): Boolean
-    abstract val isExplicit: Boolean
-    abstract val isDefault: Boolean
+    @get:Throws(InappropriateDescriptionException::class)
+    override val isZeroInLimits: Boolean
+        get() = isWithinLimits(0.toDouble())
 }

@@ -18,76 +18,65 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-
 package rockabilly.descriptions
 
-import java.math.BigInteger
+import rockabilly.toolbox.randomInteger
 
-class BigIntegerFieldDescription : ValueFieldDescription<BigInteger> {
-    constructor(
-            limitsDescription: LimitsDescription<BigInteger>) : super(limitsDescription) {
-    }
 
+class IntFieldDescription : ValueFieldDescription<Int> {
+    constructor(limitsDescription: LimitsDescription<Int>) : super(limitsDescription) {}
     constructor() : super() {}
-    constructor(BasisValue: BigInteger) : super(BasisValue) {}
+    constructor(BasisValue: Int) : super(BasisValue) {}
 
     @get:Throws(InappropriateDescriptionException::class)
-    override val positiveMinisculeValue: BigInteger
-        get() = BigInteger.ONE
+    override val positiveMinisculeValue: Int
+        get() = 1
+
+    // PROBLEM: If limits are from 0 to 30 this is not moderate.
+    @get:Throws(InappropriateDescriptionException::class)
+    override val positiveModerateValue: Int
+        get() =// PROBLEM: If limits are from 0 to 30 this is not moderate.
+            100
 
     @get:Throws(InappropriateDescriptionException::class)
-    override val positiveModerateValue: BigInteger
-        get() = BigInteger.valueOf(100.toLong())
-
-    // Going by spec, there is no max or min
-    @get:Throws(InappropriateDescriptionException::class)
-    override val maximumPossibleValue: BigInteger
-        get() {
-            // Going by spec, there is no max or min
-            throw InappropriateDescriptionException()
-        }
-
-    // Going by spec, there is no max or min
-    @get:Throws(InappropriateDescriptionException::class)
-    override val minimumPossibleValue: BigInteger
-        get() {
-            // Going by spec, there is no max or min
-            throw InappropriateDescriptionException()
-        }
+    override val maximumPossibleValue: Int
+        get() = Int.MAX_VALUE
 
     @get:Throws(InappropriateDescriptionException::class)
-    override val zeroOrOrigin: BigInteger
-        get() = BigInteger.ZERO
+    override val minimumPossibleValue: Int
+        get() = Int.MIN_VALUE
+
+    @get:Throws(InappropriateDescriptionException::class)
+    override val zeroOrOrigin: Int
+        get() = 0
 
     @Throws(InappropriateDescriptionException::class)
-    override fun add(x: BigInteger, y: BigInteger): BigInteger {
-        return x.add(y)
+    override fun add(x: Int, y: Int): Int {
+        return x + y
     }
 
     @Throws(InappropriateDescriptionException::class)
-    override fun subtract(x: BigInteger, y: BigInteger): BigInteger {
-        return x.subtract(y)
+    override fun subtract(x: Int, y: Int): Int {
+        return x - y
     }
 
     @Throws(InappropriateDescriptionException::class)
-    override fun multiply(x: BigInteger, y: BigInteger): BigInteger {
-        return x.multiply(y)
+    override fun multiply(x: Int, y: Int): Int {
+        return x * y
     }
 
     @Throws(InappropriateDescriptionException::class)
-    override fun divide(x: BigInteger, y: BigInteger): BigInteger {
-        return x.divide(y)
+    override fun divide(x: Int, y: Int): Int {
+        return Math.round(x / y.toFloat())
     }
 
     @Throws(InappropriateDescriptionException::class)
-    override fun half(x: BigInteger): BigInteger {
-        return divide(x, BigInteger.valueOf(2.toLong()))
+    override fun half(x: Int): Int {
+        return divide(x, 2)
     }
 
     @Throws(InappropriateDescriptionException::class)
-    override fun random(min: BigInteger, max: BigInteger): BigInteger {
-        // return add(min, new Random().nextInt(subtract(max, min)));
-        // TODO: Will implement support later
-        throw InappropriateDescriptionException()
+    override fun random(min: Int, max: Int): Int {
+        return add(min, randomInteger(min, max))
     }
 }
