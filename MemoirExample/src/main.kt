@@ -40,6 +40,7 @@ fun main(args: Array<String>) {
     val memoir = Memoir("Kotlin Memoir Test", stdout, outputFile.printWriter())
 
     try {
+
         val arrayCheck = intArrayOf(1, 5, 7, 9, 42, 781)
         memoir.Show(arrayCheck, "arrayCheck")
         val peopleToAge = mapOf("Alice" to 20, "Bob" to 21, "George" to 68)

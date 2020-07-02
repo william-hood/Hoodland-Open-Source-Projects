@@ -24,18 +24,19 @@ package rockabilly.toolbox
 import java.io.*
 import java.net.URL
 import java.nio.file.Files
-import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.AbstractMap.SimpleEntry
+import kotlin.collections.ArrayList
 
 val stdout = PrintWriter(System.out)
 val stderr = PrintWriter(System.err)
 
-private const val quickDateFormatString = "yyyy-MM-dd kk-mm-ss.SSS"
-private val quickDateFormat = SimpleDateFormat(quickDateFormatString)
+private val quickDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd kk-mm-ss.SSS")
 
 val QuickTimeStamp: String
-    get() = quickDateFormat.format(Date())
+    get() = quickDateFormat.format(LocalDateTime.now())
 
 @Throws(FileNotFoundException::class)
 fun openForReading(filePath: String?): BufferedReader? {
@@ -139,8 +140,7 @@ fun depictFailure(thisFailure: Throwable): String? {
 		 */return stacktraceWriter.toString()
 }
 
-// From
-// http://stackoverflow.com/questions/2546078/java-random-long-number-in-0-x-n-range
+// From http://stackoverflow.com/questions/2546078/java-random-long-number-in-0-x-n-range
 fun nextLong(rng: Random, n: Long): Long {
     // error checking and 2^x checking removed for simplicity.
     var bits: Long

@@ -21,11 +21,14 @@
 
 package rockabilly.transceiver
 
+import rockabilly.memoir.Memoir
+import rockabilly.memoir.ShowHttpResponse
 import java.io.BufferedInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
+import java.util.ArrayList
 import javax.net.ssl.SSLSocket
 import javax.net.ssl.SSLSocketFactory
 
@@ -36,7 +39,7 @@ import javax.net.ssl.SSLSocketFactory
 
 class HttpClient {
     @Throws(IOException::class, HttpMessageParseException::class)
-    fun sendAndReceive(httpRequest: HttpRequest): HttpResponse {
+    fun sendAndReceive(httpRequest: HttpRequest, memoir: Memoir? = null): HttpResponse {
         var outgoing: DataOutputStream? = null
         var incoming: BufferedInputStream? = null
         var socket: Socket? = null
@@ -63,7 +66,11 @@ class HttpClient {
             httpRequest.toOutgoingStream(outgoing)
             //outgoing.close();
             outgoing.flush()
-            HttpResponse.fromInputStream(incoming)
+            val result = HttpResponse.fromInputStream(incoming)
+
+            // TODO: Change the HTTP Header class to reflect reality.
+            memoir.ShowHttpResponse(result.getStatusCode(), result.headers)
+            result
         } finally {
             try {
                 //incoming.close();

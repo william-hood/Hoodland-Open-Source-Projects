@@ -22,19 +22,23 @@
 package rockabilly.transceiver
 
 import rockabilly.toolbox.UnsetString
-import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.AbstractMap.SimpleEntry
 
-
+// TODO: This has to be changed to Map<String, ArrayList<String?>>
+// The value on the header can be many strings, not just one.
+// TODO: Intellisense shows Transceiver to look like a Java/Kotlin b@st_rd love child. Make it into proper Kotlin.
 class HttpHeader(key: String, value: String) : SimpleEntry<String, String>(key, value) {
     companion object {
         private const val serialVersionUID = 5682603081858980317L
-        private val httpDateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US)
+        private val httpDateFormat = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z", Locale.US).withZone(ZoneId.of("GMT")) //SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US)
         const val DATE_HEADER_KEY = "Date"
         const val SERVER_HEADER_KEY = "Server"
         val httpDate: String
-            get() = httpDateFormat.format(Calendar.getInstance().time)
+            get() = httpDateFormat.format(LocalDateTime.now())
 
         fun fromString(headerLine: String): HttpHeader {
             val split = headerLine.indexOf(':')
@@ -43,10 +47,6 @@ class HttpHeader(key: String, value: String) : SimpleEntry<String, String>(key, 
 
         val dateHeader: HttpHeader
             get() = HttpHeader(DATE_HEADER_KEY, httpDate)
-
-        init {
-            httpDateFormat.timeZone = TimeZone.getTimeZone("GMT")
-        }
     }
 
     override fun toString(): String {

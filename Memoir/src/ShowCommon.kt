@@ -74,7 +74,7 @@ fun Memoir.Show(target: Any?, targetVariableName: String = nameless, recurseLeve
 
     if (target == null) {
         // Write to HTML and plain text???
-        return "<div class=\"outlined\">($targetVariableName is Null)</div>"
+        return highlight("($targetVariableName is Null)")
     }
 
     if (target is Throwable) { return this.ShowThrowable(target) }

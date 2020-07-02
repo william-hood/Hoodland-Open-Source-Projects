@@ -34,7 +34,7 @@ fun Memoir.ShowObject(target: Any?, targetVariableName: String = nameless, recur
     }
 
     if (target == null) {
-        return "<div class=\"outlined\">(Object is Null)</div>"
+        return highlight("(Object is Null)")
     }
 
     val timeStamp = LocalDateTime.now()

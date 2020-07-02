@@ -21,10 +21,7 @@
 
 package rockabilly.transceiver
 
-import rockabilly.toolbox.CarriageReturnLineFeed
-import rockabilly.toolbox.UnsetString
-import rockabilly.toolbox.readEntireInputStream
-import rockabilly.toolbox.readLineFromInputStream
+import rockabilly.toolbox.*
 import java.io.BufferedInputStream
 import java.io.ByteArrayInputStream
 import java.io.DataOutputStream
@@ -59,7 +56,7 @@ class HttpResponse : HttpMessage {
     @Throws(IOException::class)
     override fun toOutgoingStream(outputStream: DataOutputStream?) {
         var outgoing: StringBuilder? = StringBuilder()
-        outgoing!!.append("""$PROTOCOL $statusCode ${statusCodeDescription(statusCode)}
+        outgoing!!.append("""$PROTOCOL $statusCode ${statusCode.toStatusCodeDescription()}
 """)
         outgoing.append(HttpHeader.dateHeader.toString())
         outgoing.append("\r\n")
@@ -83,7 +80,7 @@ class HttpResponse : HttpMessage {
         result.append(" STATUS CODE")
         if (statusCode != Int.MIN_VALUE) {
             result.append(" - ")
-            result.append(statusCodeDescription(statusCode))
+            result.append(statusCode.toStatusCodeDescription())
         }
         result.append(CarriageReturnLineFeed)
         result.append(CarriageReturnLineFeed)
@@ -143,52 +140,6 @@ class HttpResponse : HttpMessage {
                 throw HttpMessageParseException(causalException)
             }
             return result
-        }
-
-        fun statusCodeDescription(code: Int): String {
-            return when (code) {
-                100 -> "Continue"
-                200 -> "OK"
-                201 -> "Created"
-                202 -> "Accepted"
-                203 -> "Non-authoritative Information"
-                204 -> "No Content"
-                205 -> "Reset Content"
-                206 -> "Partial Content"
-                300 -> "Multiple Choices"
-                301 -> "Moved Permanently"
-                302 -> "Found"
-                303 -> "See Other"
-                304 -> "Not Modified"
-                305 -> "Use Proxy"
-                306 -> "Unused"
-                307 -> "Temporary Redirect"
-                400 -> "Bad Request"
-                401 -> "Unauthorized"
-                402 -> "Payment Required"
-                403 -> "Forbidden"
-                404 -> "Not Found"
-                405 -> "Method Not Allowed"
-                406 -> "Not Acceptable"
-                407 -> "Proxy Authentication Required"
-                408 -> "Request Timeout"
-                409 -> "Conflict"
-                410 -> "Gone"
-                411 -> "Length Required"
-                412 -> "Precondition Failed"
-                413 -> "Request Entity Too Large"
-                414 -> "Request-url Too Long"
-                415 -> "Unsupported Media Type"
-                416 -> "Requested Range Not Satisfiable"
-                417 -> "Expectation Failed"
-                500 -> "Internal Server Error"
-                501 -> "Not Implemented"
-                502 -> "Bad Gateway"
-                503 -> "Service Unavailable"
-                504 -> "Gateway Timeout"
-                505 -> "HTTP Version Not Supported"
-                else -> ""
-            }
         }
     }
 }

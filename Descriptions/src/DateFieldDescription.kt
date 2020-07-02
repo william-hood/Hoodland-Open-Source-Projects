@@ -25,22 +25,6 @@ import rockabilly.toolbox.nextLong
 import java.time.LocalDate
 import java.util.*
 
-
-/*
-const val ONE_DAY = 86400000.toLong()
-val ONE_DAY_DATE: Date = Date(ONE_DAY)
-const val YEAR_AND_HALF = 4733538.toLong() * 1000.toLong()
-val YEAR_AND_HALF_DATE: Date = Date(YEAR_AND_HALF)
-val MAX_DATE: Date = Date(Long.MAX_VALUE)
-val MIN_DATE: Date = Date(Long.MIN_VALUE)
-
-private const val dateFormatString = "yyyyMMdd"
-private val dateFormat = SimpleDateFormat(dateFormatString)
-private val CURRENT_MONTH = dateFormat.format(Date()).substring(4, 6)
-private val CURRENT_DAY = dateFormat.format(Date()).substring(6)
-private val HAPPY_YEAR = String.format("%04d", Calendar.getInstance()[Calendar.YEAR] - 30)
-*/
-
 class DateFieldDescription() : FieldDescription<LocalDate>() {
     var target = DateFieldTargets.HAPPY_PATH
     private var bounds: DateLimitsDescription? = null
