@@ -30,41 +30,44 @@ import java.io.IOException
 import java.net.http.HttpRequest
 
 
-abstract class HttpMessage : HttpHeadersList() {
-    // Server is here because this is where the headers are parsed and we need a place to put it.
-    // It is only accessible from response, not from request.
-    // If determined to be a request while reading from input stream, a Server header will be added.
-    protected var server = "Rockabilly Common HTTP Server"
+abstract class HttpMessage {
+    // Java version kept the property 'server' here.
+    // The Kotlin version keeps the property in the HttpHeaders class.
     protected var skipReadingHeaders = false
+
+    val headers = HttpHeaders()
     var payload: HttpPayload<*>? = null
 
     @Throws(IOException::class)
     abstract fun toOutgoingStream(outputStream: DataOutputStream?)
 
     @Throws(IOException::class, HttpMessageParseException::class)
-    fun populateFromInputStream(inputStream: BufferedInputStream?) {
+    fun populateFromIncomingStream(inputStream: BufferedInputStream?) {
         // This assumes we've read in far enough to begin reading the headers
         if (skipReadingHeaders) {
-            server = "UNKNOWN"
+            // Deliberate NO-OP
         } else {
-            server = populateHeadersFromInputStream(inputStream!!)
+            inputStream!!.toHttpHeaders()
 
             // Skip the line after the headers
             readLineFromInputStream(inputStream)
         }
+        /*
         if (this is HttpRequest) {
             headers.add(HttpHeader(HttpHeader.SERVER_HEADER_KEY, server))
         }
+        */
+
         try {
-            if (httpContent!!.isMultipart) {
+            if (headers.contentIsMultipart) {
                 payload = HttpMultipartPayload()
-                payload!!.populateFromInputStream(inputStream!!, httpContent!!.multipartBoundary)
-            } else if (httpContent!!.isText) {
+                payload!!.populateFromIncomingStream(inputStream!!, headers.multipartBoundary)
+            } else if (headers.contentIsText) {
                 payload = HttpStringPayload()
-                payload!!.populateFromInputStream(inputStream!!, "")
+                payload!!.populateFromIncomingStream(inputStream!!)
             } else { //Assuming binary
                 payload = HttpBinaryPayload()
-                payload!!.populateFromInputStream(inputStream!!, "")
+                payload!!.populateFromIncomingStream(inputStream!!)
             }
         } catch (rethrownException: IOException) {
             throw rethrownException

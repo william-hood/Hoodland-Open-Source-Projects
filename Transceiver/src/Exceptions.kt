@@ -28,3 +28,5 @@ class HttpMessageParseException : Exception {
     constructor(message: String?, cause: Exception?) : super(message, cause) {}
     constructor(message: String?) : super(message) {}
 }
+
+class MissingContentTypeException : Exception("The message headers do not include $CONTENT_TYPE_HEADER_KEY")

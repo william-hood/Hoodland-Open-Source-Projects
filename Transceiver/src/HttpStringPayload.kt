@@ -21,16 +21,13 @@
 
 package rockabilly.transceiver
 
-import rockabilly.toolbox.CarriageReturnLineFeed
-import rockabilly.toolbox.StringIsEmpty
-import rockabilly.toolbox.divider
-import rockabilly.toolbox.readLineFromInputStream
+import rockabilly.toolbox.*
 import java.io.BufferedInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
 
-class HttpStringPayload : HttpHeadersList(), HttpPayload<StringBuilder?> {
+class HttpStringPayload : HttpPayload<StringBuilder?> {
     override var content: StringBuilder? = StringBuilder()
 
     @Throws(IOException::class)
@@ -65,8 +62,8 @@ class HttpStringPayload : HttpHeadersList(), HttpPayload<StringBuilder?> {
     }
 
     @Throws(IOException::class, HttpMessageParseException::class)
-    override fun populateFromInputStream(rawInputStream: BufferedInputStream, multipartBoundary: String?) {
-        var thisLine = "DO NOT USE DEFAULT STRING"
+    override fun populateFromIncomingStream(rawInputStream: BufferedInputStream, multipartBoundary: String?) {
+        var thisLine = UnsetString // Java version: "DO NOT USE DEFAULT STRING"
         while (!StringIsEmpty(thisLine.trim { it <= ' ' })) {
             thisLine = readLineFromInputStream(rawInputStream)
             if (thisLine.trim { it <= ' ' } == multipartBoundary) return

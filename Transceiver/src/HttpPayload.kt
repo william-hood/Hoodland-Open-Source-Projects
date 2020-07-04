@@ -28,10 +28,10 @@ import java.io.IOException
 
 interface HttpPayload<T> {
     @Throws(IOException::class)
-    fun toOutgoingStream(outputStream: DataOutputStream?)
+    fun sendToOutgoingStream(outputStream: DataOutputStream?)
 
     @Throws(IOException::class, HttpMessageParseException::class)
-    fun populateFromInputStream(inputStream: BufferedInputStream, multipartBoundary: String?)
+    fun populateFromIncomingStream(inputStream: BufferedInputStream, multipartBoundary: String? = null)
     var content: T?
     val contentLength: Int
     val isEmpty: Boolean

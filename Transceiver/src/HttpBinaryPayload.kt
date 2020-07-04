@@ -29,11 +29,11 @@ import java.io.IOException
 import java.util.*
 
 
-class HttpBinaryPayload : HttpHeadersList(), HttpPayload<ByteArray?> {
+class HttpBinaryPayload : HttpPayload<ByteArray?> {
     override var content: ByteArray? = null
 
     @Throws(IOException::class)
-    override fun toOutgoingStream(outputStream: DataOutputStream?) {
+    override fun sendToOutgoingStream(outputStream: DataOutputStream?) {
         /*
 		if (headers.size() > 0) {
 			outputStream.writeBytes(headersToOutgoingDataString());
@@ -45,12 +45,15 @@ class HttpBinaryPayload : HttpHeadersList(), HttpPayload<ByteArray?> {
 
     override fun toString(): String {
         val result = StringBuilder()
-        if (headers.size > 0) {
+        /*
+        This sends the headers... Can't do it this way if headers are "has-a"
+        if (this.size > 0) {
             result.append(super.toString())
             result.append(divider())
             result.append(CarriageReturnLineFeed)
             result.append(CarriageReturnLineFeed)
         }
+        */
         result.append("BINARY CONTENT: ")
         if (content == null) {
             result.append("(null)")
@@ -71,7 +74,7 @@ class HttpBinaryPayload : HttpHeadersList(), HttpPayload<ByteArray?> {
     }
 
     @Throws(IOException::class, HttpMessageParseException::class)
-    override fun populateFromInputStream(rawInputStream: BufferedInputStream, multipartBoundary: String?) {
+    override fun populateFromIncomingStream(rawInputStream: BufferedInputStream, multipartBoundary: String?) {
         var delimiterIndex = 0
         val delimiter = multipartBoundary!!.toByteArray()
         val buffer = ArrayList<Byte>()

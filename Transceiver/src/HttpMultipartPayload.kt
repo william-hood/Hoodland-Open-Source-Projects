@@ -23,18 +23,20 @@ package rockabilly.transceiver
 
 import rockabilly.toolbox.CarriageReturnLineFeed
 import rockabilly.toolbox.divider
+import rockabilly.toolbox.readEntireInputStream
 import java.io.BufferedInputStream
+import java.io.ByteArrayInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 import java.util.*
 
 
-class HttpMultipartPayload : HttpPayload<ArrayList<HttpPayload<*>?>?> {
+class HttpMultipartPayload : HttpPayload<ArrayList<HttpMessage>> {
     var MULTIPART_BOUNDARY = DEFAULT_MULTIPART_BOUNDARY
-    override var content: ArrayList<HttpPayload<*>?>? = ArrayList()
+    override var content: ArrayList<HttpMessage>? = ArrayList<HttpMessage>()
 
     @Throws(IOException::class)
-    override fun toOutgoingStream(outputStream: DataOutputStream?) {
+    override fun sendToOutgoingStream(outputStream: DataOutputStream?) {
         for (thisPart in content!!) {
             outputStream!!.writeBytes(TERMINUS)
             outputStream.writeBytes(MULTIPART_BOUNDARY)
@@ -45,6 +47,7 @@ class HttpMultipartPayload : HttpPayload<ArrayList<HttpPayload<*>?>?> {
         outputStream.writeBytes(TERMINUS)
     }
 
+    // TODO: Fix this to maybe include the headers. Maybe just delete it?
     override fun toString(): String {
         val result = StringBuilder("(MULTIPART PAYLOAD)")
         result.append(CarriageReturnLineFeed)
@@ -71,10 +74,23 @@ class HttpMultipartPayload : HttpPayload<ArrayList<HttpPayload<*>?>?> {
     }
 
     @Throws(IOException::class, HttpMessageParseException::class)
-    override fun populateFromInputStream(rawInputStream: BufferedInputStream, multipartBoundary: String?) {
-        val incomingHeaders = HttpHeadersList()
-        incomingHeaders.populateHeadersFromInputStream(rawInputStream)
-        if (incomingHeaders.httpContent!!.isText) {
+    override fun populateFromIncomingStream(rawInputStream: BufferedInputStream, multipartBoundary: String?) {
+        if (multipartBoundary == null) { throw HttpMessageParseException("Programming Error: HttpMultipartPayload.populateFromIncomingStream() was called without supplying multipartBoundary.") }
+
+        // Need to read in the whole thing and treat each section as a separate HTTP Message with its own headers
+        val entireMessage = readEntireInputStream(rawInputStream) // might need to read this as bytes???
+        val rawMessages = entireMessage.split(multipartBoundary!!)
+
+        rawMessages.forEach {
+            content.add(HttpMessage().populateFromIncomingStream(BufferedInputStream(ByteArrayInputStream(it.toByteArray()))))
+        }
+
+
+        // Each section of a multipart message has its own headers.
+        // Headers are no longer populated here and should already be present at this point.
+        //val incomingHeaders = HttpHeadersList()
+        //incomingHeaders.populateHeadersFromInputStream(rawInputStream)
+        if (parentMessage.contentIsText) {
             var newStringPayload: HttpStringPayload? = incomingHeaders as HttpStringPayload
             newStringPayload!!.populateFromInputStream(rawInputStream, multipartBoundary)
             content!!.add(newStringPayload)

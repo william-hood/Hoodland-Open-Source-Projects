@@ -67,20 +67,19 @@ class HttpRequest : HttpMessage {
     override fun toOutgoingStream(outputStream: DataOutputStream?) {
         outputStream!!.writeBytes(verb.toString() + " " + uRL!!.path + " " + PROTOCOL)
         outputStream.writeBytes("\r\n")
-        headers.add(HttpHeader("HOST", uRL!!.host))
-        if (verb === HttpVerb.POST) headers.add(HttpHeader("Content-Length", "" + payload!!.contentLength))
-        outputStream.writeBytes(headersToOutgoingDataString())
-        //outputStream.writeBytes("\r\n");
+        headers.add("HOST", uRL!!.host)
+        if (verb === HttpVerb.POST) headers.add("Content-Length", "" + payload!!.contentLength)
+        outputStream.writeBytes(headers.toOutgoingStream())
+
+        // TODO: Is there a cleaner way? Refactor?
         if (payload != null) {
             if (payload!!.content != null) {
                 if (!payload!!.isEmpty) {
-                    payload!!.toOutgoingStream(outputStream)
+                    payload!!.sendToOutgoingStream(outputStream)
                     outputStream.writeBytes("\r\n")
                 }
             }
         }
-
-        //outputStream.writeBytes("\r\n");
     }
 
     companion object {
@@ -130,7 +129,7 @@ class HttpRequest : HttpMessage {
             result.verb = verb.toHttpVerb()
 
             // Add headers
-            result.populateFromInputStream(inputStream)
+            result.headers.addAll(inputStream.toHttpHeaders())
             for ((key, value) in result.headers) {
                 if (key.toLowerCase().startsWith("host")) {
                     try {

@@ -1,0 +1,148 @@
+// Copyright (c) 2020 William Arthur Hood
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights to
+// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+// of the Software, and to permit persons to whom the Software is furnished
+// to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+
+package rockabilly.transceiver
+
+import rockabilly.toolbox.CarriageReturnLineFeed
+import rockabilly.toolbox.StringIsEmpty
+import rockabilly.toolbox.readLineFromInputStream
+import java.io.BufferedInputStream
+
+const val WORK_AROUND_DELAY: Long = 0
+const val DATE_HEADER_KEY = "Date"
+const val SERVER_HEADER_KEY = "Server"
+
+open class HttpHeaders: HashMap<String, ArrayList<String>>() {
+    // Yes I'm aware of HashMap.merge(). It was difficult to find a proper example of how to use it in Kotlin.
+    // The examples I could find were in Java and were not always readable. Decided to just do it my own way.
+    fun add(key: String, values: ArrayList<String>) {
+        if (this.containsKey(key)) {
+            this[key]!!.addAll(values.toList())
+        } else {
+            this.put(key, values)
+        }
+    }
+
+    fun add(key: String, value: String) {
+        val result = ArrayList<String>()
+        result.add(value)
+        this.add(key, result)
+    }
+
+    fun addAll(otherHeaders: HashMap<String, ArrayList<String>>) {
+        otherHeaders.keys.forEach {
+            if (otherHeaders[it] != null) {
+                this.add(it, otherHeaders[it]!!)
+            }
+        }
+    }
+
+    // Determined that in the old Java version there's trivial or no difference
+    // between headersToOutgoingDataString() and toString(). So they're the same thing now.
+    override fun toString(): String {
+        enforceServerHeaderExists()
+        val result = StringBuilder()
+        if (this.isNotEmpty()) {
+            this.keys.forEach {key ->
+                val values = this[key]
+                if (values != null) {
+                    values.forEach {value ->
+                        result.append("$key: $value$CarriageReturnLineFeed")
+                    }
+                }
+            }
+        }
+
+        return result.toString()
+    }
+
+    fun toOutgoingStream() = toString()
+
+    val declaredServer: String
+        get() {
+            enforceServerHeaderExists()
+            return this[SERVER_HEADER_KEY]!!.first()
+        }
+
+    // May need a LocalDateTime property or a way to
+    // get a LocalDateTime from the various date fields.
+
+    private fun enforceServerHeaderExists() {
+        if (! this.containsKey(SERVER_HEADER_KEY)) {
+            this.add(SERVER_HEADER_KEY, "Rockabilly Transceiver HTTP Server")
+        }
+    }
+
+    // Determine Content Type & Subtype
+    // The Content-Type header is "special" and the extensions in ContentType.kt
+    // allow it to be treated almost like a separate object.
+    // These fields need to be here because they may not be extended in ContentType.kt
+    internal var determinedContentType: String? = null
+    internal var determinedContentSubtype: String = ""
+}
+
+fun BufferedInputStream.toHttpHeaders(): HttpHeaders {
+    // This assumes we've read in far enough to begin reading the headers
+    // Unlike the Java version this does NOT return the server.
+    // It returns the constructed object (Java version had this as a
+    // static class member). Use the declaredServer property instead.
+
+    val result = HttpHeaders()
+
+    try {
+        // Read content type and headers
+        var headerLine: String = readLineFromInputStream(this)
+        while (!StringIsEmpty(headerLine)) {
+            // Comment in the old Java version, accurate as of 2016
+            //
+            // It appears that Java itself has a race condition (thanks Oracle)
+            // Need to print, or otherwise access headerLine here or you
+            // might get a mysterious nullref downstream. *sigh*
+            if (WORK_AROUND_DELAY > 0) { Thread.sleep(WORK_AROUND_DELAY) }
+
+            var headerKey = headerLine
+            val headerValues = ArrayList<String>()
+            val split = headerLine.indexOf(':')
+            if (split != -1) {
+                headerKey = headerLine.substring(0, split)
+                val allHeaderValues = headerLine.substring(split + 2)
+
+                when(headerKey) {
+                    "Date",
+                    "Last-Modifed",
+                    "Expires",
+                    "Accept-Datetime",
+                    "If-Modified-Since",
+                    "If-Unmodified-Since"
+                        -> headerValues.add(allHeaderValues)
+                    else -> headerValues.addAll(allHeaderValues.split(','))
+                }
+            }
+
+            result.add(headerKey, headerValues)
+        }
+
+    } catch (causalException: Exception) {
+        throw HttpMessageParseException(causalException)
+    }
+
+    return result
+}
