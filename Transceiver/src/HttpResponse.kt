@@ -29,45 +29,28 @@ import java.io.IOException
 import java.nio.charset.Charset
 
 
-class HttpResponse : HttpMessage {
-    private var statusCode: Int = Int.MIN_VALUE
+class HttpResponse() : HttpMessage(), Transceivable {
+    private var managedStatusCode: Int = Int.MIN_VALUE
+    var statusCode: Int
+        get() = managedStatusCode
+        @Throws(IllegalStatusCodeException::class)
+        set(it) {
+            if (it.isInvalidStatusCode) throw IllegalStatusCodeException(it)
+            managedStatusCode = it
+        }
 
-    private constructor() {}
-    constructor(blankPayload: HttpPayload<*>) {
-        payload = blankPayload
-    }
-
-    constructor(code: Int, blankPayload: HttpPayload<*>) : this(blankPayload) {
-        setStatusCode(code)
-    }
-
-    @Throws(IllegalStatusCodeException::class)
-    fun setStatusCode(code: Int) {
-        if (isInvalidStatusCode(code)) throw IllegalStatusCodeException(code)
+    constructor(code: Int) : this() {
         statusCode = code
-    }
-
-    fun getStatusCode(): Int {
-        return statusCode
     }
 
     //override var server: String = UnsetString
 
-    @Throws(IOException::class)
-    override fun toOutgoingStream(outputStream: DataOutputStream?) {
-        var outgoing: StringBuilder? = StringBuilder()
-        outgoing!!.append("""$PROTOCOL $statusCode ${statusCode.toStatusCodeDescription()}
-""")
-        outgoing.append(HttpHeader.dateHeader.toString())
-        outgoing.append("\r\n")
-        outgoing.append(HttpHeader(HttpHeader.SERVER_HEADER_KEY, server).toString())
-        outgoing.append("\r\n")
-        outgoing.append(headersToOutgoingDataString())
-        //outgoing.append("\r\n");
-        //outgoing.append("\r\n");
-        outputStream!!.writeBytes(outgoing.toString())
-        payload!!.toOutgoingStream(outputStream)
-        outgoing = null
+    override fun sendToOutgoingStream(outputStream: DataOutputStream) {
+        headers.enforceServerHeaderExists()
+        headers.updateDateHeader()
+        outputStream.writeBytes("$PROTOCOL_AND_VERSION $statusCode ${statusCode.toStatusCodeDescription()}$CarriageReturnLineFeed")
+
+        super.sendToOutgoingStream(outputStream)
     }
 
     override fun toString(): String {
@@ -88,58 +71,33 @@ class HttpResponse : HttpMessage {
         return result.toString()
     }
 
-    companion object {
-        /*
-	 * from http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html
-	 *
-      - 1xx: Informational - Request received, continuing process
-      - 2xx: Success - The action was successfully received,
-        understood, and accepted
-      - 3xx: Redirection - Further action must be taken in order to
-        complete the request
-      - 4xx: Client Error - The request contains bad syntax or cannot
-        be fulfilled
-      - 5xx: Server Error - The server failed to fulfill an apparently
-        valid request
-	 */
-        fun isInvalidStatusCode(code: Int): Boolean {
-            return code < 100 || code > 599
-        }
+    override fun populateFromIncomingStream(inputStream: BufferedInputStream, multipartBoundary: String?) {
+        try {
 
-        fun isValidStatusCode(code: Int): Boolean {
-            return !isInvalidStatusCode(code)
-        }
+            // Determine the status code from first line
+            var thisLine = ""
+            var firstLineParts = Array<String>(1){""}
+            do {
+                thisLine = readLineFromInputStream(inputStream)
+                val firstLineParts = thisLine.trim { it <= ' ' }.split("\\s+".toRegex()).toTypedArray()
+            } while (thisLine.length < 1 || firstLineParts.size < 3)
+            this.statusCode = firstLineParts[1].toInt()
 
-        @Throws(IOException::class, HttpMessageParseException::class)
-        fun fromInputStream(rawInputStream: BufferedInputStream): HttpResponse {
-            // NEED TO DETERMINE WHETHER THIS IS STRING, BINARY, OR MULTIPART
-            // ASSUMING STRING FOR NOW
-            val result = HttpResponse()
-            val unparsedMessage: String = readEntireInputStream(rawInputStream)
-            try {
-                // Determine the status code from first line
-                var thisLine = ""
-                var firstLineParts = thisLine.trim { it <= ' ' }.split("\\s+".toRegex()).toTypedArray()
-                val fromString = BufferedInputStream(ByteArrayInputStream(unparsedMessage.toByteArray(Charset.defaultCharset())))
-                if (unparsedMessage.startsWith("<")) {
-                    result.httpContent!!.type = HttpContent.text
-                    result.httpContent!!.subtype = HttpContent.html
-                    result.skipReadingHeaders = true
-                } else {
-                    // handle first line
-                    do {
-                        thisLine = readLineFromInputStream(fromString)
-                        firstLineParts = thisLine.trim { it <= ' ' }.split("\\s+".toRegex()).toTypedArray()
-                    } while (thisLine.length < 1 || firstLineParts.size < 3)
-                    result.statusCode = firstLineParts[1].toInt()
-                }
-                result.populateFromInputStream(fromString)
-            } catch (rethrownException: IOException) {
-                throw rethrownException
-            } catch (causalException: Exception) {
-                throw HttpMessageParseException(causalException)
+            this.headers.populateFromIncomingStream(inputStream)
+
+            if (headers.contentIsText) {
+                payload = HttpStringPayload()
+            } else if (headers.contentIsMultipart) {
+                payload = HttpMultipartPayload()
+            } else {
+                payload = HttpBinaryPayload()
             }
-            return result
+
+            readPayload(inputStream)
+        } catch (rethrownException: IOException) {
+            throw rethrownException
+        } catch (causalException: Exception) {
+            throw HttpMessageParseException(causalException)
         }
     }
 }

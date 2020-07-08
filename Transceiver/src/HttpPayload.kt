@@ -26,13 +26,8 @@ import java.io.DataOutputStream
 import java.io.IOException
 
 
-interface HttpPayload<T> {
-    @Throws(IOException::class)
-    fun sendToOutgoingStream(outputStream: DataOutputStream?)
-
-    @Throws(IOException::class, HttpMessageParseException::class)
-    fun populateFromIncomingStream(inputStream: BufferedInputStream, multipartBoundary: String? = null)
-    var content: T?
-    val contentLength: Int
-    val isEmpty: Boolean
+abstract class HttpPayload<T> : Transceivable {
+    abstract var content: T?
+    abstract val contentLength: Int
+    abstract val isEmpty: Boolean
 }

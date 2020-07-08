@@ -24,13 +24,15 @@ package rockabilly.transceiver
 import rockabilly.toolbox.CarriageReturnLineFeed
 import rockabilly.toolbox.divider
 import rockabilly.toolbox.readLineFromInputStream
+import rockabilly.toolbox.toStatusCodeDescription
 import java.io.BufferedInputStream
 import java.io.DataOutputStream
 import java.io.IOException
 import java.net.http.HttpRequest
 
+const val PROTOCOL_AND_VERSION = "HTTP/1.1"
 
-abstract class HttpMessage {
+abstract class HttpMessage: Transceivable {
     // Java version kept the property 'server' here.
     // The Kotlin version keeps the property in the HttpHeaders class.
     protected var skipReadingHeaders = false
@@ -38,16 +40,44 @@ abstract class HttpMessage {
     val headers = HttpHeaders()
     var payload: HttpPayload<*>? = null
 
-    @Throws(IOException::class)
-    abstract fun toOutgoingStream(outputStream: DataOutputStream?)
+    override fun sendToOutgoingStream(outputStream: DataOutputStream) {
+        headers.sendToOutgoingStream(outputStream)
 
+        if (payload != null) {
+            if (payload!!.content != null) {
+                if (!payload!!.isEmpty) {
+                    payload!!.sendToOutgoingStream(outputStream)
+                    outputStream.writeBytes(CarriageReturnLineFeed)
+                }
+            }
+        }
+    }
+
+    override fun populateFromIncomingStream(inputStream: BufferedInputStream, multipartBoundary: String?) {
+        // This will not be used by HttpResponse, which must read the headers
+        // first in order to determine what kind of payload to use.
+        headers.populateFromIncomingStream(inputStream)
+        readPayload(inputStream)
+    }
+
+    protected fun readPayload(inputStream: BufferedInputStream) {
+        if (payload != null) {
+            if (payload!!.content != null) {
+                if (!payload!!.isEmpty) {
+                    payload!!.populateFromIncomingStream(inputStream)
+                }
+            }
+        }
+    }
+
+    /*
     @Throws(IOException::class, HttpMessageParseException::class)
-    fun populateFromIncomingStream(inputStream: BufferedInputStream?) {
+    fun populateFromIncomingStream(inputStream: BufferedInputStream) {
         // This assumes we've read in far enough to begin reading the headers
         if (skipReadingHeaders) {
             // Deliberate NO-OP
         } else {
-            inputStream!!.toHttpHeaders()
+            inputStream.toHttpHeaders()
 
             // Skip the line after the headers
             readLineFromInputStream(inputStream)
@@ -61,13 +91,13 @@ abstract class HttpMessage {
         try {
             if (headers.contentIsMultipart) {
                 payload = HttpMultipartPayload()
-                payload!!.populateFromIncomingStream(inputStream!!, headers.multipartBoundary)
+                payload!!.populateFromIncomingStream(inputStream, headers.multipartBoundary)
             } else if (headers.contentIsText) {
                 payload = HttpStringPayload()
-                payload!!.populateFromIncomingStream(inputStream!!)
+                payload!!.populateFromIncomingStream(inputStream)
             } else { //Assuming binary
                 payload = HttpBinaryPayload()
-                payload!!.populateFromIncomingStream(inputStream!!)
+                payload!!.populateFromIncomingStream(inputStream)
             }
         } catch (rethrownException: IOException) {
             throw rethrownException
@@ -75,6 +105,7 @@ abstract class HttpMessage {
             throw HttpMessageParseException(causalException)
         }
     }
+     */
 
     override fun toString(): String {
         val result = StringBuilder(super.toString())
@@ -83,9 +114,5 @@ abstract class HttpMessage {
         result.append(CarriageReturnLineFeed)
         result.append(payload.toString())
         return result.toString()
-    }
-
-    companion object {
-        const val PROTOCOL = "HTTP/1.1"
     }
 }

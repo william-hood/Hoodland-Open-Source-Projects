@@ -31,16 +31,16 @@ import java.io.IOException
 import java.util.*
 
 
-class HttpMultipartPayload : HttpPayload<ArrayList<HttpMessage>> {
+class HttpMultipartPayload : HttpPayload<ArrayList<HttpMessage>>(), Transceivable {
     var MULTIPART_BOUNDARY = DEFAULT_MULTIPART_BOUNDARY
     override var content: ArrayList<HttpMessage>? = ArrayList<HttpMessage>()
 
     @Throws(IOException::class)
-    override fun sendToOutgoingStream(outputStream: DataOutputStream?) {
+    override fun sendToOutgoingStream(outputStream: DataOutputStream) {
         for (thisPart in content!!) {
             outputStream!!.writeBytes(TERMINUS)
             outputStream.writeBytes(MULTIPART_BOUNDARY)
-            thisPart!!.toOutgoingStream(outputStream)
+            thisPart!!.sendToOutgoingStream(outputStream)
         }
         outputStream!!.writeBytes(TERMINUS)
         outputStream.writeBytes(MULTIPART_BOUNDARY)
@@ -82,7 +82,7 @@ class HttpMultipartPayload : HttpPayload<ArrayList<HttpMessage>> {
         val rawMessages = entireMessage.split(multipartBoundary!!)
 
         rawMessages.forEach {
-            content.add(HttpMessage().populateFromIncomingStream(BufferedInputStream(ByteArrayInputStream(it.toByteArray()))))
+            //content.add(HttpMessage().populateFromIncomingStream(BufferedInputStream(ByteArrayInputStream(it.toByteArray()))))
         }
 
 

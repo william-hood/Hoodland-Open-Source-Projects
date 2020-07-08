@@ -29,11 +29,11 @@ import java.io.IOException
 import java.util.*
 
 
-class HttpBinaryPayload : HttpPayload<ByteArray?> {
+class HttpBinaryPayload : HttpPayload<ByteArray?>(), Transceivable {
     override var content: ByteArray? = null
 
     @Throws(IOException::class)
-    override fun sendToOutgoingStream(outputStream: DataOutputStream?) {
+    override fun sendToOutgoingStream(outputStream: DataOutputStream) {
         /*
 		if (headers.size() > 0) {
 			outputStream.writeBytes(headersToOutgoingDataString());
@@ -45,15 +45,6 @@ class HttpBinaryPayload : HttpPayload<ByteArray?> {
 
     override fun toString(): String {
         val result = StringBuilder()
-        /*
-        This sends the headers... Can't do it this way if headers are "has-a"
-        if (this.size > 0) {
-            result.append(super.toString())
-            result.append(divider())
-            result.append(CarriageReturnLineFeed)
-            result.append(CarriageReturnLineFeed)
-        }
-        */
         result.append("BINARY CONTENT: ")
         if (content == null) {
             result.append("(null)")

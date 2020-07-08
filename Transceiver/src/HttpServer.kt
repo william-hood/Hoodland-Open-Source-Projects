@@ -76,7 +76,8 @@ abstract class HttpServer : Thread() {
         // Busy loop below is deliberate;
         // block will only be null in the instant
         // before service begins.
-        while (block == null);
+        while (block == null)
+
         if (!continueService()) return
         try {
             block!!.await()
@@ -97,6 +98,9 @@ abstract class HttpServer : Thread() {
         while (continueService()) {
             try {
                 var connectedSocket = listeningSocket!!.accept()
+
+                // TODO: Well, THAT's a mess.  ...and it doesn't fit the revised Transceiver interface
+                //       Use the new interface and make it readable. ⚫️🐦🐦
                 handle(HttpRequest
                         .fromInputStream(BufferedInputStream(
                                 connectedSocket

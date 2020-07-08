@@ -43,8 +43,9 @@ class HttpClient {
         var outgoing: DataOutputStream? = null
         var incoming: BufferedInputStream? = null
         var socket: Socket? = null
-        var secure = false
-        if (httpRequest.uRL.toString().toLowerCase().startsWith("https")) secure = true
+        val secure = httpRequest.isSecure
+
+        // TODO: Cleanup getting this info from request...?
         var host = httpRequest.uRL!!.host
         var port = httpRequest.uRL!!.port
         if (port < 1 || port > 65535) {
@@ -61,19 +62,15 @@ class HttpClient {
                 socket = Socket()
                 socket.connect(InetSocketAddress(host, port))
             }
-            outgoing = DataOutputStream(socket!!.getOutputStream())
+            outgoing = DataOutputStream(socket.getOutputStream())
             incoming = BufferedInputStream(socket.getInputStream())
-            httpRequest.toOutgoingStream(outgoing)
-            //outgoing.close();
+            httpRequest.sendToOutgoingStream(outgoing)
             outgoing.flush()
-            val result = HttpResponse.fromInputStream(incoming)
-
-            // TODO: Change the HTTP Header class to reflect reality.
-            memoir.ShowHttpResponse(result.getStatusCode(), result.headers)
-            result
+            val result = HttpResponse()
+            result.populateFromIncomingStream(incoming)
+            return result
         } finally {
             try {
-                //incoming.close();
                 socket!!.close()
             } finally {
                 outgoing = null

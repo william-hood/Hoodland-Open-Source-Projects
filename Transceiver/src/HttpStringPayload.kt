@@ -27,28 +27,26 @@ import java.io.DataOutputStream
 import java.io.IOException
 
 
-class HttpStringPayload : HttpPayload<StringBuilder?> {
+class HttpStringPayload : HttpPayload<StringBuilder?>(), Transceivable {
     override var content: StringBuilder? = StringBuilder()
 
     @Throws(IOException::class)
-    override fun toOutgoingStream(outputStream: DataOutputStream?) {
-        /*
-		if (headers.size() > 0) {
-			outputStream.writeBytes(headersToOutgoingDataString());
-			outputStream.writeBytes("\r\n");
-		}
-		*/
-        outputStream!!.writeBytes(content.toString())
+    override fun sendToOutgoingStream(outputStream: DataOutputStream) {
+        outputStream.writeBytes(content.toString())
     }
 
+    // TODO: Handle any necessary nesting of toString() calls
     override fun toString(): String {
         val result = StringBuilder()
+        /*
         if (headers.size > 0) {
             result.append(super.toString())
             result.append(divider())
             result.append(CarriageReturnLineFeed)
             result.append(CarriageReturnLineFeed)
         }
+
+         */
         result.append("TEXT CONTENT:")
         if (content == null) {
             result.append(" (null)")

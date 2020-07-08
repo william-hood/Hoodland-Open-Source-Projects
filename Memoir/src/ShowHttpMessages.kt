@@ -21,6 +21,7 @@
 
 package rockabilly.memoir
 
+import rockabilly.toolbox.isSuccessfulStatusCode
 import rockabilly.toolbox.toStatusCodeDescription
 import java.net.URL
 import java.time.LocalDateTime
@@ -80,7 +81,7 @@ fun Memoir.ShowHttpRequest(Verb: String, CompleteUrl: String, Headers: Map<Strin
 fun Memoir.ShowHttpResponse(StatusCode: Int, Headers: Map<String, ArrayList<String?>>, StringPayload: String = "", PlaintextRendition: String? = null) {
     val timeStamp = LocalDateTime.now()
     var style = "implied_bad"
-    if (StatusCode.toString()[0] == '2') { style = "implied_good" }
+    if (StatusCode.isSuccessfulStatusCode) { style = "implied_good" }
 
     val result = java.lang.StringBuilder("<div class=\"incoming $style\">\r\n")
 

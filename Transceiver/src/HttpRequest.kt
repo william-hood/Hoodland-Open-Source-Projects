@@ -32,13 +32,12 @@ import java.net.MalformedURLException
 import java.net.URL
 
 
-class HttpRequest : HttpMessage {
+class HttpRequest : HttpMessage, Transceivable {
     var verb = HttpVerb.GET
     var uRL: URL? = null
 
-    constructor() {
-        // DEFAULT CONSTRUCTOR
-    }
+    val isSecure: Boolean
+    get() = uRL.toString().toLowerCase().startsWith("https")
 
     constructor(httpVerb: HttpVerb, url: URL?, blankPayload: HttpPayload<*>) {
         verb = httpVerb
@@ -57,29 +56,22 @@ class HttpRequest : HttpMessage {
         val result = StringBuilder()
         result.append(uRL.toString())
         result.append(CarriageReturnLineFeed)
-        result.append(verb.toString() + " " + uRL!!.path + " " + PROTOCOL)
+        result.append(verb.toString() + " " + uRL!!.path + " " + PROTOCOL_AND_VERSION)
         result.append(CarriageReturnLineFeed)
         result.append(super.toString())
         return result.toString()
     }
 
-    @Throws(IOException::class)
-    override fun toOutgoingStream(outputStream: DataOutputStream?) {
-        outputStream!!.writeBytes(verb.toString() + " " + uRL!!.path + " " + PROTOCOL)
-        outputStream.writeBytes("\r\n")
-        headers.add("HOST", uRL!!.host)
-        if (verb === HttpVerb.POST) headers.add("Content-Length", "" + payload!!.contentLength)
-        outputStream.writeBytes(headers.toOutgoingStream())
+    override fun sendToOutgoingStream(outputStream: DataOutputStream) {
+        headers.clobber("HOST", uRL!!.host)
+        if (verb === HttpVerb.POST) headers.clobber("Content-Length", "" + payload!!.contentLength)
+        outputStream.writeBytes("$verb ${uRL!!.path} $PROTOCOL_AND_VERSION$CarriageReturnLineFeed")
+        super.sendToOutgoingStream(outputStream)
+    }
 
-        // TODO: Is there a cleaner way? Refactor?
-        if (payload != null) {
-            if (payload!!.content != null) {
-                if (!payload!!.isEmpty) {
-                    payload!!.sendToOutgoingStream(outputStream)
-                    outputStream.writeBytes("\r\n")
-                }
-            }
-        }
+    override fun populateFromIncomingStream(inputStream: BufferedInputStream, multipartBoundary: String?) {
+        // TODO
+        throw NotImplementedError()
     }
 
     companion object {

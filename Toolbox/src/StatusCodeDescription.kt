@@ -20,6 +20,32 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 package rockabilly.toolbox
+/*
+	 * from http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html
+	 *
+      - 1xx: Informational - Request received, continuing process
+      - 2xx: Success - The action was successfully received,
+        understood, and accepted
+      - 3xx: Redirection - Further action must be taken in order to
+        complete the request
+      - 4xx: Client Error - The request contains bad syntax or cannot
+        be fulfilled
+      - 5xx: Server Error - The server failed to fulfill an apparently
+        valid request
+	 */
+
+val Int.isInvalidStatusCode
+    get() = (this < 100 || this > 599)
+
+val Int.isValidStatusCode
+get() = !this.isInvalidStatusCode
+
+val Int.isSuccessfulStatusCode
+get() = this.isValidStatusCode && (this.toString()[0] == '2')
+
+// This assumes that an invalid status code is neither successful nor an error
+val Int.isErrorStatusCode
+    get() = this.isValidStatusCode && ((this.toString()[0] == '4') || (this.toString()[0] == '5'))
 
 fun Int.toStatusCodeDescription(): String {
     return when (this) {

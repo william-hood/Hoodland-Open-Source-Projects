@@ -26,7 +26,7 @@ import rockabilly.toolbox.StringIsEmpty
 const val CONTENT_TYPE_HEADER_KEY = "Content-Type"
 const val TYPE_SUBTYPE_DELIMITER = "/"
 private const val BOUNDARY_IDENTIFIER = "boundary="
-private const val BOUNDARY_MISSING = "Content Type header does not designate a multipart boundary."
+private const val BOUNDARY_MISSING = "$CONTENT_TYPE_HEADER_KEY header does not designate a multipart boundary."
 
 fun ContentTypeHeaderValue(type: String, subtype: String?): String? {
     if (StringIsEmpty(type)) return null // Java version used "" to allow omission of the Content Type header.
