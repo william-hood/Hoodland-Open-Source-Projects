@@ -39,13 +39,13 @@ class HttpRequest() : HttpMessage(), Transceivable {
     val isSecure: Boolean
     get() = uRL.toString().toLowerCase().startsWith("https")
 
-    constructor(httpVerb: HttpVerb, url: URL?, blankPayload: HttpPayload<*>) {
+    constructor(httpVerb: HttpVerb, url: URL, body: HttpPayload<*>? = null): this() {
         verb = httpVerb
         uRL = url
-        payload = blankPayload
+        payload = body
     }
 
-    constructor(httpVerb: HttpVerb, url: String?, blankPayload: HttpPayload<*>) : this(httpVerb, URL(url), blankPayload) {}
+    constructor(httpVerb: HttpVerb, url: String, body: HttpPayload<*>? = null) : this(httpVerb, URL(url), body) {}
 
     @Throws(MalformedURLException::class)
     fun setURL(url: String?) {
@@ -124,13 +124,10 @@ class HttpRequest() : HttpMessage(), Transceivable {
 
         for ((key, value) in headers) {
             if (key.toLowerCase().startsWith("host")) {
-                try {
-                    //result.setURL(protocol + "://" + thisHeader.getValue().substring(thisHeader.getValue().indexOf("://") + 3) + path);
-                    setURL("$protocol://$value$path")
-                } catch (thisFailure: Exception) {
-                    // TODO: Log to a memoir if available
-                    System.err.println(depictFailure(thisFailure))
-                }
+                // Java version had this in a try catch and would print the error.
+                // Design for the Kotlin version is that errors should be handled/logged by the server, client, or other client code.
+                //result.setURL(protocol + "://" + thisHeader.getValue().substring(thisHeader.getValue().indexOf("://") + 3) + path);
+                setURL("$protocol://$value$path")
                 break
             }
         }

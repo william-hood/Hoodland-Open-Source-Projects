@@ -21,8 +21,10 @@
 
 import rockabilly.memoir.*
 import rockabilly.toolbox.stdout
+import rockabilly.transceiver.HttpClient
 import java.io.File
-import java.io.PrintWriter
+import rockabilly.transceiver.HttpRequest
+import rockabilly.transceiver.HttpVerb
 
 internal class TestStruct() {
     var name = "Hi"
@@ -101,7 +103,9 @@ fun main(args: Array<String>) {
         justSomeTest.Info("Then this")
         justSomeTest.Info("Also this")
 
-        // TODO HTTP TRANSACTION LOGGING TEST
+        //val request = HttpRequest(HttpVerb.GET, "https://httpbin.org/get?param1=latida&param2=tweedledee&param3=whatever")
+        val request = HttpRequest(HttpVerb.GET, "Http://neverssl.com")
+        HttpClient.sendAndReceive(request, justSomeTest)
 
         justSomeTest.Info("This check passed", EMOJI_PASSING_TEST)
         justSomeTest.Info("So did this", EMOJI_PASSING_TEST)

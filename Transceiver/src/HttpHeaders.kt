@@ -121,7 +121,7 @@ open class HttpHeaders: HashMap<String, ArrayList<String>>(), Transceivable {
     // get a LocalDateTime from the various date fields.
 
     internal fun enforceServerHeaderExists() {
-        enforcePresent(SERVER_HEADER_KEY, "Rockabilly Transceiver HTTP Server")
+        enforcePresent(SERVER_HEADER_KEY, SERVER_NAME)
     }
 
     // Determine Content Type & Subtype

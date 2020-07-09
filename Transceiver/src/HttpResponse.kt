@@ -79,7 +79,7 @@ class HttpResponse() : HttpMessage(), Transceivable {
             var firstLineParts = Array<String>(1){""}
             do {
                 thisLine = readLineFromInputStream(inputStream)
-                val firstLineParts = thisLine.trim { it <= ' ' }.split("\\s+".toRegex()).toTypedArray()
+                val firstLineParts = thisLine.trim().split("\\s+") //thisLine.trim { it <= ' ' }.split("\\s+".toRegex()).toTypedArray()
             } while (thisLine.length < 1 || firstLineParts.size < 3)
             this.statusCode = firstLineParts[1].toInt()
 

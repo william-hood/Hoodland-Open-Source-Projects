@@ -30,11 +30,15 @@ import java.util.*
 // In Java/Kotlin/JVM-in-general there are many HTTP Clients/Servers available. Rather than adopt
 // one over the others, Memoir provides a generic means to render a Request and Response, with only
 // plaintext bodies supported. Rockabilly Transceiver provides a usage example.
-fun Memoir.ShowHttpRequest(Verb: String, CompleteUrl: String, Headers: Map<String, ArrayList<String?>>, StringPayload: String = "", PlaintextRendition: String? = null) {
+fun Memoir.ShowHttpRequest(Verb: String, CompleteUrl: String, Headers: Map<String, ArrayList<String>>, StringPayload: String = "", PlaintextRendition: String? = null) {
     val timeStamp = LocalDateTime.now()
 
     val url = URL(CompleteUrl)
-    val queries = url.query.split('&') // Starts with ?
+    val queries = ArrayList<String>()
+
+    if (url.query != null) {
+        queries.addAll(url.query.split('&')) // Starts with ?
+    }
 
     val result = StringBuilder("<div class=\"outgoing implied_caution\">\r\n")
 
@@ -78,7 +82,7 @@ fun Memoir.ShowHttpRequest(Verb: String, CompleteUrl: String, Headers: Map<Strin
     if (PlaintextRendition != null) { EchoPlainText(PlaintextRendition) }
 }
 
-fun Memoir.ShowHttpResponse(StatusCode: Int, Headers: Map<String, ArrayList<String?>>, StringPayload: String = "", PlaintextRendition: String? = null) {
+fun Memoir.ShowHttpResponse(StatusCode: Int, Headers: Map<String, ArrayList<String>>, StringPayload: String = "", PlaintextRendition: String? = null) {
     val timeStamp = LocalDateTime.now()
     var style = "implied_bad"
     if (StatusCode.isSuccessfulStatusCode) { style = "implied_good" }
@@ -94,7 +98,7 @@ fun Memoir.ShowHttpResponse(StatusCode: Int, Headers: Map<String, ArrayList<Stri
     if (PlaintextRendition != null) { EchoPlainText(PlaintextRendition) }
 }
 
-private fun renderHeadersAndBody(Headers: Map<String, ArrayList<String?>>, StringPayload: String): String {
+private fun renderHeadersAndBody(Headers: Map<String, ArrayList<String>>, StringPayload: String): String {
     val result = StringBuilder()
 
     // Headers

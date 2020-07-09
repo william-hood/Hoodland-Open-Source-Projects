@@ -21,7 +21,13 @@
 
 package rockabilly.transceiver
 
+import rockabilly.memoir.Memoir
+import rockabilly.memoir.ShowHttpRequest
+import rockabilly.memoir.ShowHttpResponse
+import rockabilly.memoir.ShowThrowable
 import rockabilly.toolbox.depictFailure
+import rockabilly.toolbox.stderr
+import rockabilly.toolbox.stdout
 import java.io.BufferedInputStream
 import java.io.DataOutputStream
 import java.io.IOException
@@ -29,11 +35,21 @@ import java.net.InetAddress
 import java.net.ServerSocket
 import java.util.concurrent.CountDownLatch
 
+internal const val SERVER_NAME = "Rockabilly Transceiver HTTP Server"
+private const val DISCONTINUE_WARNING = "$SERVER_NAME: DISCONTINUING SERVICE NOW"
 
-abstract class HttpServer : Thread() {
+abstract class HttpServer(log: Memoir? = null) : Thread() {
     protected abstract fun handle(incomingRequest: HttpRequest?): HttpResponse
     private var listeningSocket: ServerSocket? = null
     private var block: CountDownLatch? = null
+    private var memoir = log
+
+    init {
+        if (memoir == null) {
+            memoir = Memoir("$SERVER_NAME", forPlainText = stdout)
+        }
+    }
+
     val isServing: Boolean
         get() = if (block == null) false else continueService()
 
@@ -54,7 +70,12 @@ abstract class HttpServer : Thread() {
     }
 
     fun discontinueService() {
-        println("HTTP SERVER DISCONTINUING SERVICE")
+        if (memoir != null) {
+            memoir!!.Info(DISCONTINUE_WARNING)
+        } else {
+            stderr.println(DISCONTINUE_WARNING)
+        }
+
         while (block!!.count > 0) {
             try {
                 block!!.countDown()
@@ -95,21 +116,45 @@ abstract class HttpServer : Thread() {
 
     override fun run() {
         block = CountDownLatch(1)
+        var transactionLog: Memoir? = null
         while (continueService()) {
             try {
                 val connectedSocket = listeningSocket!!.accept()
                 val inputStream = BufferedInputStream(connectedSocket.getInputStream())
                 val incomingRequest = HttpRequest()
                 incomingRequest.populateFromIncomingStream(inputStream)
+
+                if (memoir != null) {
+                    transactionLog = Memoir("${connectedSocket.inetAddress.hostName}: ${incomingRequest.verb} ${incomingRequest.uRL}")
+                    transactionLog.ShowHttpRequest(incomingRequest.verb.toString(), incomingRequest.uRL.toString(), incomingRequest.headers, incomingRequest.payload.toString(), incomingRequest.toString())
+                }
+
                 val outgoingResponse = handle(incomingRequest)
+
+                if (transactionLog != null) {
+                    transactionLog.ShowHttpResponse(outgoingResponse.statusCode, outgoingResponse.headers, outgoingResponse.payload.toString(), outgoingResponse.toString())
+                }
+
                 val outputStream = DataOutputStream(connectedSocket.getOutputStream())
                 outgoingResponse.sendToOutgoingStream(outputStream)
                 outputStream.flush()
                 connectedSocket.close()
-            } catch (handledException: Throwable) {
-                // TODO: Log it? Can't throw it...
-                //       Server should accept a memoir and log it's transactions. That's where to log this.
-                System.out.println(depictFailure(handledException))
+            } catch (caughtFailure: Throwable) {
+                if (memoir != null) {
+                    if (transactionLog != null) {
+                        transactionLog.ShowThrowable(caughtFailure)
+                    } else {
+                        memoir!!.ShowThrowable(caughtFailure)
+                    }
+                } else {
+                    stderr.println(depictFailure(caughtFailure))
+                }
+            } finally {
+                if (transactionLog != null) {
+                    if (memoir != null) {
+                        memoir!!.ShowMemoir(transactionLog)
+                    }
+                }
             }
         }
     }

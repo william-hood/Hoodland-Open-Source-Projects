@@ -22,7 +22,9 @@
 package rockabilly.transceiver
 
 import rockabilly.memoir.Memoir
+import rockabilly.memoir.ShowHttpRequest
 import rockabilly.memoir.ShowHttpResponse
+import rockabilly.toolbox.stdout
 import java.io.BufferedInputStream
 import java.io.DataOutputStream
 import java.io.IOException
@@ -34,16 +36,19 @@ import javax.net.ssl.SSLSocketFactory
 
 // In the Java version, which predated Memoir, there was a "Verbose" version
 // which implemented a common interface with this class.
-// TODO: Allow passing of a memoir to log messages to.
-// TODO: If not passed a memoir, one will be created to log errors to files. (Replace to prints to stderr)
 
-class HttpClient {
+object HttpClient {
     @Throws(IOException::class, HttpMessageParseException::class)
-    fun sendAndReceive(httpRequest: HttpRequest, memoir: Memoir? = null): HttpResponse {
+    fun sendAndReceive(httpRequest: HttpRequest, log: Memoir? = null): HttpResponse {
+        var memoir = log
         var outgoing: DataOutputStream? = null
         var incoming: BufferedInputStream? = null
         var socket: Socket? = null
         val secure = httpRequest.isSecure
+
+        if (memoir == null) {
+            memoir = Memoir("$SERVER_NAME", forPlainText = stdout)
+        }
 
         // TODO: Cleanup getting this info from request...?
         var host = httpRequest.uRL!!.host
@@ -55,7 +60,8 @@ class HttpClient {
                 80
             }
         }
-        return try {
+
+        try {
             if (secure) {
                 socket = SSLSocketFactory.getDefault().createSocket(host, port) as SSLSocket
             } else {
@@ -64,10 +70,21 @@ class HttpClient {
             }
             outgoing = DataOutputStream(socket.getOutputStream())
             incoming = BufferedInputStream(socket.getInputStream())
+
+            if (memoir != null) {
+                memoir.ShowHttpRequest(httpRequest.verb.toString(), httpRequest.uRL.toString(), httpRequest.headers, httpRequest.payload.toString(), httpRequest.toString())
+            }
+
             httpRequest.sendToOutgoingStream(outgoing)
             outgoing.flush()
+
             val result = HttpResponse()
             result.populateFromIncomingStream(incoming)
+
+            if (memoir != null) {
+                memoir.ShowHttpResponse(result.statusCode, result.headers, result.payload.toString(), result.toString())
+            }
+
             return result
         } finally {
             try {
