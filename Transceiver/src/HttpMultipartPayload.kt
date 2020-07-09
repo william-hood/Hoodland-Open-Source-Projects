@@ -30,6 +30,8 @@ import java.io.DataOutputStream
 import java.io.IOException
 import java.util.*
 
+const val DEFAULT_MULTIPART_BOUNDARY = "X_ROCKABILLY_TRANSCEIVER_BOUNDARY_X"
+private const val TERMINUS = "--"
 
 class HttpMultipartPayload : HttpPayload<ArrayList<HttpMessage>>(), Transceivable {
     var MULTIPART_BOUNDARY = DEFAULT_MULTIPART_BOUNDARY
@@ -82,10 +84,15 @@ class HttpMultipartPayload : HttpPayload<ArrayList<HttpMessage>>(), Transceivabl
         val rawMessages = entireMessage.split(multipartBoundary!!)
 
         rawMessages.forEach {
+            // TODO: May not work. May need to know if the parent message is content-type text???
+            val result = HttpMessage()
+            result.populateFromIncomingStream(BufferedInputStream(ByteArrayInputStream(it.toByteArray())))
+            content!!.add(result)
+
             //content.add(HttpMessage().populateFromIncomingStream(BufferedInputStream(ByteArrayInputStream(it.toByteArray()))))
         }
 
-
+/*
         // Each section of a multipart message has its own headers.
         // Headers are no longer populated here and should already be present at this point.
         //val incomingHeaders = HttpHeadersList()
@@ -101,6 +108,8 @@ class HttpMultipartPayload : HttpPayload<ArrayList<HttpMessage>>(), Transceivabl
             content!!.add(newBinaryPayload)
             newBinaryPayload = null
         }
+
+ */
     }
 
     override val isEmpty: Boolean
@@ -112,16 +121,11 @@ class HttpMultipartPayload : HttpPayload<ArrayList<HttpMessage>>(), Transceivabl
             for (thisPart in content!!) {
                 result += TERMINUS.length
                 result += MULTIPART_BOUNDARY.length
-                result += thisPart!!.contentLength
+                result += thisPart!!.payload!!.contentLength
             }
             result += TERMINUS.length
             result += MULTIPART_BOUNDARY.length
             result += TERMINUS.length
             return result
         }
-
-    companion object {
-        const val DEFAULT_MULTIPART_BOUNDARY = "X_ROCKABILLY_TRANSCEIVER_BOUNDARY_X"
-        private const val TERMINUS = "--"
-    }
 }

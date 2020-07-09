@@ -97,24 +97,18 @@ abstract class HttpServer : Thread() {
         block = CountDownLatch(1)
         while (continueService()) {
             try {
-                var connectedSocket = listeningSocket!!.accept()
-
-                // TODO: Well, THAT's a mess.  ...and it doesn't fit the revised Transceiver interface
-                //       Use the new interface and make it readable. ⚫️🐦🐦
-                handle(HttpRequest
-                        .fromInputStream(BufferedInputStream(
-                                connectedSocket
-                                        .getInputStream()
-                        )))
-                        .toOutgoingStream(
-                                DataOutputStream(
-                                        connectedSocket
-                                                .getOutputStream()))
-                connectedSocket!!.getOutputStream().flush()
+                val connectedSocket = listeningSocket!!.accept()
+                val inputStream = BufferedInputStream(connectedSocket.getInputStream())
+                val incomingRequest = HttpRequest()
+                incomingRequest.populateFromIncomingStream(inputStream)
+                val outgoingResponse = handle(incomingRequest)
+                val outputStream = DataOutputStream(connectedSocket.getOutputStream())
+                outgoingResponse.sendToOutgoingStream(outputStream)
+                outputStream.flush()
                 connectedSocket.close()
-                connectedSocket = null
             } catch (handledException: Throwable) {
-                // STUB: Log it? Can't throw it...
+                // TODO: Log it? Can't throw it...
+                //       Server should accept a memoir and log it's transactions. That's where to log this.
                 System.out.println(depictFailure(handledException))
             }
         }

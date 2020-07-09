@@ -32,7 +32,7 @@ import java.net.MalformedURLException
 import java.net.URL
 
 
-class HttpRequest : HttpMessage, Transceivable {
+class HttpRequest() : HttpMessage(), Transceivable {
     var verb = HttpVerb.GET
     var uRL: URL? = null
 
@@ -70,75 +70,69 @@ class HttpRequest : HttpMessage, Transceivable {
     }
 
     override fun populateFromIncomingStream(inputStream: BufferedInputStream, multipartBoundary: String?) {
-        // TODO
-        throw NotImplementedError()
-    }
+        var thisLine: String? = ""
+        var firstLineParts: Array<String>? = thisLine!!.trim { it <= ' ' }.split("\\s+".toRegex()).toTypedArray()
 
-    companion object {
-        @Throws(Exception::class)
-        fun fromInputStream(inputStream: BufferedInputStream): HttpRequest {
-            var thisLine: String? = ""
-            var firstLineParts: Array<String>? = thisLine!!.trim { it <= ' ' }.split("\\s+".toRegex()).toTypedArray()
+        // handle first line
+        do {
+            thisLine = readLineFromInputStream(inputStream)
+            firstLineParts = thisLine.trim { it <= ' ' }.split("\\s+".toRegex()).toTypedArray()
+        } while (thisLine!!.length == 0 && firstLineParts!!.size < 3)
 
-            // handle first line
-            do {
-                thisLine = readLineFromInputStream(inputStream)
-                firstLineParts = thisLine.trim { it <= ' ' }.split("\\s+".toRegex()).toTypedArray()
-            } while (thisLine!!.length == 0 && firstLineParts!!.size < 3)
+        // Create the basic HTTP Request object
+        var verbString: String = UnsetString
+        var protocol: String = UnsetString
+        var path: String = UnsetString
 
-            // Create the basic HTTP Request object
-            var verb: String? = UnsetString
-            var protocol: String? = UnsetString
-            var path: String? = UnsetString
-            verb = try {
-                firstLineParts!![0]
-            } catch (thisException: Exception) {
-                // DELIBERATE NO-OP
-                System.err.println("This line ==$thisLine")
-                System.err.println("This line size ==" + thisLine.length)
-                System.err.println(depictFailure(thisException))
-                throw thisException
-            }
-            protocol = try {
-                firstLineParts[2].split("/".toRegex()).toTypedArray()[0]
-            } catch (thisException: Exception) {
-                // DELIBERATE NO-OP
-                System.err.println("This line ==$thisLine")
-                System.err.println("This line size ==" + thisLine.length)
-                System.err.println(depictFailure(thisException))
-                throw thisException
-            }
-            path = try {
-                firstLineParts[1]
-            } catch (thisException: Exception) {
-                // DELIBERATE NO-OP
-                System.err.println("This line ==$thisLine")
-                System.err.println("This line size ==" + thisLine.length)
-                System.err.println(depictFailure(thisException))
-                throw thisException
-            }
-            val result = HttpRequest()
-            result.verb = verb.toHttpVerb()
+        verbString = try {
+            firstLineParts!![0]
+        } catch (thisException: Exception) {
+            // DELIBERATE NO-OP
+            System.err.println("This line ==$thisLine")
+            System.err.println("This line size ==" + thisLine.length)
+            System.err.println(depictFailure(thisException))
+            throw thisException
+        }
 
-            // Add headers
-            result.headers.addAll(inputStream.toHttpHeaders())
-            for ((key, value) in result.headers) {
-                if (key.toLowerCase().startsWith("host")) {
-                    try {
-                        //result.setURL(protocol + "://" + thisHeader.getValue().substring(thisHeader.getValue().indexOf("://") + 3) + path);
-                        result.setURL("$protocol://$value$path")
-                    } catch (thisFailure: Exception) {
-                        System.err.println(depictFailure(thisFailure))
-                    }
-                    break
+        verb = verbString.toHttpVerb()
+
+        protocol = try {
+            firstLineParts[2].split("/".toRegex()).toTypedArray()[0]
+        } catch (thisException: Exception) {
+            // DELIBERATE NO-OP
+            System.err.println("This line ==$thisLine")
+            System.err.println("This line size ==" + thisLine.length)
+            System.err.println(depictFailure(thisException))
+            throw thisException
+        }
+
+        path = try {
+            firstLineParts[1]
+        } catch (thisException: Exception) {
+            // DELIBERATE NO-OP
+            System.err.println("This line ==$thisLine")
+            System.err.println("This line size ==" + thisLine.length)
+            System.err.println(depictFailure(thisException))
+            throw thisException
+        }
+
+        thisLine = null
+        firstLineParts = null
+
+        // Add headers
+        headers.populateFromIncomingStream(inputStream)
+
+        for ((key, value) in headers) {
+            if (key.toLowerCase().startsWith("host")) {
+                try {
+                    //result.setURL(protocol + "://" + thisHeader.getValue().substring(thisHeader.getValue().indexOf("://") + 3) + path);
+                    setURL("$protocol://$value$path")
+                } catch (thisFailure: Exception) {
+                    // TODO: Log to a memoir if available
+                    System.err.println(depictFailure(thisFailure))
                 }
+                break
             }
-            verb = null
-            path = null
-            protocol = null
-            thisLine = null
-            firstLineParts = null
-            return result
         }
     }
 }

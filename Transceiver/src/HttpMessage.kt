@@ -32,7 +32,7 @@ import java.net.http.HttpRequest
 
 const val PROTOCOL_AND_VERSION = "HTTP/1.1"
 
-abstract class HttpMessage: Transceivable {
+open class HttpMessage: Transceivable {
     // Java version kept the property 'server' here.
     // The Kotlin version keeps the property in the HttpHeaders class.
     protected var skipReadingHeaders = false
@@ -70,43 +70,6 @@ abstract class HttpMessage: Transceivable {
         }
     }
 
-    /*
-    @Throws(IOException::class, HttpMessageParseException::class)
-    fun populateFromIncomingStream(inputStream: BufferedInputStream) {
-        // This assumes we've read in far enough to begin reading the headers
-        if (skipReadingHeaders) {
-            // Deliberate NO-OP
-        } else {
-            inputStream.toHttpHeaders()
-
-            // Skip the line after the headers
-            readLineFromInputStream(inputStream)
-        }
-        /*
-        if (this is HttpRequest) {
-            headers.add(HttpHeader(HttpHeader.SERVER_HEADER_KEY, server))
-        }
-        */
-
-        try {
-            if (headers.contentIsMultipart) {
-                payload = HttpMultipartPayload()
-                payload!!.populateFromIncomingStream(inputStream, headers.multipartBoundary)
-            } else if (headers.contentIsText) {
-                payload = HttpStringPayload()
-                payload!!.populateFromIncomingStream(inputStream)
-            } else { //Assuming binary
-                payload = HttpBinaryPayload()
-                payload!!.populateFromIncomingStream(inputStream)
-            }
-        } catch (rethrownException: IOException) {
-            throw rethrownException
-        } catch (causalException: Exception) {
-            throw HttpMessageParseException(causalException)
-        }
-    }
-     */
-
     override fun toString(): String {
         val result = StringBuilder(super.toString())
         result.append(divider())
@@ -116,3 +79,40 @@ abstract class HttpMessage: Transceivable {
         return result.toString()
     }
 }
+
+/*
+@Throws(IOException::class, HttpMessageParseException::class)
+fun populateFromIncomingStream(inputStream: BufferedInputStream) {
+    // This assumes we've read in far enough to begin reading the headers
+    if (skipReadingHeaders) {
+        // Deliberate NO-OP
+    } else {
+        inputStream.toHttpHeaders()
+
+        // Skip the line after the headers
+        readLineFromInputStream(inputStream)
+    }
+    /*
+    if (this is HttpRequest) {
+        headers.add(HttpHeader(HttpHeader.SERVER_HEADER_KEY, server))
+    }
+    */
+
+    try {
+        if (headers.contentIsMultipart) {
+            payload = HttpMultipartPayload()
+            payload!!.populateFromIncomingStream(inputStream, headers.multipartBoundary)
+        } else if (headers.contentIsText) {
+            payload = HttpStringPayload()
+            payload!!.populateFromIncomingStream(inputStream)
+        } else { //Assuming binary
+            payload = HttpBinaryPayload()
+            payload!!.populateFromIncomingStream(inputStream)
+        }
+    } catch (rethrownException: IOException) {
+        throw rethrownException
+    } catch (causalException: Exception) {
+        throw HttpMessageParseException(causalException)
+    }
+}
+ */
