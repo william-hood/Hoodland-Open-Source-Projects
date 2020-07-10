@@ -117,13 +117,14 @@ private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: Str
                 // Attempt Base64 Decode and JSON pretty-print here.
                 renderedHeaders.append(ProcessString(it.value[0].toString()))
             } else {
-                renderedHeaders.append("<center><table class=\"gridlines\">\r\n")
+                renderedHeaders.append("<table class=\"gridlines neutral\">\r\n")
                 it.value.forEach() {
                     renderedHeaders.append("<tr><td>")
                     // Attempt Base64 Decode and JSON pretty-print here.
-                    renderedHeaders.append(ProcessString(it.toString()), true)
+                    renderedHeaders.append(ProcessString(it.toString()))
                     renderedHeaders.append("</td></tr>")
                 }
+                renderedHeaders.append("\r\n</table>")
             }
 
             renderedHeaders.append("</td></tr>")
@@ -151,9 +152,10 @@ private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: Str
 
         result.append("<br><b>Payload</b><br></center>\r\n")
 
+        // TODO: Improve display of HTML code
         val renderedBody = StringBuilder("<pre><code>\r\n")
         // Attempt Base64 Decode and JSON pretty-print here.
-        renderedBody.append(ProcessString(StringPayload))
+        renderedBody.append(ProcessString(StringPayload), true)
         renderedBody.append("\r\n</code></pre>\r\n")
 
         if (size > MAX_BODY_LENGTH_TO_DISPLAY) {
@@ -166,7 +168,7 @@ private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: Str
         }
     }
 
-    result.append("</div>")
+    //result.append("</div>")
     return result.toString()
 }
 

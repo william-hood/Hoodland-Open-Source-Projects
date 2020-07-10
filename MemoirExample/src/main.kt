@@ -42,13 +42,13 @@ fun main(args: Array<String>) {
 
     try {
         //val request = HttpRequest(HttpVerb.GET, "https://httpbin.org/get?param1=latida&param2=tweedledee&param3=whatever")
-        //val request = HttpRequest(HttpVerb.GET, "Http://neverssl.com")
+        //val request = HttpRequest(HttpVerb.GET, "http://neverssl.com")
         //val request = HttpRequest(HttpVerb.GET, "http://vbcknxfwztdmlhrs.neverssl.com/online")
-        //val request = HttpRequest(HttpVerb.GET, "Http://cnn.com")
+        //val request = HttpRequest(HttpVerb.GET, "http://cnn.com")
         // http://openjdk.java.net/
 
         val request = HttpRequest.newBuilder()
-                .uri(URI.create("https://httpbin.org/get?param1=latida&param2=tweedledee&param3=whatever"))
+                .uri(URI.create("http://vbcknxfwztdmlhrs.neverssl.com/online"))
                 .build()
         memoir.ShowObject(request)
 
