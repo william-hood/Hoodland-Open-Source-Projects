@@ -33,7 +33,7 @@ fun Memoir.ShowMap(target: Map<*, *>, targetVariableName: String = nameless, rec
     val targetClass = target::class as KClass<Any>
 
     if (target.count() < 1) {
-        return "<div class=\"outlined\">(the map \"$targetVariableName\" is empty)</div>"
+        return "<div class=\"outlined highlighted\">(the map \"$targetVariableName\" is empty)</div>"
     }
 
     val timeStamp = LocalDateTime.now()

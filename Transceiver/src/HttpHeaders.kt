@@ -136,7 +136,12 @@ open class HttpHeaders: HashMap<String, ArrayList<String>>(), Transceivable {
         // It also assumes we've read in far enough to begin reading the headers
         try {
             // Read content type and headers
-            var headerLine: String = readLineFromInputStream(inputStream)
+            var headerLine: String = ""
+            while (StringIsEmpty(headerLine)) {
+                headerLine = readLineFromInputStream(inputStream).trim()
+            }
+
+            // TODO: May have to skip headers if HTML is detected at this point.
             while (!StringIsEmpty(headerLine)) {
                 // Comment in the old Java version, accurate as of 2016
                 //
@@ -165,6 +170,7 @@ open class HttpHeaders: HashMap<String, ArrayList<String>>(), Transceivable {
                 }
 
                 this.add(headerKey, headerValues)
+                headerLine = readLineFromInputStream(inputStream).trim()
             }
 
         } catch (causalException: Exception) {

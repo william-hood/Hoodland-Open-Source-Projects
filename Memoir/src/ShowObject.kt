@@ -84,13 +84,16 @@ fun Memoir.ShowObject(target: Any?, targetVariableName: String = nameless, recur
 
     result.append("<br><small><i>$visibilityDescription visible</i></small><br>")
 
-    if (fieldCount > MAX_OBJECT_FIELDS_TO_DISPLAY) {
-        val identifier2 = UUID.randomUUID().toString()
-        result.append("<label for=\"$identifier2\">\r\n<input id=\"$identifier2\" type=\"checkbox\">\r\n(show $fieldCount fields)\r\n<div class=\"${this.encapsulationTag}\">\r\n")
-        result.append(content.toString());
-        result.append("</div></label>");
-    } else {
-        result.append(content.toString());
+    // Don't show the checkbox if nothing's actually visible
+    if (visibleProperties > 0) {
+        if (fieldCount > MAX_OBJECT_FIELDS_TO_DISPLAY) {
+            val identifier2 = UUID.randomUUID().toString()
+            result.append("<label for=\"$identifier2\">\r\n<input id=\"$identifier2\" type=\"checkbox\">\r\n(show $fieldCount fields)\r\n<div class=\"${this.encapsulationTag}\">\r\n")
+            result.append(content.toString());
+            result.append("</div></label>");
+        } else {
+            result.append(content.toString());
+        }
     }
 
     if (recurseLevel > 0) {

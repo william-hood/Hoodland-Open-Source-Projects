@@ -44,15 +44,12 @@ class HttpBinaryPayload : HttpPayload<ByteArray?>(), Transceivable {
     }
 
     override fun toString(): String {
-        val result = StringBuilder()
-        result.append("BINARY CONTENT: ")
-        if (content == null) {
-            result.append("(null)")
-        } else {
-            result.append(content!!.size)
-            result.append(" bytes")
+        var result = "(null)"
+        if (content != null) {
+            result = "(${content!!.size} bytes of binary content)"
         }
-        return result.toString()
+
+        return result
     }
 
     private fun takeContent(buffer: ArrayList<Byte>, length: Int) {

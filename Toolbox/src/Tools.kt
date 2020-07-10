@@ -59,12 +59,19 @@ fun readLineFromInputStream(rawInputStream: BufferedInputStream): String {
             break
         }
     }
-    return result.toString().trim { it <= ' ' } // Intentionally trimming off the carriage return at the end.
+    return result.toString().trim('\r', '\n')// { it <= ' ' } // Intentionally trimming off the carriage return at the end.
 }
+
+
 
 // Based on http://stackoverflow.com/questions/5713857/bufferedinputstream-to-string-conversion
 const val BUFFER_SIZE = 1024
 fun readEntireInputStream(rawInputStream: BufferedInputStream): String {
+    if (rawInputStream.available() > 0) {
+        return String(rawInputStream.readAllBytes())
+    }
+    return ""
+    /*
     val buffer = ByteArray(BUFFER_SIZE)
     var bytesRead = 0
     val result = StringBuilder()
@@ -76,6 +83,7 @@ fun readEntireInputStream(rawInputStream: BufferedInputStream): String {
         // Deliberate NO-OP -- Assume EOF
     }
     return result.toString()
+    */
 }
 
 // Based on http://stackoverflow.com/questions/8668905/directory-does-not-exist-with-filewriter

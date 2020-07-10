@@ -73,14 +73,17 @@ class HttpResponse() : HttpMessage(), Transceivable {
 
     override fun populateFromIncomingStream(inputStream: BufferedInputStream, multipartBoundary: String?) {
         try {
+            //val check = readEntireInputStream(inputStream)
 
             // Determine the status code from first line
             var thisLine = ""
             var firstLineParts = Array<String>(1){""}
+
             do {
                 thisLine = readLineFromInputStream(inputStream)
-                val firstLineParts = thisLine.trim().split("\\s+") //thisLine.trim { it <= ' ' }.split("\\s+".toRegex()).toTypedArray()
-            } while (thisLine.length < 1 || firstLineParts.size < 3)
+                firstLineParts = thisLine.trim().split("\\s+".toRegex()).toTypedArray() //thisLine.trim { it <= ' ' }.split("\\s+".toRegex()).toTypedArray()
+                val available = inputStream.available()
+            } while (inputStream.available() > 0 && (thisLine.length < 1 || firstLineParts.size < 3))
             this.statusCode = firstLineParts[1].toInt()
 
             this.headers.populateFromIncomingStream(inputStream)

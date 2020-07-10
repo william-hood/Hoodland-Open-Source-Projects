@@ -73,13 +73,13 @@ fun Memoir.ShowHttpRequest(Verb: String, CompleteUrl: String, Headers: Map<Strin
             }
             result.append("</td></tr>")
         }
-        result.append("\r\n</table><br>")
+        result.append("\r\n</table>")
     }
 
-    result.append(renderHeadersAndBody(Headers, StringPayload))
+    result.append("<br>${renderHeadersAndBody(Headers, StringPayload)}")
 
     WriteToHTML(result.toString())
-    if (PlaintextRendition != null) { EchoPlainText(PlaintextRendition) }
+    if (PlaintextRendition != null) { EchoPlainText(PlaintextRendition, EMOJI_OUTGOING) }
 }
 
 fun Memoir.ShowHttpResponse(StatusCode: Int, Headers: Map<String, ArrayList<String>>, StringPayload: String = "", PlaintextRendition: String? = null) {
@@ -95,7 +95,7 @@ fun Memoir.ShowHttpResponse(StatusCode: Int, Headers: Map<String, ArrayList<Stri
     result.append(renderHeadersAndBody(Headers, StringPayload))
 
     WriteToHTML(result.toString())
-    if (PlaintextRendition != null) { EchoPlainText(PlaintextRendition) }
+    if (PlaintextRendition != null) { EchoPlainText(PlaintextRendition, EMOJI_INCOMING) }
 }
 
 private fun renderHeadersAndBody(Headers: Map<String, ArrayList<String>>, StringPayload: String): String {

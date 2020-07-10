@@ -21,6 +21,8 @@
 
 package rockabilly.transceiver
 
+import rockabilly.memoir.Memoir
+import rockabilly.memoir.ShowHttpRequest
 import rockabilly.toolbox.CarriageReturnLineFeed
 import rockabilly.toolbox.UnsetString
 import rockabilly.toolbox.depictFailure
@@ -32,9 +34,10 @@ import java.net.MalformedURLException
 import java.net.URL
 
 
-class HttpRequest() : HttpMessage(), Transceivable {
+class HttpRequest(log: Memoir? = null) : HttpMessage(), Transceivable {
     var verb = HttpVerb.GET
     var uRL: URL? = null
+    internal var memoir = log
 
     val isSecure: Boolean
     get() = uRL.toString().toLowerCase().startsWith("https")
@@ -65,6 +68,15 @@ class HttpRequest() : HttpMessage(), Transceivable {
     override fun sendToOutgoingStream(outputStream: DataOutputStream) {
         headers.clobber("HOST", uRL!!.host)
         if (verb === HttpVerb.POST) headers.clobber("Content-Length", "" + payload!!.contentLength)
+
+        if (memoir != null) {
+            var payloadString = ""
+            if (this.payload != null) {
+                payloadString = this.payload.toString()
+            }
+            memoir!!.ShowHttpRequest(this.verb.toString(), this.uRL.toString(), this.headers, payloadString, this.toString())
+        }
+
         outputStream.writeBytes("$verb ${uRL!!.path} $PROTOCOL_AND_VERSION$CarriageReturnLineFeed")
         super.sendToOutgoingStream(outputStream)
     }

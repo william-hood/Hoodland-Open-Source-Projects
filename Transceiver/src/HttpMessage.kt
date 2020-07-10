@@ -63,7 +63,7 @@ open class HttpMessage: Transceivable {
     protected fun readPayload(inputStream: BufferedInputStream) {
         if (payload != null) {
             if (payload!!.content != null) {
-                if (!payload!!.isEmpty) {
+                if (payload!!.isEmpty) {
                     payload!!.populateFromIncomingStream(inputStream)
                 }
             }

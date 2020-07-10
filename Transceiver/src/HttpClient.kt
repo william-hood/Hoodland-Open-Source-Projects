@@ -68,11 +68,12 @@ object HttpClient {
                 socket = Socket()
                 socket.connect(InetSocketAddress(host, port))
             }
+
             outgoing = DataOutputStream(socket.getOutputStream())
             incoming = BufferedInputStream(socket.getInputStream())
 
-            if (memoir != null) {
-                memoir.ShowHttpRequest(httpRequest.verb.toString(), httpRequest.uRL.toString(), httpRequest.headers, httpRequest.payload.toString(), httpRequest.toString())
+            if (httpRequest.memoir == null) {
+                httpRequest.memoir = memoir
             }
 
             httpRequest.sendToOutgoingStream(outgoing)

@@ -47,13 +47,12 @@ class HttpStringPayload : HttpPayload<StringBuilder?>(), Transceivable {
         }
 
          */
-        result.append("TEXT CONTENT:")
+
         if (content == null) {
             result.append(" (null)")
         } else if (content!!.length < 1) {
             result.append(" (empty)")
         } else {
-            result.append(CarriageReturnLineFeed)
             result.append(content.toString())
         }
         return result.toString()
