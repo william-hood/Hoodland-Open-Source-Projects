@@ -9,7 +9,6 @@
       <module fileurl="file://$PROJECT_DIR$/MemoirExample/MemoirExample.iml" filepath="$PROJECT_DIR$/MemoirExample/MemoirExample.iml" />
       <module fileurl="file://$PROJECT_DIR$/Rockajay/Rockajay.iml" filepath="$PROJECT_DIR$/Rockajay/Rockajay.iml" />
       <module fileurl="file://$PROJECT_DIR$/Toolbox/Toolbox.iml" filepath="$PROJECT_DIR$/Toolbox/Toolbox.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Transceiver/Transceiver.iml" filepath="$PROJECT_DIR$/Transceiver/Transceiver.iml" />
     </modules>
   </component>
 </project>

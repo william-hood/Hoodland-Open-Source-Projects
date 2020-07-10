@@ -28,7 +28,9 @@ private val base64Check = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{
 private val base64Decoder = Base64.getDecoder()
 
 fun IsBase64(candidate: String): Boolean {
-    return base64Check.matches(candidate)
+    return false
+    // TODO: Make this correct. It is detecting Base64 where such is not the case.
+    //return base64Check.matches(candidate)
 }
 
 fun FromBase64(candidate: String): String {
@@ -40,7 +42,7 @@ fun FromBase64(candidate: String): String {
 // adds a dependency. Will think on this a bit, but may have to implement a simple JSON parser. Easiest
 // way to pretty-print JSON may be to read it into an object, then render that object as pretty json.
 
-fun ProcessString(candidate: String): String {
+fun ProcessString(candidate: String, treatAsCode: Boolean = false): String {
     var result = candidate
 
     // If it's Base64, decode it.
@@ -50,6 +52,11 @@ fun ProcessString(candidate: String): String {
 
     // If it's JSON, pretty-print it.
     // result = readJSON(result).prettyPrint()
+    // This should also force treatAsCode to be true
+
+    if (treatAsCode) {
+        result = result.replace("<", "&lt;").replace(">", "&gt;")
+    }
 
     return result
 }

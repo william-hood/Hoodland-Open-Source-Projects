@@ -21,11 +21,9 @@
 
 import rockabilly.memoir.*
 import rockabilly.toolbox.stdout
-import rockabilly.transceiver.HttpClient
 import java.io.File
-import rockabilly.transceiver.HttpRequest
-import rockabilly.transceiver.HttpVerb
-import java.util.ArrayList
+import java.net.URI
+import java.net.http.HttpRequest
 
 internal class TestStruct() {
     var name = "Hi"
@@ -46,10 +44,18 @@ fun main(args: Array<String>) {
         //val request = HttpRequest(HttpVerb.GET, "https://httpbin.org/get?param1=latida&param2=tweedledee&param3=whatever")
         //val request = HttpRequest(HttpVerb.GET, "Http://neverssl.com")
         //val request = HttpRequest(HttpVerb.GET, "http://vbcknxfwztdmlhrs.neverssl.com/online")
-        val request = HttpRequest(HttpVerb.GET, "Http://cnn.com")
-        //request.headers.add("Connection", "close")
+        //val request = HttpRequest(HttpVerb.GET, "Http://cnn.com")
+        // http://openjdk.java.net/
+
+        val request = HttpRequest.newBuilder()
+                .uri(URI.create("https://httpbin.org/get?param1=latida&param2=tweedledee&param3=whatever"))
+                .build()
         memoir.ShowObject(request)
-        HttpClient.sendAndReceive(request, memoir)
+
+        //val response = memoir.ShowHttpTransaction(request)
+        //memoir.Debug("Upon return response body = ${response.body()}")
+
+        memoir.ShowHttpTransaction(request)
 
         val arrayCheck = intArrayOf(1, 5, 7, 9, 42, 781)
         memoir.Show(arrayCheck, "arrayCheck")
@@ -110,11 +116,6 @@ fun main(args: Array<String>) {
         justSomeTest.Info("This happened")
         justSomeTest.Info("Then this")
         justSomeTest.Info("Also this")
-
-        justSomeTest.ShowHttpRequest("GET", "http://fake.news.com/index.html?fakeness=75&nameSources=false", HashMap<String, ArrayList<String>>())
-        justSomeTest.ShowHttpResponse(200, HashMap<String, ArrayList<String>>(), "{ \"Name\":\"That Guy\", \"Contact\":5551212 }")
-        justSomeTest.ShowHttpResponse(500, HashMap<String, ArrayList<String>>(), "Seriously?")
-
 
         justSomeTest.Info("This check passed", EMOJI_PASSING_TEST)
         justSomeTest.Info("So did this", EMOJI_PASSING_TEST)

@@ -23,33 +23,29 @@ package rockabilly.memoir
 
 import rockabilly.toolbox.isSuccessfulStatusCode
 import rockabilly.toolbox.toStatusCodeDescription
-import java.net.URL
-import java.time.LocalDateTime
+import java.net.http.HttpClient
+import java.net.http.HttpHeaders
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 import java.util.*
 
-// In Java/Kotlin/JVM-in-general there are many HTTP Clients/Servers available. Rather than adopt
-// one over the others, Memoir provides a generic means to render a Request and Response, with only
-// plaintext bodies supported. Rockabilly Transceiver provides a usage example.
-fun Memoir.ShowHttpRequest(Verb: String, CompleteUrl: String, Headers: Map<String, ArrayList<String>>, StringPayload: String = "", PlaintextRendition: String? = null) {
-    val timeStamp = LocalDateTime.now()
-
-    val url = URL(CompleteUrl)
+fun Memoir.ShowHttpRequest(request: HttpRequest) {
+    val uri = request.uri()
     val queries = ArrayList<String>()
-
-    if (url.query != null) {
-        queries.addAll(url.query.split('&')) // Starts with ?
-    }
-
     val result = StringBuilder("<div class=\"outgoing implied_caution\">\r\n")
 
-    result.append("<center><h2>$Verb ${url.path}</h2>")
-    result.append("<small><b><i>${url.host}</i></b></small>")
+    if (uri.query != null) {
+        queries.addAll(uri.query.split('&')) // Starts with ?
+    }
+
+    result.append("<center><h2>${request.method()} ${uri.path}</h2>")
+    result.append("<small><b><i>${uri.host}</i></b></small>")
 
     // Hide the Full URL
     val identifier = UUID.randomUUID().toString()
     result.append("<br><br><label for=\"$identifier\">\r\n<input id=\"$identifier\" type=\"checkbox\"><small><i>(show complete URL)</i></small>\r\n<div class=\"${this.encapsulationTag}\">\r\n")
 
-    result.append("<br>\r\n${CompleteUrl.replace("&", "&amp;")}\r\n")
+    result.append("<br>\r\n${request.uri().toString().replace("&", "&amp;")}\r\n")
     result.append("</div>\r\n</label>")
 
     if (queries.size < 1) {
@@ -76,75 +72,108 @@ fun Memoir.ShowHttpRequest(Verb: String, CompleteUrl: String, Headers: Map<Strin
         result.append("\r\n</table>")
     }
 
-    result.append("<br>${renderHeadersAndBody(Headers, StringPayload)}")
+    result.append("<br>${renderHeadersAndBody(request.headers(), request.bodyPublisher().toString())}")
 
-    WriteToHTML(result.toString())
-    if (PlaintextRendition != null) { EchoPlainText(PlaintextRendition, EMOJI_OUTGOING) }
+    WriteToHTML(result.toString(), EMOJI_OUTGOING)
+
+    // TODO: Plaintext version
+    //if (PlaintextRendition != null) { EchoPlainText(PlaintextRendition, EMOJI_OUTGOING) }
 }
 
-fun Memoir.ShowHttpResponse(StatusCode: Int, Headers: Map<String, ArrayList<String>>, StringPayload: String = "", PlaintextRendition: String? = null) {
-    val timeStamp = LocalDateTime.now()
+fun Memoir.ShowHttpResponse(response: HttpResponse<*>) {
+    val statusCode = response.statusCode()
     var style = "implied_bad"
-    if (StatusCode.isSuccessfulStatusCode) { style = "implied_good" }
+    if (statusCode.isSuccessfulStatusCode) { style = "implied_good" }
 
     val result = java.lang.StringBuilder("<div class=\"incoming $style\">\r\n")
 
     // Status code & description
-    result.append("<center><h2>$StatusCode ${StatusCode.toStatusCodeDescription()}</h2>")
+    result.append("<center><h2>$statusCode ${statusCode.toStatusCodeDescription()}</h2>")
 
-    result.append(renderHeadersAndBody(Headers, StringPayload))
+    result.append(renderHeadersAndBody(response.headers(), response.body().toString()))
 
-    WriteToHTML(result.toString())
-    if (PlaintextRendition != null) { EchoPlainText(PlaintextRendition, EMOJI_INCOMING) }
+    WriteToHTML(result.toString(), EMOJI_INCOMING)
+    // TODO: Plaintext version
+    //if (PlaintextRendition != null) { EchoPlainText(PlaintextRendition, EMOJI_INCOMING) }
 }
 
-private fun renderHeadersAndBody(Headers: Map<String, ArrayList<String>>, StringPayload: String): String {
+private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: String): String {
     val result = StringBuilder()
+    val headerMap = Headers.map()
 
     // Headers
-    if (Headers.size > 0) {
-        result.append("<br><b>Headers</b><br><table class=\"gridlines\">\r\n")
+    if (headerMap.size > 0) {
+        result.append("<br><b>Headers</b><br>")
+        val renderedHeaders = StringBuilder("<table class=\"gridlines\">\r\n")
 
-        Headers.forEach() {
-            result.append("<tr><td>")
-            result.append(it.key)
-            result.append("</td><td>")
+        headerMap.forEach() {
+            renderedHeaders.append("<tr><td>")
+            renderedHeaders.append(it.key)
+            renderedHeaders.append("</td><td>")
 
             if (it.value.size < 1) {
-                result.append("<small><i>(empty)</i></small>")
+                renderedHeaders.append("<small><i>(empty)</i></small>")
             } else if (it.value.size == 1) {
                 // Attempt Base64 Decode and JSON pretty-print here.
-                result.append(ProcessString(it.value[0].toString()))
+                renderedHeaders.append(ProcessString(it.value[0].toString()))
             } else {
-                result.append("<center><table class=\"gridlines\">\r\n")
+                renderedHeaders.append("<center><table class=\"gridlines\">\r\n")
                 it.value.forEach() {
-                    result.append("<tr><td>")
+                    renderedHeaders.append("<tr><td>")
                     // Attempt Base64 Decode and JSON pretty-print here.
-                    result.append(ProcessString(it.toString()))
-                    result.append("</td></tr>")
+                    renderedHeaders.append(ProcessString(it.toString()), true)
+                    renderedHeaders.append("</td></tr>")
                 }
             }
 
-            result.append("</td></tr>")
+            renderedHeaders.append("</td></tr>")
         }
-        result.append("\r\n</table><br>")
+        renderedHeaders.append("\r\n</table><br>")
+
+        if (headerMap.keys.size > MAX_HEADERS_TO_DISPLAY) {
+            val identifier1 = UUID.randomUUID().toString()
+            result.append("<label for=\"$identifier1\">\r\n<input id=\"$identifier1\" type=\"checkbox\">\r\n(show ${headerMap.keys.size} headers)\r\n<div class=\"${this.encapsulationTag}\">\r\n")
+            result.append(renderedHeaders)
+            result.append("</div></label>");
+        } else {
+            result.append(renderedHeaders)
+        }
     }
     else {
         result.append("<br><br><small><i>(no headers)</i></small>\r\n")
     }
 
     // Body
-    if (StringPayload == "") {
+    if ((StringPayload == "") || (StringPayload == "Optional.empty")) {
         result.append("<br><br><small><i>(no payload)</i></small></center>")
     } else {
+        val size = StringPayload.length
+
         result.append("<br><b>Payload</b><br></center>\r\n")
-        // TODO: Remove <pre/> tags if ProcessString handles that
-        result.append("<pre>\r\n")
+
+        val renderedBody = StringBuilder("<pre><code>\r\n")
         // Attempt Base64 Decode and JSON pretty-print here.
-        result.append(ProcessString(StringPayload))
-        result.append("\r\n</pre>\r\n")
+        renderedBody.append(ProcessString(StringPayload))
+        renderedBody.append("\r\n</code></pre>\r\n")
+
+        if (size > MAX_BODY_LENGTH_TO_DISPLAY) {
+            val identifier2 = UUID.randomUUID().toString()
+            result.append("<label for=\"$identifier2\">\r\n<input id=\"$identifier2\" type=\"checkbox\">\r\n(show large payload)\r\n<div class=\"${this.encapsulationTag}\">\r\n")
+            result.append(renderedBody);
+            result.append("</div></label>")
+        } else {
+            result.append(renderedBody)
+        }
     }
 
     result.append("</div>")
     return result.toString()
+}
+
+fun Memoir.ShowHttpTransaction(request: HttpRequest): HttpResponse<*> {
+    val client = HttpClient.newHttpClient()
+    ShowHttpRequest(request)
+    val result = client.send(request, HttpResponse.BodyHandlers.ofString())
+    ShowHttpResponse(result)
+    return result
 }

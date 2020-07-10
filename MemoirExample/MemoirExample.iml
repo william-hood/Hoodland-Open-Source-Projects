@@ -11,6 +11,5 @@
     <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
     <orderEntry type="module" module-name="Memoir" />
     <orderEntry type="module" module-name="Toolbox" />
-    <orderEntry type="module" module-name="Transceiver" />
   </component>
 </module>
