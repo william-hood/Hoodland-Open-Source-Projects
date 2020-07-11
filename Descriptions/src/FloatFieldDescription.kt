@@ -20,6 +20,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 package rockabilly.descriptions
 
+import java.util.*
+
 class FloatFieldDescription : ValueFieldDescription<Float> {
     constructor(limitsDescription: LimitsDescription<Float>) : super(limitsDescription) {}
     constructor() : super() {}
@@ -72,8 +74,6 @@ class FloatFieldDescription : ValueFieldDescription<Float> {
 
     @Throws(InappropriateDescriptionException::class)
     override fun random(min: Float, max: Float): Float {
-        // return add(min, new Random().nextInt(subtract(max, min)));
-        // TODO: Will implement support later
-        throw InappropriateDescriptionException()
+        return min + Random().nextFloat() * (max - min)
     }
 }

@@ -25,7 +25,7 @@ import java.time.LocalDateTime
 import java.util.*
 import kotlin.reflect.KClass
 
-fun Memoir.ShowMap(target: Map<*, *>, targetVariableName: String = nameless, recurseLevel: Int = 0, targetClassName: String = "Map"): String {
+fun Memoir.showMap(target: Map<*, *>, targetVariableName: String = NAMELESS, recurseLevel: Int = 0, targetClassName: String = "Map"): String {
     if (recurseLevel > MAX_SHOW_OBJECT_RECURSION) {
         return "<div class=\"outlined\">$EMOJI_INCONCLUSIVE_TEST Too Many Levels In $EMOJI_INCONCLUSIVE_TEST</div>"
     }
@@ -47,7 +47,7 @@ fun Memoir.ShowMap(target: Map<*, *>, targetVariableName: String = nameless, rec
         content.append("<tr><td>")
         content.append(it.key.toString())
         content.append("</td><td>")
-        content.append(this.Show(it.value, recurseLevel = recurseLevel + 1))
+        content.append(this.show(it.value, recurseLevel = recurseLevel + 1))
         content.append("</td></tr>\r\n")
     }
 
@@ -71,7 +71,7 @@ fun Memoir.ShowMap(target: Map<*, *>, targetVariableName: String = nameless, rec
     val rendition = result.toString()
 
     if (recurseLevel < 1) {
-        this.WriteToHTML(rendition)
+        this.writeToHTML(rendition)
     }
 
     return rendition

@@ -29,7 +29,7 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.util.*
 
-fun Memoir.ShowHttpRequest(request: HttpRequest) {
+fun Memoir.showHttpRequest(request: HttpRequest) {
     val uri = request.uri()
     val queries = ArrayList<String>()
     val result = StringBuilder("<div class=\"outgoing implied_caution\">\r\n")
@@ -51,7 +51,6 @@ fun Memoir.ShowHttpRequest(request: HttpRequest) {
     if (queries.size < 1) {
         result.append("<br><br><small><i>(no query)</i></small>")
     } else {
-        //this.ShowArray(queries as Array<Any>, "Queries", 1)
         result.append("<br><br><b>Queries</b><br><table class=\"gridlines\">\r\n")
 
         queries.forEach {
@@ -62,7 +61,7 @@ fun Memoir.ShowHttpRequest(request: HttpRequest) {
             if (part.size > 1)
             {
                 // Attempt Base64 Decode and JSON pretty-print here.
-                result.append(ProcessString(part[1]))
+                result.append(processString(part[1]))
             } else
             {
                 result.append("(unset)")
@@ -74,13 +73,13 @@ fun Memoir.ShowHttpRequest(request: HttpRequest) {
 
     result.append("<br>${renderHeadersAndBody(request.headers(), request.bodyPublisher().toString())}")
 
-    WriteToHTML(result.toString(), EMOJI_OUTGOING)
+    writeToHTML(result.toString(), EMOJI_OUTGOING)
 
     // TODO: Plaintext version
     //if (PlaintextRendition != null) { EchoPlainText(PlaintextRendition, EMOJI_OUTGOING) }
 }
 
-fun Memoir.ShowHttpResponse(response: HttpResponse<*>) {
+fun Memoir.showHttpResponse(response: HttpResponse<*>) {
     val statusCode = response.statusCode()
     var style = "implied_bad"
     if (statusCode.isSuccessfulStatusCode) { style = "implied_good" }
@@ -92,7 +91,7 @@ fun Memoir.ShowHttpResponse(response: HttpResponse<*>) {
 
     result.append(renderHeadersAndBody(response.headers(), response.body().toString()))
 
-    WriteToHTML(result.toString(), EMOJI_INCOMING)
+    writeToHTML(result.toString(), EMOJI_INCOMING)
     // TODO: Plaintext version
     //if (PlaintextRendition != null) { EchoPlainText(PlaintextRendition, EMOJI_INCOMING) }
 }
@@ -115,13 +114,13 @@ private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: Str
                 renderedHeaders.append("<small><i>(empty)</i></small>")
             } else if (it.value.size == 1) {
                 // Attempt Base64 Decode and JSON pretty-print here.
-                renderedHeaders.append(ProcessString(it.value[0].toString()))
+                renderedHeaders.append(processString(it.value[0].toString()))
             } else {
                 renderedHeaders.append("<table class=\"gridlines neutral\">\r\n")
                 it.value.forEach() {
                     renderedHeaders.append("<tr><td>")
                     // Attempt Base64 Decode and JSON pretty-print here.
-                    renderedHeaders.append(ProcessString(it.toString()))
+                    renderedHeaders.append(processString(it.toString()))
                     renderedHeaders.append("</td></tr>")
                 }
                 renderedHeaders.append("\r\n</table>")
@@ -152,10 +151,8 @@ private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: Str
 
         result.append("<br><b>Payload</b><br></center>\r\n")
 
-        // TODO: Improve display of HTML code
         val renderedBody = StringBuilder("<pre><code>\r\n")
-        // Attempt Base64 Decode and JSON pretty-print here.
-        renderedBody.append(ProcessString(StringPayload), true)
+        renderedBody.append(processString(StringPayload, true))
         renderedBody.append("\r\n</code></pre>\r\n")
 
         if (size > MAX_BODY_LENGTH_TO_DISPLAY) {
@@ -172,10 +169,10 @@ private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: Str
     return result.toString()
 }
 
-fun Memoir.ShowHttpTransaction(request: HttpRequest): HttpResponse<*> {
+fun Memoir.showHttpTransaction(request: HttpRequest): HttpResponse<*> {
     val client = HttpClient.newHttpClient()
-    ShowHttpRequest(request)
+    showHttpRequest(request)
     val result = client.send(request, HttpResponse.BodyHandlers.ofString())
-    ShowHttpResponse(result)
+    showHttpResponse(result)
     return result
 }

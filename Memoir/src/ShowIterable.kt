@@ -25,7 +25,7 @@ import java.time.LocalDateTime
 import java.util.*
 import kotlin.reflect.KClass
 
-fun Memoir.ShowIterable(target: Iterable<*>, targetVariableName: String = nameless, recurseLevel: Int = 0): String {
+fun Memoir.showIterable(target: Iterable<*>, targetVariableName: String = NAMELESS, recurseLevel: Int = 0): String {
     if (recurseLevel > MAX_SHOW_OBJECT_RECURSION) {
         return "<div class=\"outlined\">$EMOJI_INCONCLUSIVE_TEST Too Many Levels In $EMOJI_INCONCLUSIVE_TEST</div>"
     }
@@ -49,7 +49,7 @@ fun Memoir.ShowIterable(target: Iterable<*>, targetVariableName: String = namele
             content.append("<tr><td>")
             content.append(it.key.toString())
             content.append("</td><td>")
-            content.append(this.Show(it, recurseLevel = recurseLevel + 1))
+            content.append(this.show(it, recurseLevel = recurseLevel + 1))
             content.append("</td></tr>\r\n")
         }
     } else {
@@ -58,7 +58,7 @@ fun Memoir.ShowIterable(target: Iterable<*>, targetVariableName: String = namele
             content.append("<tr><td>")
             content.append(it!!::class.simpleName)
             content.append("</td><td>")
-            content.append(this.Show(it, recurseLevel = recurseLevel + 1))
+            content.append(this.show(it, recurseLevel = recurseLevel + 1))
             content.append("</td></tr>\r\n")
         }
     }
@@ -83,7 +83,7 @@ fun Memoir.ShowIterable(target: Iterable<*>, targetVariableName: String = namele
     val rendition = result.toString()
 
     if (recurseLevel < 1) {
-        this.WriteToHTML(rendition)
+        this.writeToHTML(rendition)
     }
 
     return rendition

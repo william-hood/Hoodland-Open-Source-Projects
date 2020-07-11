@@ -22,7 +22,7 @@
 package rockabilly.koarsegrind
 
 import rockabilly.memoir.Memoir
-import rockabilly.memoir.ShowThrowable
+import rockabilly.memoir.showThrowable
 import rockabilly.memoir.UNKNOWN
 import rockabilly.toolbox.*
 import java.io.File
@@ -80,8 +80,8 @@ public object TestCollection: ArrayList<Test>() {
         try {
             copyCompletely(currentTest!!.ArtifactsDirectory, currentArtifactsDirectory + File.separatorChar + currentTest!!.PrefixedName)
         } catch (loggedThrowable: Throwable) {
-            memoir.Error("Koarse Grind was unable to copy the current test results to their permanent location")
-            memoir.ShowThrowable(loggedThrowable)
+            memoir.error("Koarse Grind was unable to copy the current test results to their permanent location")
+            memoir.showThrowable(loggedThrowable)
         } finally {
             //hardDelete(currentTest!!.ArtifactsDirectory)
             File(currentTest!!.ArtifactsDirectory).deleteRecursively()
@@ -98,7 +98,7 @@ public object TestCollection: ArrayList<Test>() {
         currentArtifactsDirectory = rootDirectory
         val expectedFileName = currentArtifactsDirectory + File.separatorChar + "All tests.html"
         forceParentDirectoryExistence(expectedFileName)
-        val overlog = Memoir(name, null, PrintWriter(expectedFileName), ::LogHeader)
+        val overlog = Memoir(name, null, PrintWriter(expectedFileName), ::logHeader)
 
         for (indexCount in 0..(this.count() - 1)) {
             currentCount = indexCount
@@ -123,14 +123,14 @@ public object TestCollection: ArrayList<Test>() {
                     currentTest!!.AddResult(currentTest!!.GetResultForPreclusionInSetup(thisFailure))
                 } finally {
                     executionThread = null
-                    overlog.ShowMemoir(currentTest!!.topLevelMemoir!!, currentTest!!.OverallStatus.memoirIcon, currentTest!!.OverallStatus.memoirStyle)
+                    overlog.showMemoir(currentTest!!.topLevelMemoir!!, currentTest!!.OverallStatus.memoirIcon, currentTest!!.OverallStatus.memoirStyle)
                     this.copyResultsToCategories(overlog)
                 }
             }
         }
 
         CreateSummaryReport(rootDirectory, overlog)
-        overlog.Conclude()
+        overlog.conclude()
     }
 
     // Omitting public functions Run() & InterruptCurrentTest() from C#
@@ -172,7 +172,7 @@ public object TestCollection: ArrayList<Test>() {
 
     fun CreateSummaryReport(rootDirectory: String, memoir: Memoir = Memoir(forPlainText = stdout)) {
         val fullyQulaifiedSummaryFileName = rootDirectory + File.separatorChar + SUMMARY_FILE_NAME
-        memoir.Info("Creating Test Suite Summary Report ($fullyQulaifiedSummaryFileName)")
+        memoir.info("Creating Test Suite Summary Report ($fullyQulaifiedSummaryFileName)")
         var summaryReport = DelimitedDataManager<String>("Categorization", "Test Priority", "Test ID", "Name", "Description", "Status", "Reasons")
 
         try {
@@ -201,8 +201,8 @@ public object TestCollection: ArrayList<Test>() {
             textFile.flush()
             textFile.close() // Shouldn't need a getter because this is a val
         } catch (thisFailure: Throwable) {
-            memoir.Error("Did not successfully create the overall status text file $fullyQulaifiedSummaryTextFileName")
-            memoir.ShowThrowable(thisFailure)
+            memoir.error("Did not successfully create the overall status text file $fullyQulaifiedSummaryTextFileName")
+            memoir.showThrowable(thisFailure)
         }
     }
 }

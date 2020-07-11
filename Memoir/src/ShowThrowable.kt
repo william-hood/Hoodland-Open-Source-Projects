@@ -26,7 +26,7 @@ import java.util.*
 
 private const val DEFAULT_STACKTRACE = "(no stacktrace)"
 
-fun Memoir.ShowThrowable(target: Throwable, timeStamp: LocalDateTime = LocalDateTime.now(), plainTextIndent: String = ""): String {
+fun Memoir.showThrowable(target: Throwable, timeStamp: LocalDateTime = LocalDateTime.now(), plainTextIndent: String = ""): String {
     val result = StringBuilder("<div class=\"object exception\">\r\n")
     val name = target.javaClass.simpleName
     val htmlStackTrace = StringBuilder(DEFAULT_STACKTRACE)
@@ -39,9 +39,9 @@ fun Memoir.ShowThrowable(target: Throwable, timeStamp: LocalDateTime = LocalDate
         loggedTextEmoji = EMOJI_CAUSED_BY
     }
 
-    this.EchoPlainText("", timeStamp = timeStamp)
-    this.EchoPlainText("$plainTextIndent$name", loggedTextEmoji, timeStamp)
-    this.EchoPlainText("$plainTextIndent$target.message", timeStamp = timeStamp)
+    this.echoPlainText("", timeStamp = timeStamp)
+    this.echoPlainText("$plainTextIndent$name", loggedTextEmoji, timeStamp)
+    this.echoPlainText("$plainTextIndent$target.message", timeStamp = timeStamp)
 
     // Build the stacktrace  strings
     if (target.stackTrace != null) {
@@ -80,7 +80,7 @@ fun Memoir.ShowThrowable(target: Throwable, timeStamp: LocalDateTime = LocalDate
                     }
                 }
 
-                this.EchoPlainText("$plainTextIndent$plainTextLine", timeStamp = timeStamp)
+                this.echoPlainText("$plainTextIndent$plainTextLine", timeStamp = timeStamp)
             }
         } else {
             // TODO: Confirm if this is a deliberate NO-OP
@@ -105,7 +105,7 @@ fun Memoir.ShowThrowable(target: Throwable, timeStamp: LocalDateTime = LocalDate
         result.append("<label for=\"$identifier\">\r\n<h2>$name</h2>\r\n<small><i>${target.message}</i></small><br><br><input id=\"$identifier\" type=\"checkbox\"><small><i>($indicator)</i></small>\r\n<div class=\"${this.encapsulationTag}\">\r\n<br><small><i>\r\n$htmlStackTrace\r\n</i></small>\r\n")
 
         if (target.cause != null) {
-            result.append("<br>\r\n<table><tr><td>&nbsp;</td><td><small><b>Cause</b></small>&nbsp;$EMOJI_CAUSED_BY</td><td>&nbsp;</td><td>${this.ShowThrowable(target.cause!!, timeStamp, "$plainTextIndent   ")}</td></tr></table>")
+            result.append("<br>\r\n<table><tr><td>&nbsp;</td><td><small><b>Cause</b></small>&nbsp;$EMOJI_CAUSED_BY</td><td>&nbsp;</td><td>${this.showThrowable(target.cause!!, timeStamp, "$plainTextIndent   ")}</td></tr></table>")
         }
 
         result.append("</div>\r\n</label>")
@@ -116,9 +116,9 @@ fun Memoir.ShowThrowable(target: Throwable, timeStamp: LocalDateTime = LocalDate
     result.append("</div>")
 
     // This is not nested if there is no plaintext indent.
-    if (plainTextIndent.length < 1) this.WriteToHTML(result.toString(), EMOJI_ERROR, timeStamp)
+    if (plainTextIndent.length < 1) this.writeToHTML(result.toString(), EMOJI_ERROR, timeStamp)
 
-    this.EchoPlainText("$plainTextIndent$EMOJI_TEXT_MEMOIR_CONCLUDE", timeStamp = timeStamp)
-    this.EchoPlainText("", timeStamp = timeStamp)
+    this.echoPlainText("$plainTextIndent$EMOJI_TEXT_MEMOIR_CONCLUDE", timeStamp = timeStamp)
+    this.echoPlainText("", timeStamp = timeStamp)
     return result.toString()
 }

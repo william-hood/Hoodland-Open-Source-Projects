@@ -25,61 +25,59 @@
 package rockabilly.koarsegrind
 
 import rockabilly.memoir.Memoir
-import rockabilly.memoir.ShowThrowable
+import rockabilly.memoir.showThrowable
 
 val SUMMARY_HEADERS = arrayOf("Criterion", "Status", "Artifacts", "Failures")
 
 enum class TestConditionalType {
     // In older versions of Coarse Grind, these were
     // Unspecified, Prerequisite, PassCriterion
-    Consideration, Requirement, Assertion;
+    CONSIDERATION, REQUIREMENT, ASSERTION;
 
     fun toTestResult(condition: Boolean, conditionDescription: String) : TestResult {
         var prefix = ""
 
         when (this) {
-            Assertion -> prefix = "(Assertion) "
-            Requirement -> prefix = "(Requirement) "
+            ASSERTION -> prefix = "(Assertion) "
+            REQUIREMENT -> prefix = "(Requirement) "
         }
 
         val result = TestResult()
 
         if (condition) {
-            result.Status = TestStatus.Pass
+            result.status = TestStatus.Pass
         } else {
             when (this) {
-                Assertion -> result.Status = TestStatus.Fail
-                Consideration -> result.Status = TestStatus.Subjective
+                ASSERTION -> result.status = TestStatus.Fail
+                CONSIDERATION -> result.status = TestStatus.Subjective
                 // Otherwise leave the default status of inconclusive in-place.
             }
         }
 
-        result.Description = prefix + conditionDescription
+        result.description = prefix + conditionDescription
         return result
     }
 }
 
-class TestResult (status: TestStatus = TestStatus.Inconclusive, description: String = "(no description provided)", vararg associatedFailures: Throwable) {
-    var Description = description
-    var Status = status
-    val Failures = ArrayList<Throwable>()
-    val Artifacts = ArrayList<Any>()
+class TestResult (var status: TestStatus = TestStatus.Inconclusive, var description: String = "(no description provided)", vararg associatedFailures: Throwable) {
+    val failures = ArrayList<Throwable>()
+    val artifacts = ArrayList<Any>()
 
     init {
-        associatedFailures.toCollection(Failures)
+        associatedFailures.toCollection(failures)
     }
 
     val hasArtifacts: Boolean
-        get() = this.Artifacts.count() > 0
+        get() = this.artifacts.count() > 0
 
     val hasFailures: Boolean
-        get() = this.Failures.count() > 0
+        get() = this.failures.count() > 0
 }
 
-fun Memoir.ShowTestResult(thisResult: TestResult) {
+fun Memoir.showTestResult(thisResult: TestResult) {
     // Should this be a subordinate memoir???
-    this.ShowTestStatus(thisResult.Status, thisResult.Description)
-    thisResult.Failures.forEach {
-        this.ShowThrowable(it)
+    this.showTestStatus(thisResult.status, thisResult.description)
+    thisResult.failures.forEach {
+        this.showThrowable(it)
     }
 }

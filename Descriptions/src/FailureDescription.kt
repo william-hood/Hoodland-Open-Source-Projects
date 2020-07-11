@@ -24,59 +24,58 @@ package rockabilly.descriptions
 import rockabilly.toolbox.UnsetString
 
 class FailureDescription {
-    private var FailureType: Class<out Throwable>? = null
-    var MessageSubstring = ""
-    var Cause: FailureDescription? = null
-    private var FailureTypePartialName: String = UnsetString
+    private var _failureType: Class<out Throwable>? = null
+    private var _messageSubstring = ""
+    private var _cause: FailureDescription? = null
+    private var _failureTypePartialName: String = UnsetString
 
     constructor(failureType: Class<out Throwable>?,
                 messageSubstring: String) {
-        FailureType = failureType
-        MessageSubstring = messageSubstring
+        this._failureType = failureType
+        this._messageSubstring = messageSubstring
     }
 
     constructor(failureType: Class<out Throwable>?,
                 messageSubstring: String, cause: FailureDescription?) : this(failureType, messageSubstring) {
-        Cause = cause
+        this._cause = cause
     }
 
-    constructor(failureTypePartial: String, messageSubstring: String) {
-        FailureTypePartialName = failureTypePartial
-        MessageSubstring = messageSubstring
+    constructor(failureTypePartialName: String, messageSubstring: String) {
+        _failureTypePartialName = failureTypePartialName
+        this._messageSubstring = messageSubstring
     }
 
     private fun messageMatches(candidate: String?): Boolean {
-        if (MessageSubstring.length > 0) {
-            if (!candidate!!.contains(MessageSubstring)) return false
+        if (_messageSubstring.length > 0) {
+            if (!candidate!!.contains(_messageSubstring)) return false
         }
         return true
     }
 
     fun isMatch(candidateFailure: Throwable): Boolean {
-        if (FailureTypePartialName !== UnsetString) return isMatch(candidateFailure.javaClass.canonicalName,
+        if (_failureTypePartialName !== UnsetString) return isMatch(candidateFailure.javaClass.canonicalName,
                 candidateFailure.message)
-        if (candidateFailure.javaClass != FailureType) return false
+        if (candidateFailure.javaClass != _failureType) return false
         if (!messageMatches(candidateFailure.message)) return false
-        return if (Cause != null) Cause!!.isMatch(candidateFailure) else true
+        return if (_cause != null) _cause!!.isMatch(candidateFailure) else true
     }
 
-    fun isMatch(candidateFailureName: String,
-                candidateFailureMessage: String?): Boolean {
-        if (!candidateFailureName.contains(FailureTypePartialName)) return false
+    fun isMatch(candidateFailureName: String, candidateFailureMessage: String?): Boolean {
+        if (!candidateFailureName.contains(_failureTypePartialName)) return false
         return if (!messageMatches(candidateFailureMessage)) false else true
     }
 
     override fun toString(): String {
         val result = StringBuilder()
-        if (FailureTypePartialName === UnsetString) {
-            result.append("failure of type " + FailureType.toString())
+        if (_failureTypePartialName === UnsetString) {
+            result.append("failure of type " + _failureType.toString())
         } else {
             result.append("failure with type name containing \""
-                    + FailureTypePartialName + "\"")
+                    + _failureTypePartialName + "\"")
         }
-        if (MessageSubstring.length > 0) result.append(" with message containing \"" + MessageSubstring
+        if (_messageSubstring.length > 0) result.append(" with message containing \"" + _messageSubstring
                 + "\"")
-        if (Cause != null) result.append("; Caused by " + Cause.toString())
+        if (_cause != null) result.append("; Caused by " + _cause.toString())
         return result.toString()
     }
 }

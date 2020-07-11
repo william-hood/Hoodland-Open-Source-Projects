@@ -81,8 +81,8 @@ enum class TestStatus {
     }
 }
 
-fun Memoir.ShowTestStatus(thisStatus: TestStatus, message: String) {
-    this.Info(message, thisStatus.memoirIcon)
+fun Memoir.showTestStatus(thisStatus: TestStatus, message: String) {
+    this.info(message, thisStatus.memoirIcon)
 }
 
 fun String.toTestStatus(): TestStatus {

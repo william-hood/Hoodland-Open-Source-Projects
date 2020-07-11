@@ -52,8 +52,8 @@ class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null
         val timeStamp = LocalDateTime.now()
 
         if (printWriter_PlainText != null) {
-            EchoPlainText("")
-            EchoPlainText(titleName, EMOJI_MEMOIR, timeStamp)
+            echoPlainText("")
+            echoPlainText(titleName, EMOJI_MEMOIR, timeStamp)
         }
 
         if (printWriter_HTML != null) {
@@ -70,10 +70,10 @@ class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null
     internal val encapsulationTag: String
         get() = "lvl-${UUID.randomUUID()}"
 
-    fun Conclude(): String {
+    fun conclude(): String {
         if (!isConcluded) {
-            EchoPlainText("", EMOJI_TEXT_MEMOIR_CONCLUDE)
-            EchoPlainText("")
+            echoPlainText("", EMOJI_TEXT_MEMOIR_CONCLUDE)
+            echoPlainText("")
 
             isConcluded = true
 
@@ -91,7 +91,7 @@ class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null
     }
 
     // Parameter order differs from the C# version
-    fun EchoPlainText(message: String, emoji: String = EMOJI_TEXT_BLANK_LINE, timeStamp: LocalDateTime? = LocalDateTime.now()) {
+    fun echoPlainText(message: String, emoji: String = EMOJI_TEXT_BLANK_LINE, timeStamp: LocalDateTime? = LocalDateTime.now()) {
         if (printWriter_PlainText == null) {
             // Silently decline
             return
@@ -111,7 +111,7 @@ class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null
     }
 
     // Parameter order differs from the C# version
-    fun WriteToHTML(message: String, emoji: String = EMOJI_TEXT_BLANK_LINE, timeStamp: LocalDateTime? = LocalDateTime.now()) {
+    fun writeToHTML(message: String, emoji: String = EMOJI_TEXT_BLANK_LINE, timeStamp: LocalDateTime? = LocalDateTime.now()) {
         if (isConcluded) {
             throw MemoirConcludedException()
         }
@@ -127,27 +127,27 @@ class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null
         content.append("<tr><td class=\"min\"><small>$date</small></td><td>&nbsp;</td><td class=\"min\"><small>$time</small></td><td>&nbsp;</td><td><h2>$emoji</h2></td><td>$message</td></tr>\r\n")
     }
 
-    fun Info(message: String, emoji: String = EMOJI_TEXT_BLANK_LINE) {
+    fun info(message: String, emoji: String = EMOJI_TEXT_BLANK_LINE) {
         val timeStamp = LocalDateTime.now()
-        WriteToHTML(message, emoji, timeStamp)
-        EchoPlainText(message, emoji, timeStamp)
+        writeToHTML(message, emoji, timeStamp)
+        echoPlainText(message, emoji, timeStamp)
     }
 
-    fun Debug(message: String) {
+    fun debug(message: String) {
         val timeStamp = LocalDateTime.now()
-        WriteToHTML(highlight(message), EMOJI_DEBUG, timeStamp)
-        EchoPlainText(message, EMOJI_DEBUG, timeStamp)
+        writeToHTML(highlight(message), EMOJI_DEBUG, timeStamp)
+        echoPlainText(message, EMOJI_DEBUG, timeStamp)
     }
 
-    fun Error(message: String) {
+    fun error(message: String) {
         val timeStamp = LocalDateTime.now()
-        WriteToHTML(highlight(message), EMOJI_ERROR, timeStamp)
-        EchoPlainText(message, EMOJI_ERROR, timeStamp)
+        writeToHTML(highlight(message), EMOJI_ERROR, timeStamp)
+        echoPlainText(message, EMOJI_ERROR, timeStamp)
     }
 
-    fun SkipLine() {
-        WriteToHTML("")
-        EchoPlainText("")
+    fun skipLine() {
+        writeToHTML("")
+        echoPlainText("")
     }
 
     private fun wrapAsSubordinate(memoirTitle: String, memoirContent: String, style: String = "neutral"): String {
@@ -155,20 +155,15 @@ class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null
         return "\r\n\r\n<div class=\"memoir $style\">\r\n<label for=\"$identifier\">\r\n<input id=\"$identifier\" class=\"gone\" type=\"checkbox\">\r\n<h2>$memoirTitle</h2>\r\n<div class=\"$encapsulationTag\">\r\n$memoirContent\r\n</div></label></div>"
     }
 
-    fun ShowMemoir(subordinate: Memoir, emoji: String = EMOJI_MEMOIR, style: String = "neutral", recurseLevel: Int = 0) : String {
+    fun showMemoir(subordinate: Memoir, emoji: String = EMOJI_MEMOIR, style: String = "neutral", recurseLevel: Int = 0) : String {
         val timeStamp = LocalDateTime.now()
-        val subordinateContent = subordinate.Conclude()
+        val subordinateContent = subordinate.conclude()
         val result = wrapAsSubordinate(subordinate.titleName, subordinateContent, style)
 
         if (recurseLevel < 1) {
-            WriteToHTML(result, emoji, timeStamp)
+            writeToHTML(result, emoji, timeStamp)
         }
 
         return result
     }
-
-    // TODO: attemptBase64Decode
-
-    // TODO: JSON Pretty-print
-
 }

@@ -22,6 +22,7 @@
 package rockabilly.descriptions
 
 import java.math.BigInteger
+import java.util.*
 
 class BigIntegerFieldDescription : ValueFieldDescription<BigInteger> {
     constructor(
@@ -84,10 +85,23 @@ class BigIntegerFieldDescription : ValueFieldDescription<BigInteger> {
         return divide(x, BigInteger.valueOf(2.toLong()))
     }
 
+    // Based on https://www.tutorialspoint.com/how-to-generate-a-random-biginteger-value-in-java
     @Throws(InappropriateDescriptionException::class)
     override fun random(min: BigInteger, max: BigInteger): BigInteger {
-        // return add(min, new Random().nextInt(subtract(max, min)));
-        // TODO: Will implement support later
-        throw InappropriateDescriptionException()
+        val delta = max.subtract(min)
+        val random = Random()
+        val length = max.bitLength()
+
+        var result = BigInteger(length, random)
+
+        if (result.compareTo(min) < 0) {
+            result = result.add(min)
+        }
+
+        if (result.compareTo(delta) >= 0) {
+            result = result.mod(delta).add(min)
+        }
+
+        return result
     }
 }

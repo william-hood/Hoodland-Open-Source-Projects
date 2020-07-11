@@ -27,28 +27,47 @@ import java.util.*
 private val base64Check = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?\$".toRegex()
 private val base64Decoder = Base64.getDecoder()
 
-fun IsBase64(candidate: String): Boolean {
-    return false
+fun isBase64(candidate: String): Boolean {
     // TODO: Make this correct. It is detecting Base64 where such is not the case.
-    //return base64Check.matches(candidate)
+    return base64Check.matches(candidate)
 }
 
-fun FromBase64(candidate: String): String {
+fun fromBase64(candidate: String): String {
     return String(base64Decoder.decode(candidate))
 }
 
 
-// Java does not have a native JSON parser. Kotlin has the kotlinx stuff, but that is Apache license and
-// adds a dependency. Will think on this a bit, but may have to implement a simple JSON parser. Easiest
-// way to pretty-print JSON may be to read it into an object, then render that object as pretty json.
-
-fun ProcessString(candidate: String, treatAsCode: Boolean = false): String {
+// TODO
+// In the future the plan is that this will automatically detect and decode base 64.
+// It will then attempt to pretty-print any obvious JSON.
+// Some issues with this...
+//
+// Both the algorithm here, and just seeing if decode succeeds in the older C# version,
+// it turns out there are many plain english strings that are legal base64. (Apparently
+// the word "whatever" is among them.) Automatic base64 decode can only happen if the
+// string really is Base64, otherwise we present the end-user with garbage. One thought
+// is that the Show*() functions might take a parameter to LOOK for Base64 and will
+// otherwise ignore it.
+//
+// To the best I can determine there is not a "standard" JSON parser or pretty-printer
+// for Java. That might change in the future. Kotlin does have the Kotlinx stuff,
+// but I'm not keen with introducing either a dependency or a non-MIT license.
+// I am possibly going to implement my own JSON parser as the easiest way to pretty-
+// print JSON seems to involve parsing it first.
+//
+// The reason to base64 decode and pretty print JSON is that I've often encountered
+// lengthy JSON in both Headers and payloads of REST call responses. Base64 decode
+// can reveal the fields of a JWT and certain other tokens which can be very
+// useful for QA and debugging.
+fun processString(candidate: String, treatAsCode: Boolean = false): String {
     var result = candidate
 
+    /*
     // If it's Base64, decode it.
-    if (IsBase64(result)) {
-        result = FromBase64(result)
+    if (isBase64(result)) {
+        result = fromBase64(result)
     }
+     */
 
     // If it's JSON, pretty-print it.
     // result = readJSON(result).prettyPrint()

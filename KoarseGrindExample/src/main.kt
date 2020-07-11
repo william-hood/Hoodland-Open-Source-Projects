@@ -20,8 +20,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import rockabilly.koarsegrind.Test
-import rockabilly.koarsegrind.TestResult
-import rockabilly.koarsegrind.TestStatus
 
 class ExampleTest2: Test(
         "Sample Test Number Two",
@@ -29,12 +27,12 @@ class ExampleTest2: Test(
         "ET-002",
         "Simple", "All", "Example"
 ) {
-    override fun PerformTest() {
-        Log.Info("Reality check2")
-        Log.Debug("Did it actually work2???")
+    override fun performTest() {
+        Log.info("Reality check2")
+        Log.debug("Did it actually work2???")
 
-        Assert.ShouldBeTrue(true, "Whelp, 'Guess I'll just brute-force the dang thing as passing!")
-        Require.ShouldBeEqual(true, false, "Actually, this should make it inconclusive.")
+        assert.shouldBeTrue(true, "Whelp, 'Guess I'll just brute-force the dang thing as passing!")
+        require.shouldBeEqual(true, false, "Actually, this should make it inconclusive.")
     }
 }
 

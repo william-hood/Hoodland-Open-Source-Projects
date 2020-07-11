@@ -1,6 +1,4 @@
 import rockabilly.koarsegrind.Test
-import rockabilly.koarsegrind.TestResult
-import rockabilly.koarsegrind.TestStatus
 
 class ExampleTest1:Test(
         "Sample Test Number One",
@@ -8,10 +6,10 @@ class ExampleTest1:Test(
         "ET-001",
         "Simple", "All", "Example"
 ) {
-    override fun PerformTest() {
-        Log.Info("Reality check")
-        Log.Debug("Did it actually work???")
-        Assert.ShouldBeTrue(true, "Whelp, 'Guess I'll just brute-force the dang thing as passing!")
+    override fun performTest() {
+        Log.info("Reality check")
+        Log.debug("Did it actually work???")
+        assert.shouldBeTrue(true, "Whelp, 'Guess I'll just brute-force the dang thing as passing!")
     }
 }
 
@@ -21,10 +19,10 @@ class ExampleTest3:Test(
         "ET-001",
         "Simple", "All", "Example"
 ) {
-    override fun PerformTest() {
-        Log.Info("Reality check")
-        Log.Debug("Did it actually work???")
-        Assert.ShouldBeTrue(true, "Whelp, 'Guess I'll just brute-force the dang thing as passing!")
-        Assert.ShouldBeEqual(true, false, "Actually, this should make it fail.")
+    override fun performTest() {
+        Log.info("Reality check")
+        Log.debug("Did it actually work???")
+        assert.shouldBeTrue(true, "Whelp, 'Guess I'll just brute-force the dang thing as passing!")
+        assert.shouldBeEqual(true, false, "Actually, this should make it fail.")
     }
 }

@@ -21,21 +21,21 @@
 
 package rockabilly.koarsegrind
 
-// Client code is prohibiting from using Setup to alter
+// Client code is prohibited from using Setup to alter
 //  * The name of the test
 //  * The test case ID
 //  * The priority level of the test
 //  * Adding results in Setup is also forbidden.
 internal class SetupEnforcement(basis: Test) {
-    val contentSize = basis.Results.size //Should this be .count() ???
-    val name = basis.name
-    val identifier = basis.identifier
-    val priority = basis.Priority
+    private val contentSize = basis.Results.size //Should this be .count() ???
+    private val name = basis.name
+    private val identifier = basis.identifier
+    private val priority = basis.priority
 
     fun matches(candidate: SetupEnforcement): Boolean {
-        if (!identifier.equals(candidate.identifier)) return false
-        if (!name.equals(candidate.name)) return false
-        if (contentSize !== candidate.contentSize) return false
+        if (identifier != candidate.identifier) return false
+        if (name != candidate.name) return false
+        if (contentSize != candidate.contentSize) return false
         return if (priority !== candidate.priority) false else true
     }
 }

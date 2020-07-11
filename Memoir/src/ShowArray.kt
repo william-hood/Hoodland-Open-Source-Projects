@@ -25,7 +25,7 @@ import java.time.LocalDateTime
 import java.util.*
 import kotlin.reflect.KClass
 
-fun Memoir.ShowArray(target: Array<*>, targetVariableName: String = nameless, recurseLevel: Int = 0): String {
+fun Memoir.showArray(target: Array<*>, targetVariableName: String = NAMELESS, recurseLevel: Int = 0): String {
     if (recurseLevel > MAX_SHOW_OBJECT_RECURSION) {
         return "<div class=\"outlined\">$EMOJI_INCONCLUSIVE_TEST Too Many Levels In $EMOJI_INCONCLUSIVE_TEST</div>"
     }
@@ -46,7 +46,7 @@ fun Memoir.ShowArray(target: Array<*>, targetVariableName: String = nameless, re
         content.append("<tr><td>")
         content.append(index.toString())
         content.append("</td><td>")
-        content.append(this.Show(target[index], "Array slot #$index", recurseLevel + 1))
+        content.append(this.show(target[index], "Array slot #$index", recurseLevel + 1))
         content.append("</td></tr>\r\n")
     }
 
@@ -70,69 +70,69 @@ fun Memoir.ShowArray(target: Array<*>, targetVariableName: String = nameless, re
     val rendition = result.toString()
 
     if (recurseLevel < 1) {
-        this.WriteToHTML(rendition)
+        this.writeToHTML(rendition)
     }
 
     return rendition
 }
 
-fun Memoir.ShowPrimitiveArray(candidate: Any, targetVariableName: String = nameless, recurseLevel: Int = 0): String {
+fun Memoir.showPrimitiveArray(candidate: Any, targetVariableName: String = NAMELESS, recurseLevel: Int = 0): String {
     val target = HashMap<String, String>()
 
     if (candidate is IntArray) {
         for (index in 0 until candidate.size) {
             target[index.toString()] = candidate[index].toString()
         }
-        return this.ShowMap(target, targetVariableName, recurseLevel, "IntArray")
+        return this.showMap(target, targetVariableName, recurseLevel, "IntArray")
     }
 
     if (candidate is FloatArray) {
         for (index in 0 until candidate.size) {
             target[index.toString()] = candidate[index].toString()
         }
-        return this.ShowMap(target, targetVariableName, recurseLevel, "FloatArray")
+        return this.showMap(target, targetVariableName, recurseLevel, "FloatArray")
     }
 
     if (candidate is ShortArray) {
         for (index in 0 until candidate.size) {
             target[index.toString()] = candidate[index].toString()
         }
-        return this.ShowMap(target, targetVariableName, recurseLevel, "ShortArray")
+        return this.showMap(target, targetVariableName, recurseLevel, "ShortArray")
     }
 
     if (candidate is LongArray) {
         for (index in 0 until candidate.size) {
             target[index.toString()] = candidate[index].toString()
         }
-        return this.ShowMap(target, targetVariableName, recurseLevel, "LongArray")
+        return this.showMap(target, targetVariableName, recurseLevel, "LongArray")
     }
 
     if (candidate is DoubleArray) {
         for (index in 0 until candidate.size) {
             target[index.toString()] = candidate[index].toString()
         }
-        return this.ShowMap(target, targetVariableName, recurseLevel, "DoubleArray")
+        return this.showMap(target, targetVariableName, recurseLevel, "DoubleArray")
     }
 
     if (candidate is CharArray) {
         for (index in 0 until candidate.size) {
             target[index.toString()] = candidate[index].toString()
         }
-        return this.ShowMap(target, targetVariableName, recurseLevel, "CharArray")
+        return this.showMap(target, targetVariableName, recurseLevel, "CharArray")
     }
 
     if (candidate is ByteArray) {
         for (index in 0 until candidate.size) {
             target[index.toString()] = candidate[index].toString()
         }
-        return this.ShowMap(target, targetVariableName, recurseLevel, "ByteArray")
+        return this.showMap(target, targetVariableName, recurseLevel, "ByteArray")
     }
 
     if (candidate is BooleanArray) {
         for (index in 0 until candidate.size) {
             target[index.toString()] = candidate[index].toString()
         }
-        return this.ShowMap(target, targetVariableName, recurseLevel, "BooleanArray")
+        return this.showMap(target, targetVariableName, recurseLevel, "BooleanArray")
     }
 
     throw IllegalArgumentException("The parameter supplied is not a primitive array.")

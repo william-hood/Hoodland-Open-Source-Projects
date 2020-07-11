@@ -30,22 +30,22 @@ public interface WebInterfaceControl {
 }
 
 public interface WebImage {
-    /// A recommended site for this: http://jpillora.com/base64-encoder/
-    val Base64ImageData: String
-    val ImageType: String
+    // A recommended site for this: http://jpillora.com/base64-encoder/
+    val base64ImageData: String
+    val imageType: String
 }
 
 public abstract class InlineImage : WebInterfaceControl, WebImage
 {
-    public abstract override val Base64ImageData: String
-    public abstract override val ImageType: String
+    public abstract override val base64ImageData: String
+    public abstract override val imageType: String
 
     public override fun toString(): String {
         val result = StringBuilder("<img src=\"");
         result.append("data:img/");
-        result.append(ImageType);
+        result.append(imageType);
         result.append(";base64,");
-        result.append(Base64ImageData);
+        result.append(base64ImageData);
         result.append("\">");
         return result.toString();
     }

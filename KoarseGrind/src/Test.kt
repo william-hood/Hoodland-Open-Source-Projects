@@ -30,57 +30,53 @@ import java.io.PrintWriter
 import kotlin.concurrent.thread
 
 enum class TestPriority {
-    HappyPath, Critical, Normal, Ancillary
+    HAPPY_PATH, CRITICAL, NORMAL, LOW
 }
 
 fun String.toTestPriority(): TestPriority {
-    if (this.toUpperCase().startsWith("N")) { return TestPriority.Normal }
-    if (this.toUpperCase().startsWith("A")) { return TestPriority.Ancillary }
-    if (this.toUpperCase().startsWith("C")) { return TestPriority.Critical }
-    return TestPriority.HappyPath
+    if (this.toUpperCase().startsWith("N")) { return TestPriority.NORMAL }
+    if (this.toUpperCase().startsWith("L")) { return TestPriority.LOW }
+    if (this.toUpperCase().startsWith("C")) { return TestPriority.CRITICAL }
+    return TestPriority.HAPPY_PATH
 }
 
 internal const val INFO_ICON = "ℹ️"
-internal const val inProgressName = "(test in progress)"
+internal const val IN_PROGRESS_NAME = "(test in progress)"
 internal const val SETUP = "setup"
 internal const val CLEANUP = "cleanup"
 internal const val UNSET_DESCRIPTION = "(no details)"
 
-abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTION, ID: String = "", vararg Categories: String) {
+abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTION, testCaseID: String = "", vararg categories: String) {
     // Client code must implement or override
-    open fun Setup(): Boolean { return true }
-    open fun Cleanup(): Boolean { return true }
-    abstract fun PerformTest();
+    open fun setup(): Boolean { return true }
+    open fun cleanup(): Boolean { return true }
+    abstract fun performTest();
 
     // Class Members
     internal var topLevelMemoir: Memoir? = null
     internal var setupMemoir: Memoir? = null
     internal var cleanupMemoir: Memoir? = null
     private var parentArtifactsDirectory = UnsetString
-    var Priority = TestPriority.Normal
+    var priority = TestPriority.NORMAL
     private var executionThread: Thread? = null
     internal var wasSetup = false
     internal var wasRun = false
     internal var wasCleanedUp = false
 
     // Assertions
-    protected val Assert = Enforcer(TestConditionalType.Assertion, this)
-    protected val Require = Enforcer(TestConditionalType.Requirement, this)
-    protected val Consider = Enforcer(TestConditionalType.Consideration, this)
+    protected val assert = Enforcer(TestConditionalType.ASSERTION, this)
+    protected val require = Enforcer(TestConditionalType.REQUIREMENT, this)
+    protected val consider = Enforcer(TestConditionalType.CONSIDERATION, this)
 
     //Should this be internal???
     val Results = ArrayList<TestResult>()
 
     // For readability these are now passed into the base constructor
     // and are no longer abstract properties
-    internal var identifier = ID
-    internal var name = Name
-    private var detailedDescription = DetailedDescription
-    private var categories: Array<out String> = Categories
-
-    // TODO: Assert enforcer
-    // TODO: Require enforcer
-    // TODO: Consider enforcer
+    internal var identifier = testCaseID
+    internal var name = name
+    private var detailedDescription = detailedDescription
+    private var categories: Array<out String> = categories
 
     // If there's ever some reason to call it something other than a test, change this.
     open protected val echelonName = "Test"
@@ -121,7 +117,7 @@ abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTI
 
     // For some reason in the C# version this was open/virtual
     fun AddResult(thisResult: TestResult) {
-        topLevelMemoir!!.ShowTestResult((thisResult)) // Should be Log instead of topLevelMemoir???
+        topLevelMemoir!!.showTestResult((thisResult)) // Should be Log instead of topLevelMemoir???
         Results.add(thisResult)
     }
 
@@ -130,7 +126,7 @@ abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTI
             if ((Results.size < 1)) return TestStatus.Inconclusive
             var finalValue = TestStatus.Pass
             Results.forEach {
-                finalValue = finalValue + it.Status
+                finalValue = finalValue + it.status
             }
 
             return finalValue;
@@ -138,7 +134,7 @@ abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTI
 
     // Is virtual/open in C#
     val ArtifactsDirectory: String
-        get() = parentArtifactsDirectory + File.separatorChar + inProgressName
+        get() = parentArtifactsDirectory + File.separatorChar + IN_PROGRESS_NAME
 
     // Is virtual/open in C#
     val IdentifiedName: String
@@ -164,7 +160,7 @@ abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTI
         get() {
             val result = ArrayList<String>()
             result.add(filterForSummary(categorization))
-            result.add(filterForSummary(Priority.toString()))
+            result.add(filterForSummary(priority.toString()))
             result.add(filterForSummary(identifier))
             result.add(filterForSummary(name))
             result.add(filterForSummary(detailedDescription))
@@ -172,14 +168,14 @@ abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTI
 
             val reasoning = StringBuilder()
             Results.forEach {
-                if (! it.Status.isPassing()) {
+                if (! it.status.isPassing()) {
                     if (reasoning.length > 0) {
                         reasoning.append("; ")
                     }
-                        reasoning.append(it.Description)
+                        reasoning.append(it.description)
 
                         if (it.hasFailures) {
-                            it.Failures.forEach { thisFailure ->
+                            it.failures.forEach { thisFailure ->
                                 if (reasoning.length > 0) {
                                     reasoning.append("; ")
                                 }
@@ -201,7 +197,7 @@ abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTI
         }
 
         val result = TestResult(status, "$IdentifiedName$section: An unanticipated failure occurred.")
-        result.Failures.add(failure)
+        result.failures.add(failure)
         return result
     }
 
@@ -222,8 +218,8 @@ abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTI
         message.append(additionalMessage)
 
         // This is a direct translation from C#. Spacing looks suspicious... ???
-        topLevelMemoir!!.Error("$IdentifiedName$CLEANUP: An unanticipated failure occurred$additionalMessage.") // Should be Log instead of topLevelMemoir???
-        topLevelMemoir!!.ShowThrowable(thisFailure)
+        topLevelMemoir!!.error("$IdentifiedName$CLEANUP: An unanticipated failure occurred$additionalMessage.") // Should be Log instead of topLevelMemoir???
+        topLevelMemoir!!.showThrowable(thisFailure)
     }
 
     private val indicateSetup: Memoir
@@ -237,13 +233,13 @@ abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTI
 
     // C# version used topLevelMemoir. This would not work during Setup() or Cleanup()
     fun WaitSeconds(howMany: Long) {
-        Log.Info("Waiting $howMany seconds...", INFO_ICON)
+        Log.info("Waiting $howMany seconds...", INFO_ICON)
         Thread.sleep(1000 * howMany)
     }
 
     // C# version used topLevelMemoir. This would not work during Setup() or Cleanup()
     fun WaitMilliseconds(howMany: Long) {
-        Log.Info("Waiting $howMany milliseconds...", INFO_ICON)
+        Log.info("Waiting $howMany milliseconds...", INFO_ICON)
         Thread.sleep(howMany)
     }
 
@@ -272,26 +268,26 @@ abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTI
             val expectedFileName = ArtifactsDirectory + File.separatorChar + LogFileName
 
             forceParentDirectoryExistence(expectedFileName)
-            topLevelMemoir = Memoir(name, stdout, PrintWriter(expectedFileName), ::LogHeader)
+            topLevelMemoir = Memoir(name, stdout, PrintWriter(expectedFileName), ::logHeader)
 
             if (detailedDescription != UNSET_DESCRIPTION) {
-                topLevelMemoir!!.WriteToHTML("<small><i>$detailedDescription</i></small>", EMOJI_TEXT_BLANK_LINE)
+                topLevelMemoir!!.writeToHTML("<small><i>$detailedDescription</i></small>", EMOJI_TEXT_BLANK_LINE)
             }
 
-            topLevelMemoir!!.SkipLine()
+            topLevelMemoir!!.skipLine()
             val before = SetupEnforcement(this)
 
             // SETUP
             try {
                 setupMemoir = indicateSetup
                 try {
-                    setupResult = Setup()
+                    setupResult = setup()
                 } finally {
                     wasSetup = true
                     if (setupMemoir!!.wasUsed) {
                         var style = "decaf_orange_light_roast"
                         if (setupResult) { style = "decaf_green_light_roast" }
-                        topLevelMemoir!!.ShowMemoir(setupMemoir!!, EMOJI_SETUP, style)
+                        topLevelMemoir!!.showMemoir(setupMemoir!!, EMOJI_SETUP, style)
                     }
                 }
             } catch (thisFailure: Throwable) {
@@ -307,7 +303,7 @@ abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTI
             // RUN THE ACTUAL TEST
             if (setupResult && (! KILL_SWITCH)) {
                 try {
-                    executionThread = thread(start = true) { PerformTest() }
+                    executionThread = thread(start = true) { performTest() }
                     executionThread!!.join()
                 } catch (thisFailure: Throwable) {
                     AddResult(GetResultForFailure(thisFailure))
@@ -322,7 +318,7 @@ abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTI
             // CLEANUP
             cleanupMemoir = indicateCleanup
             try {
-                cleanupResult = Cleanup()
+                cleanupResult = cleanup()
                 wasCleanedUp = true
             } catch (thisFailure: Throwable) {
                 ReportFailureInCleanup(thisFailure)
@@ -330,15 +326,15 @@ abstract class Test (Name: String, DetailedDescription: String = UNSET_DESCRIPTI
                 if (cleanupMemoir!!.wasUsed) {
                     var style = "decaf_orange_light_roast"
                     if (cleanupResult) { style = "decaf_green_light_roast" }
-                    topLevelMemoir!!.ShowMemoir(cleanupMemoir!!, EMOJI_CLEANUP, style)
+                    topLevelMemoir!!.showMemoir(cleanupMemoir!!, EMOJI_CLEANUP, style)
                 }
             }
 
             val overall = OverallStatus.toString()
             val emoji = OverallStatus.memoirIcon
-            topLevelMemoir!!.WriteToHTML("<h2>Overall Status: $overall</h2>", emoji)
-            topLevelMemoir!!.EchoPlainText("Overall Status: $overall", emoji)
-            topLevelMemoir!!.Conclude()
+            topLevelMemoir!!.writeToHTML("<h2>Overall Status: $overall</h2>", emoji)
+            topLevelMemoir!!.echoPlainText("Overall Status: $overall", emoji)
+            topLevelMemoir!!.conclude()
         }
     }
 }

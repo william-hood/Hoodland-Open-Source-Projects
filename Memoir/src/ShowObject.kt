@@ -24,11 +24,9 @@ package rockabilly.memoir
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.reflect.KClass
-import kotlin.reflect.KProperty1
-import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 
-fun Memoir.ShowObject(target: Any?, targetVariableName: String = nameless, recurseLevel: Int = 0): String {
+fun Memoir.showObject(target: Any?, targetVariableName: String = NAMELESS, recurseLevel: Int = 0): String {
     if (recurseLevel > MAX_SHOW_OBJECT_RECURSION) {
         return "<div class=\"outlined\">$EMOJI_INCONCLUSIVE_TEST Too Many Levels In $EMOJI_INCONCLUSIVE_TEST</div>"
     }
@@ -56,7 +54,7 @@ fun Memoir.ShowObject(target: Any?, targetVariableName: String = nameless, recur
                 content.append("</td><td>")
                 content.append(it.name)
                 content.append("</td><td>")
-                content.append(this.Show(value, it.name, recurseLevel + 1))
+                content.append(this.show(value, it.name, recurseLevel + 1))
                 content.append("</td></tr>\r\n")
             } catch (dontCare: Throwable) { }
         }
@@ -105,7 +103,7 @@ fun Memoir.ShowObject(target: Any?, targetVariableName: String = nameless, recur
     val rendition = result.toString()
 
     if (recurseLevel < 1) {
-        this.WriteToHTML(rendition)
+        this.writeToHTML(rendition)
     }
 
     return rendition
