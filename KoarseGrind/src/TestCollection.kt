@@ -43,7 +43,7 @@ public object TestCollection: ArrayList<Test>() {
 
     fun reset() {
         currentCount = Int.MAX_VALUE
-        _currentTest?.Interrupt() // C# code did not check if the test was present and did not call Interrupt()
+        _currentTest?.interrupt() // C# code did not check if the test was present and did not call Interrupt()
         _currentTest = null
         executionThread?.interrupt() // C# code tried to Abort() three times in a row if not null
         executionThread = null
@@ -53,7 +53,7 @@ public object TestCollection: ArrayList<Test>() {
     val currentTest: String
         get() {
             if (_currentTest == null) { return UNKNOWN }
-            return _currentTest!!.IdentifiedName
+            return _currentTest!!.identifiedName
         }
 
     // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
@@ -65,7 +65,7 @@ public object TestCollection: ArrayList<Test>() {
             var effectiveCount = currentCount.toFloat()
 
             try {
-                effectiveCount += _currentTest!!.Progress
+                effectiveCount += _currentTest!!.progress
             } catch (dontCare: Throwable) {
                 // DELIBERATE NO-OP
             }
@@ -78,13 +78,13 @@ public object TestCollection: ArrayList<Test>() {
     // I'm changing this to require a memoir so it can be logged properly.
     private fun copyResultsToCategories(memoir: Memoir) {
         try {
-            copyCompletely(_currentTest!!.ArtifactsDirectory, currentArtifactsDirectory + File.separatorChar + _currentTest!!.PrefixedName)
+            copyCompletely(_currentTest!!.artifactsDirectory, currentArtifactsDirectory + File.separatorChar + _currentTest!!.prefixedName)
         } catch (loggedThrowable: Throwable) {
             memoir.error("Koarse Grind was unable to copy the current test results to their permanent location")
             memoir.showThrowable(loggedThrowable)
         } finally {
             //hardDelete(currentTest!!.ArtifactsDirectory)
-            File(_currentTest!!.ArtifactsDirectory).deleteRecursively()
+            File(_currentTest!!.artifactsDirectory).deleteRecursively()
         }
     }
 
@@ -116,14 +116,14 @@ public object TestCollection: ArrayList<Test>() {
                 }
                 */
                 try {
-                    executionThread = thread(start = true) { _currentTest!!.RunTest(currentArtifactsDirectory) } // C# used the public Run() function
+                    executionThread = thread(start = true) { _currentTest!!.runTest(currentArtifactsDirectory) } // C# used the public Run() function
                     executionThread!!.join()
                 } catch (thisFailure: Throwable) {
                     // Uncertain why specifically calling GetResultForPreclusionInSetup()
-                    _currentTest!!.AddResult(_currentTest!!.GetResultForPreclusionInSetup(thisFailure))
+                    _currentTest!!.addResult(_currentTest!!.getResultForPreclusionInSetup(thisFailure))
                 } finally {
                     executionThread = null
-                    overlog.showMemoir(_currentTest!!.topLevelMemoir!!, _currentTest!!.OverallStatus.memoirIcon, _currentTest!!.OverallStatus.memoirStyle)
+                    overlog.showMemoir(_currentTest!!.topLevelMemoir!!, _currentTest!!.overallStatus.memoirIcon, _currentTest!!.overallStatus.memoirStyle)
                     this.copyResultsToCategories(overlog)
                 }
             }
@@ -143,7 +143,7 @@ public object TestCollection: ArrayList<Test>() {
     fun haltAllTesting() {
         KILL_SWITCH = true
         currentCount = Int.MAX_VALUE
-        _currentTest!!.Interrupt() // C# used the public InterruptCurrentTest() function
+        _currentTest!!.interrupt() // C# used the public InterruptCurrentTest() function
 
         try {
             executionThread?.interrupt()
@@ -162,7 +162,7 @@ public object TestCollection: ArrayList<Test>() {
             this.forEach {
                 if (it.wasRun) {
                     tally++
-                    result = result + it.OverallStatus
+                    result = result + it.overallStatus
                 }
             }
 
@@ -185,7 +185,7 @@ public object TestCollection: ArrayList<Test>() {
 
         this.forEach {
             if (it.wasSetup) {
-                summaryReport.addDataRow(it.SummaryDataRow)
+                summaryReport.addDataRow(it.summaryDataRow)
             }
         }
 

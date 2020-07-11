@@ -29,7 +29,7 @@ class Enforcer(conditionalType: TestConditionalType, owner: Test) {
     private var parent = owner
 
     private fun enforce(condition: Boolean, explanation: String) {
-        parent.AddResult(condType.toTestResult(condition, explanation))
+        parent.addResult(condType.toTestResult(condition, explanation))
     }
 
     fun shouldBeTrue(condition: Boolean, explanation: String = "Expected boolean true. (Actual value was $condition)") {

@@ -92,7 +92,7 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
             return result.toString()
         }
 
-    val Log: Memoir
+    val log: Memoir
      get() = // https://stackoverflow.com/questions/4065518/java-how-to-get-the-caller-function-name/46590924
          when (Thread.currentThread().stackTrace[1].methodName) { // slot [2]???
              "Setup" -> this.setupMemoir!!
@@ -102,7 +102,7 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
 
     // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
     // Basically this needs to be thread safe.
-    internal val Progress: Float
+    internal val progress: Float
     get() {
         // According to https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/synchronized.html
         // "Deprecated: Synchronization on any object is not supported on every platform and will be removed from the common standard library soon."
@@ -116,12 +116,12 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
     }
 
     // For some reason in the C# version this was open/virtual
-    fun AddResult(thisResult: TestResult) {
+    fun addResult(thisResult: TestResult) {
         topLevelMemoir!!.showTestResult((thisResult)) // Should be Log instead of topLevelMemoir???
         Results.add(thisResult)
     }
 
-    val OverallStatus: TestStatus
+    val overallStatus: TestStatus
         get() {
             if ((Results.size < 1)) return TestStatus.INCONCLUSIVE
             var finalValue = TestStatus.PASS
@@ -133,30 +133,30 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
         }
 
     // Is virtual/open in C#
-    val ArtifactsDirectory: String
+    val artifactsDirectory: String
         get() = parentArtifactsDirectory + File.separatorChar + IN_PROGRESS_NAME
 
     // Is virtual/open in C#
-    val IdentifiedName: String
+    val identifiedName: String
         get() {
             if (identifier.length < 1) return name
             return "$identifier - $name"
         }
 
     // Is virtual/open in C#
-    val PrefixedName: String
-        get() = "$OverallStatus - $IdentifiedName"
+    val prefixedName: String
+        get() = "$overallStatus - $identifiedName"
 
     // Is virtual/open in C#
-    val LogFileName: String
-        get() = "$IdentifiedName Log.html"
+    val logFileName: String
+        get() = "$identifiedName Log.html"
 
     private fun filterForSummary(it: String): String {
         // C# return Regex.Replace(Regex.Replace(it, "[,\r\f\b]", ""), "[\t\n]", " ");
         return it.replace(Regex("[,\r\b]"), "").replace(Regex("[\t\n]"), "")
     }
 
-    internal val SummaryDataRow: ArrayList<String>
+    internal val summaryDataRow: ArrayList<String>
         get() {
             val result = ArrayList<String>()
             result.add(filterForSummary(categorization))
@@ -164,7 +164,7 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
             result.add(filterForSummary(identifier))
             result.add(filterForSummary(name))
             result.add(filterForSummary(detailedDescription))
-            result.add(filterForSummary(OverallStatus.toString()))
+            result.add(filterForSummary(overallStatus.toString()))
 
             val reasoning = StringBuilder()
             Results.forEach {
@@ -196,54 +196,54 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
             reportedSection = "($section)"
         }
 
-        val result = TestResult(status, "$IdentifiedName$section: An unanticipated failure occurred.")
+        val result = TestResult(status, "$identifiedName$section: An unanticipated failure occurred.")
         result.failures.add(failure)
         return result
     }
 
 
     // Is virtual/open in C#
-    fun GetResultForFailure(thisFailure: Throwable, section: String = "") = getResultForIncident(TestStatus.FAIL, section, thisFailure)
+    fun getResultForFailure(thisFailure: Throwable, section: String = "") = getResultForIncident(TestStatus.FAIL, section, thisFailure)
 
     // Is virtual/open in C#
-    fun GetResultForPreclusionInSetup(thisPreclusion: Throwable) = getResultForIncident(TestStatus.INCONCLUSIVE, SETUP, thisPreclusion)
+    fun getResultForPreclusionInSetup(thisPreclusion: Throwable) = getResultForIncident(TestStatus.INCONCLUSIVE, SETUP, thisPreclusion)
 
     // Is virtual/open in C#
-    fun GetResultForPreclusion(thisPreclusion: Throwable) = getResultForIncident(TestStatus.INCONCLUSIVE, "", thisPreclusion)
+    fun getResultForPreclusion(thisPreclusion: Throwable) = getResultForIncident(TestStatus.INCONCLUSIVE, "", thisPreclusion)
 
     // Is virtual/open in C#
-    fun ReportFailureInCleanup(thisFailure: Throwable, additionalMessage: String = "") {
+    fun reportFailureInCleanup(thisFailure: Throwable, additionalMessage: String = "") {
         var message = StringBuilder()
         if (additionalMessage.length > 0) { message.append(" ") }
         message.append(additionalMessage)
 
         // This is a direct translation from C#. Spacing looks suspicious... ???
-        topLevelMemoir!!.error("$IdentifiedName$CLEANUP: An unanticipated failure occurred$additionalMessage.") // Should be Log instead of topLevelMemoir???
+        topLevelMemoir!!.error("$identifiedName$CLEANUP: An unanticipated failure occurred$additionalMessage.") // Should be Log instead of topLevelMemoir???
         topLevelMemoir!!.showThrowable(thisFailure)
     }
 
     private val indicateSetup: Memoir
-        get() = Memoir("Setup - $echelonName $IdentifiedName", stdout)
+        get() = Memoir("Setup - $echelonName $identifiedName", stdout)
 
     private val indicateCleanup: Memoir
-        get() = Memoir("Cleanup - $echelonName $IdentifiedName", stdout)
+        get() = Memoir("Cleanup - $echelonName $identifiedName", stdout)
 
     private val indicateBody: Memoir
-        get() = Memoir("$echelonName $IdentifiedName", stdout)
+        get() = Memoir("$echelonName $identifiedName", stdout)
 
     // C# version used topLevelMemoir. This would not work during Setup() or Cleanup()
-    fun WaitSeconds(howMany: Long) {
-        Log.info("Waiting $howMany seconds...", INFO_ICON)
+    fun waitSeconds(howMany: Long) {
+        log.info("Waiting $howMany seconds...", INFO_ICON)
         Thread.sleep(1000 * howMany)
     }
 
     // C# version used topLevelMemoir. This would not work during Setup() or Cleanup()
-    fun WaitMilliseconds(howMany: Long) {
-        Log.info("Waiting $howMany milliseconds...", INFO_ICON)
+    fun waitMilliseconds(howMany: Long) {
+        log.info("Waiting $howMany milliseconds...", INFO_ICON)
         Thread.sleep(howMany)
     }
 
-    fun Interrupt() {
+    fun interrupt() {
         try {
             executionThread?.interrupt()
             // C# version was followed by executionThread.Abort() three times in a row.
@@ -252,12 +252,12 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
         }
     }
 
-    fun MakeSubjective() {
-        AddResult(TestResult(TestStatus.SUBJECTIVE, "This test case requires analysis by appropriate personnel to determine pass/fail status"))
+    fun makeSubjective() {
+        addResult(TestResult(TestStatus.SUBJECTIVE, "This test case requires analysis by appropriate personnel to determine pass/fail status"))
     }
 
     // This was virtual/open in the C# version
-    fun RunTest(rootDirectory: String) {
+    fun runTest(rootDirectory: String) {
         if (KILL_SWITCH) {
             // Decline to run
             // Deliberate NO-OP
@@ -265,7 +265,7 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
             var setupResult = true
             var cleanupResult = true
             parentArtifactsDirectory = rootDirectory
-            val expectedFileName = ArtifactsDirectory + File.separatorChar + LogFileName
+            val expectedFileName = artifactsDirectory + File.separatorChar + logFileName
 
             forceParentDirectoryExistence(expectedFileName)
             topLevelMemoir = Memoir(name, stdout, PrintWriter(expectedFileName), ::logHeader)
@@ -292,11 +292,11 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
                 }
             } catch (thisFailure: Throwable) {
                 setupResult = false
-                AddResult(GetResultForPreclusionInSetup(thisFailure))
+                addResult(getResultForPreclusionInSetup(thisFailure))
             } finally {
                 if (!SetupEnforcement(this).matches(before)) {
                     setupResult = false
-                    AddResult(TestResult(TestStatus.INCONCLUSIVE, "PROGRAMMING ERROR: It is illegal to change the identifier, name, or priority in Setup.  This must happen in the constructor. Setup may also not add Test Results."))
+                    addResult(TestResult(TestStatus.INCONCLUSIVE, "PROGRAMMING ERROR: It is illegal to change the identifier, name, or priority in Setup.  This must happen in the constructor. Setup may also not add Test Results."))
                 }
             }
 
@@ -306,13 +306,13 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
                     executionThread = thread(start = true) { performTest() }
                     executionThread!!.join()
                 } catch (thisFailure: Throwable) {
-                    AddResult(GetResultForFailure(thisFailure))
+                    addResult(getResultForFailure(thisFailure))
                 } finally {
                     wasRun = true
                     executionThread = null
                 }
             } else {
-                AddResult(TestResult(TestStatus.INCONCLUSIVE, "Declining to perform test case $IdentifiedName because setup method failed."))
+                addResult(TestResult(TestStatus.INCONCLUSIVE, "Declining to perform test case $identifiedName because setup method failed."))
             }
 
             // CLEANUP
@@ -321,7 +321,7 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
                 cleanupResult = cleanup()
                 wasCleanedUp = true
             } catch (thisFailure: Throwable) {
-                ReportFailureInCleanup(thisFailure)
+                reportFailureInCleanup(thisFailure)
             } finally {
                 if (cleanupMemoir!!.wasUsed) {
                     var style = "decaf_orange_light_roast"
@@ -330,8 +330,8 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
                 }
             }
 
-            val overall = OverallStatus.toString()
-            val emoji = OverallStatus.memoirIcon
+            val overall = overallStatus.toString()
+            val emoji = overallStatus.memoirIcon
             topLevelMemoir!!.writeToHTML("<h2>Overall Status: $overall</h2>", emoji)
             topLevelMemoir!!.echoPlainText("Overall Status: $overall", emoji)
             topLevelMemoir!!.conclude()

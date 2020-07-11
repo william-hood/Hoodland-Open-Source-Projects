@@ -7,8 +7,8 @@ class ExampleTest1:Test(
         "Simple", "All", "Example"
 ) {
     override fun performTest() {
-        Log.info("Reality check")
-        Log.debug("Did it actually work???")
+        log.info("Reality check")
+        log.debug("Did it actually work???")
         assert.shouldBeTrue(true, "Whelp, 'Guess I'll just brute-force the dang thing as passing!")
     }
 }
@@ -20,8 +20,8 @@ class ExampleTest3:Test(
         "Simple", "All", "Example"
 ) {
     override fun performTest() {
-        Log.info("Reality check")
-        Log.debug("Did it actually work???")
+        log.info("Reality check")
+        log.debug("Did it actually work???")
         assert.shouldBeTrue(true, "Whelp, 'Guess I'll just brute-force the dang thing as passing!")
         assert.shouldBeEqual(true, false, "Actually, this should make it fail.")
     }

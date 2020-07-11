@@ -21,24 +21,6 @@
 
 import rockabilly.koarsegrind.Test
 
-class ExampleTest2: Test(
-        "Sample Test Number Two",
-        "This is the detailed description for ExampleTest2.  Use this field to describe what the test does and what its pass criteria are. Commas, \tTabs, \rCarriage Returns, and \nLine Feed chars will be filtered out.",
-        "ET-002",
-        "Simple", "All", "Example"
-) {
-    override fun performTest() {
-        log.info("Reality check2")
-        log.debug("Did it actually work2???")
-
-        assert.shouldBeTrue(true, "Whelp, 'Guess I'll just brute-force the dang thing as passing!")
-        require.shouldBeEqual(true, false, "Actually, this should make it inconclusive.")
-    }
-}
-
 fun main(args: Array<String>) {
-    TestProgram.run("Koarse Grind Demo")
+    TestProgram.run("Rockabilly Library Test Suite")
 }
-
-// TODO: Verify Manufactured Tests Work
-// TODO: Example for Rockabilly Descriptions
