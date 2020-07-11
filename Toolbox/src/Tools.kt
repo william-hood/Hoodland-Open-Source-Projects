@@ -48,12 +48,18 @@ fun openForReading(filePath: String?): BufferedReader? {
     // FileShare.Read);
 }
 
-// TODO: Is this the best way in Kotlin? Is it correct?
+// TODO: OBSOLETE
+// val check = BufferedReader(InputStreamReader(rawInputStream))
+// check.readLine()
+// There is also readLine for stdin and File.forEachLine() for files...
+//
 fun readLineFromInputStream(rawInputStream: BufferedInputStream): String {
     val result = StringBuilder()
     var lastRead: Int = Int.MIN_VALUE
     while (lastRead != -1) {
         try {
+            val check = BufferedReader(InputStreamReader(rawInputStream))
+            check.readText()
             if (rawInputStream.available() < 1) break
             lastRead = rawInputStream.read()
             result.append(lastRead.toChar())
@@ -65,7 +71,12 @@ fun readLineFromInputStream(rawInputStream: BufferedInputStream): String {
     return result.toString().trim('\r', '\n')// { it <= ' ' } // Intentionally trimming off the carriage return at the end.
 }
 
-// TODO: Is this the best way in Kotlin? Is it correct?
+// TODO: OBSOLETE
+//  val check = BufferedReader(InputStreamReader(rawInputStream))
+//  check.readText()
+// File.readLines() can get the whole file as an array of lines
+// Creating the BufferedInputStream as shown above also provides readLines()
+//
 // Based on http://stackoverflow.com/questions/5713857/bufferedinputstream-to-string-conversion
 const val BUFFER_SIZE = 1024
 fun readEntireInputStream(rawInputStream: BufferedInputStream): String {
@@ -137,7 +148,7 @@ fun getShortFileName(completeFilePath: String): String? {
     } else baseExt
 }
 
-// TODO: SHould this still exist? Does Memoir handle it better?
+// TODO: Should this still exist? Does Memoir handle it better?
 fun depictFailure(thisFailure: Throwable): String? {
     val stacktraceWriter = StringWriter()
     thisFailure.printStackTrace(PrintWriter(stacktraceWriter))
@@ -204,8 +215,8 @@ fun StringArrayContainsCaseInspecific(
     return false
 }
 
-// Ported this from the legacy code. TODO: In Kotlin it might make more sense
-// to use File(<complete-path>).deleteRecursively()
+// Ported this from the legacy code.
+// TODO: In Kotlin it might make more sense to use File(<complete-path>).deleteRecursively()
 fun hardDelete(fullPath: String) {
     val check = File(fullPath)
     if (check.isDirectory) {
