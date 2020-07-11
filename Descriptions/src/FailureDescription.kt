@@ -21,13 +21,13 @@
 
 package rockabilly.descriptions
 
-import rockabilly.toolbox.UnsetString
+import rockabilly.toolbox.UNSET_STRING
 
 class FailureDescription {
     private var _failureType: Class<out Throwable>? = null
     private var _messageSubstring = ""
     private var _cause: FailureDescription? = null
-    private var _failureTypePartialName: String = UnsetString
+    private var _failureTypePartialName: String = UNSET_STRING
 
     constructor(failureType: Class<out Throwable>?,
                 messageSubstring: String) {
@@ -53,7 +53,7 @@ class FailureDescription {
     }
 
     fun isMatch(candidateFailure: Throwable): Boolean {
-        if (_failureTypePartialName !== UnsetString) return isMatch(candidateFailure.javaClass.canonicalName,
+        if (_failureTypePartialName !== UNSET_STRING) return isMatch(candidateFailure.javaClass.canonicalName,
                 candidateFailure.message)
         if (candidateFailure.javaClass != _failureType) return false
         if (!messageMatches(candidateFailure.message)) return false
@@ -67,7 +67,7 @@ class FailureDescription {
 
     override fun toString(): String {
         val result = StringBuilder()
-        if (_failureTypePartialName === UnsetString) {
+        if (_failureTypePartialName === UNSET_STRING) {
             result.append("failure of type " + _failureType.toString())
         } else {
             result.append("failure with type name containing \""

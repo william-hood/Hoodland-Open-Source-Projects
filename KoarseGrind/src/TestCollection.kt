@@ -37,7 +37,7 @@ public object TestCollection: ArrayList<Test>() {
     System.err.println("Ran Init: ${this::class.simpleName}")
     }
     private var _currentTest: Test? = null
-    private var currentArtifactsDirectory = UnsetString
+    private var currentArtifactsDirectory = UNSET_STRING
     private var executionThread: Thread? = null
     private var currentCount = Int.MAX_VALUE
 
@@ -47,7 +47,7 @@ public object TestCollection: ArrayList<Test>() {
         _currentTest = null
         executionThread?.interrupt() // C# code tried to Abort() three times in a row if not null
         executionThread = null
-        currentArtifactsDirectory = UnsetString
+        currentArtifactsDirectory = UNSET_STRING
     }
 
     val currentTest: String

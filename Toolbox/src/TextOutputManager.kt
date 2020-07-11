@@ -25,27 +25,16 @@ import java.io.FileWriter
 import java.io.IOException
 import java.io.PrintWriter
 
-class TextOutputManager {
+class TextOutputManager(filename: String = UNSET_STRING, append: Boolean = false, outputStream: PrintWriter? = null) {
     // Creates a file with header only if the first call to write is made.
     // Need method to properly flush and close. ???
-    private var internalPrintWriter: PrintWriter? = null
-    private var expectedFileName: String = UnsetString
-    private var shouldAppend = false
-
-    constructor() {}
-    constructor(outputStream: PrintWriter?) {
-        internalPrintWriter = outputStream
-    }
-
-    @JvmOverloads
-    constructor(filename: String, append: Boolean = false) {
-        expectedFileName = filename
-        shouldAppend = append
-    }
+    private var internalPrintWriter = outputStream
+    private var expectedFileName = filename
+    private var shouldAppend = append
 
     private fun createPrintWriterIfNeeded() {
         if (internalPrintWriter == null) {
-            if (expectedFileName === UnsetString) {
+            if (expectedFileName === UNSET_STRING) {
                 internalPrintWriter = PrintWriter(System.out)
             } else {
                 try {
@@ -63,7 +52,7 @@ class TextOutputManager {
     fun println(output: String?) {
         createPrintWriterIfNeeded()
         internalPrintWriter!!.print(output)
-        internalPrintWriter!!.print(CarriageReturnLineFeed)
+        internalPrintWriter!!.print(CRLF)
     }
 
     fun flush() {

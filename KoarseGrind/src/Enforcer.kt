@@ -21,7 +21,7 @@
 
 package rockabilly.koarsegrind
 
-import rockabilly.toolbox.UnsetString
+import rockabilly.toolbox.UNSET_STRING
 
 private const val DEFAULT_SHOULD_BE_FALSE_EXPLANATION = "Expected boolean false. (Actual value was "
 class Enforcer(conditionalType: TestConditionalType, owner: Test) {
@@ -72,99 +72,99 @@ class Enforcer(conditionalType: TestConditionalType, owner: Test) {
         enforce(actualCount == 0, explanation)
     }
 
-    fun shouldBeEmpty(candidate: Map<*, *>, explanation: String = UnsetString) {
+    fun shouldBeEmpty(candidate: Map<*, *>, explanation: String = UNSET_STRING) {
         val actualCount = candidate.count()
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceEmpty(actualCount)
         } else {
             enforceEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldBeEmpty(candidate: Iterable<*>, explanation: String = UnsetString) {
+    fun shouldBeEmpty(candidate: Iterable<*>, explanation: String = UNSET_STRING) {
         val actualCount = candidate.count()
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceEmpty(actualCount)
         } else {
             enforceEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldBeEmpty(candidate: Array<*>, explanation: String = UnsetString) {
+    fun shouldBeEmpty(candidate: Array<*>, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceEmpty(actualCount)
         } else {
             enforceEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldBeEmpty(candidate: IntArray, explanation: String = UnsetString) {
+    fun shouldBeEmpty(candidate: IntArray, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceEmpty(actualCount)
         } else {
             enforceEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldBeEmpty(candidate: FloatArray, explanation: String = UnsetString) {
+    fun shouldBeEmpty(candidate: FloatArray, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceEmpty(actualCount)
         } else {
             enforceEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldBeEmpty(candidate: ShortArray, explanation: String = UnsetString) {
+    fun shouldBeEmpty(candidate: ShortArray, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceEmpty(actualCount)
         } else {
             enforceEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldBeEmpty(candidate: LongArray, explanation: String = UnsetString) {
+    fun shouldBeEmpty(candidate: LongArray, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceEmpty(actualCount)
         } else {
             enforceEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldBeEmpty(candidate: DoubleArray, explanation: String = UnsetString) {
+    fun shouldBeEmpty(candidate: DoubleArray, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceEmpty(actualCount)
         } else {
             enforceEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldBeEmpty(candidate: CharArray, explanation: String = UnsetString) {
+    fun shouldBeEmpty(candidate: CharArray, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceEmpty(actualCount)
         } else {
             enforceEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldBeEmpty(candidate: ByteArray, explanation: String = UnsetString) {
+    fun shouldBeEmpty(candidate: ByteArray, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceEmpty(actualCount)
         } else {
             enforceEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldBeEmpty(candidate: BooleanArray, explanation: String = UnsetString) {
+    fun shouldBeEmpty(candidate: BooleanArray, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceEmpty(actualCount)
         } else {
             enforceEmpty(actualCount, explanation)
@@ -175,99 +175,99 @@ class Enforcer(conditionalType: TestConditionalType, owner: Test) {
         enforce(actualCount > 0, explanation)
     }
 
-    fun shouldNotBeEmpty(candidate: Map<*, *>, explanation: String = UnsetString) {
+    fun shouldNotBeEmpty(candidate: Map<*, *>, explanation: String = UNSET_STRING) {
         val actualCount = candidate.count()
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceNotEmpty(actualCount)
         } else {
             enforceNotEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldNotBeEmpty(candidate: Iterable<*>, explanation: String = UnsetString) {
+    fun shouldNotBeEmpty(candidate: Iterable<*>, explanation: String = UNSET_STRING) {
         val actualCount = candidate.count()
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceNotEmpty(actualCount)
         } else {
             enforceNotEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldNotBeEmpty(candidate: Array<*>, explanation: String = UnsetString) {
+    fun shouldNotBeEmpty(candidate: Array<*>, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceNotEmpty(actualCount)
         } else {
             enforceNotEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldNotBeEmpty(candidate: IntArray, explanation: String = UnsetString) {
+    fun shouldNotBeEmpty(candidate: IntArray, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceNotEmpty(actualCount)
         } else {
             enforceNotEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldNotBeEmpty(candidate: FloatArray, explanation: String = UnsetString) {
+    fun shouldNotBeEmpty(candidate: FloatArray, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceNotEmpty(actualCount)
         } else {
             enforceNotEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldNotBeEmpty(candidate: ShortArray, explanation: String = UnsetString) {
+    fun shouldNotBeEmpty(candidate: ShortArray, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceNotEmpty(actualCount)
         } else {
             enforceNotEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldNotBeEmpty(candidate: LongArray, explanation: String = UnsetString) {
+    fun shouldNotBeEmpty(candidate: LongArray, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceNotEmpty(actualCount)
         } else {
             enforceNotEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldNotBeEmpty(candidate: DoubleArray, explanation: String = UnsetString) {
+    fun shouldNotBeEmpty(candidate: DoubleArray, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceNotEmpty(actualCount)
         } else {
             enforceNotEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldNotBeEmpty(candidate: CharArray, explanation: String = UnsetString) {
+    fun shouldNotBeEmpty(candidate: CharArray, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceNotEmpty(actualCount)
         } else {
             enforceNotEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldNotBeEmpty(candidate: ByteArray, explanation: String = UnsetString) {
+    fun shouldNotBeEmpty(candidate: ByteArray, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceNotEmpty(actualCount)
         } else {
             enforceNotEmpty(actualCount, explanation)
         }
     }
 
-    fun shouldNotBeEmpty(candidate: BooleanArray, explanation: String = UnsetString) {
+    fun shouldNotBeEmpty(candidate: BooleanArray, explanation: String = UNSET_STRING) {
         val actualCount = candidate.size
-        if (explanation == UnsetString) {
+        if (explanation == UNSET_STRING) {
             enforceNotEmpty(actualCount)
         } else {
             enforceNotEmpty(actualCount, explanation)

@@ -23,27 +23,27 @@ package rockabilly.toolbox
 
 import java.util.*
 
-
+// TODO: Determine whether or not to keep this or toss it.
 class SelectionManager {
-    // NOTE: Java to Kotlin conversion originall used ArrayList<*> = ArrayList<Any>()
+    // NOTE: Java to Kotlin conversion originally used ArrayList<*> = ArrayList<Any>()
     private val selectedItems: ArrayList<Any> = ArrayList()
-    fun Reset() {
+    fun reset() {
         selectedItems.clear()
     }
 
-    fun AddItem(thisItem: Any) {
+    fun addItem(thisItem: Any) {
         selectedItems.add(thisItem)    //.add(thisItem)
     }
 
-    fun SelectedItems(): Array<Any> {
+    fun selectedItems(): Array<Any> {
         return selectedItems.toTypedArray()
     }
 
-    fun FirstSelectedItem(): Any {
+    fun firstSelectedItem(): Any {
         return selectedItems[0]
     }
 
-    fun HasItems(): Boolean {
+    fun hasItems(): Boolean {
         return selectedItems.size > 0
     }
 }

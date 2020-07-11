@@ -41,15 +41,6 @@ class MatchList : ArrayList<String> {
         return false
     }
 
-    /* ArrayList already has contains.
-    fun contains(candidateString: String): Boolean {
-        for (thisListedString in this) {
-            if (thisListedString == candidateString) return true
-        }
-        return false
-    }
-    */
-
     fun matchesCaseInspecific(candidateString: String): Boolean {
         for (thisListedString in this) {
             if (candidateString.toUpperCase().contains(thisListedString.toUpperCase())) return true
@@ -62,9 +53,5 @@ class MatchList : ArrayList<String> {
             if (thisListedString.equals(candidateString, ignoreCase = true)) return true
         }
         return false
-    }
-
-    companion object {
-        private const val serialVersionUID = -8871132198493596572L
     }
 }

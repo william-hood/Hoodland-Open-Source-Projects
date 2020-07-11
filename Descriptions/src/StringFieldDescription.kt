@@ -21,7 +21,7 @@
 
 package rockabilly.descriptions
 
-import rockabilly.toolbox.CarriageReturnLineFeed
+import rockabilly.toolbox.CRLF
 
 // ALL FIELD DESCRIPTIONS NEED A TOSTRING() METHOD AND A CYCLING CLASS.
 // TODO: MAKE IT POSSIBLE TO EASILY CREATE LETTERED SUB-CASES THAT ITERATE ALL POSSIBILITIES
@@ -90,7 +90,7 @@ open class StringFieldDescription() : FieldDescription<String>() {
             StringFieldTargets.CONTAINS_LINE_FEED_CHARACTER -> firstHalf.toString() + "\n" + secondHalf
             StringFieldTargets.CONTAINS_FORM_FEED_CHARACTER -> firstHalf.toString() + "\u000C" + secondHalf
             StringFieldTargets.CONTAINS_SPACE -> firstHalf.toString() + " " + secondHalf
-            StringFieldTargets.CONTAINS_NEWLINE -> firstHalf + CarriageReturnLineFeed + secondHalf
+            StringFieldTargets.CONTAINS_NEWLINE -> firstHalf + CRLF + secondHalf
             StringFieldTargets.CONTAINS_NUMERIC_CHARACTERS -> firstHalf.toString() + "1234567890" + secondHalf
             StringFieldTargets.CONTAINS_OPEN_BRACE -> firstHalf.toString() + "{" + secondHalf
             StringFieldTargets.CONTAINS_OPEN_BRACKET -> firstHalf.toString() + "[" + secondHalf

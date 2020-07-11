@@ -21,13 +21,6 @@
 
 package rockabilly.toolbox
 
-class ImpossibleCodePathException : Exception(
-        "A point in the code was reached that should not be possible to get to.")
+class ImpossibleCodePathException : Exception("A point in the code was reached that should not be possible to get to.")
+class ImproperObjectConstructionException(message: String) : Exception("An object was created in a way that precludes actual use: $message")
 
-class ImproperObjectConstructionException(message: String) : Exception(
-        "An object was created in a way that precludes actual use: $message")
-/* This is redundant in Kotlin which provides NotImplementedError
-class NotImplementedException(message: String) : Exception (message) {
-    constructor() : this("A point in the code was reached for functionality that has not yet been implemented.")
-}
-*/

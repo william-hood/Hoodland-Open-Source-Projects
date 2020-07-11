@@ -22,19 +22,11 @@
 package rockabilly.toolbox
 
 // Based on http://en.wikipedia.org/wiki/Hexavigesimal
-class SubnameFactory() {
-    var currentIndex: Long = 0
+class SubnameFactory(startingIndex: Long = 0, totalPlaces: Int = 0) {
+    var currentIndex: Long = startingIndex
         private set
-    var places = 0
+    var places = totalPlaces
     var placeholder = DEFAULT_PLACE_HOLDER
-
-    constructor(startingIndex: Long) : this() {
-        currentIndex = startingIndex
-    }
-
-    constructor(startingIndex: Long, totalPlaces: Int) : this(startingIndex) {
-        places = totalPlaces
-    }
 
     val nextIndexAsString: String
         get() {

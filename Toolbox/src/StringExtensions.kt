@@ -94,7 +94,7 @@ fun String.makeSingleQuoted(): String {
     return "'$this'"
 }
 
-fun String.filterCarriageReturns(): String {
+fun String.removeCarriageReturns(): String {
     return this.replace("\r", "")
 }
 
@@ -125,7 +125,7 @@ fun String.justify(columns: Int = 75): String {
         if (columnIndex + parsedMessage[cursor].length > columns) {
             // This word will exceed the number of columns. Add a line break
             // before the word.
-            justifiedMessage += CarriageReturnLineFeed
+            justifiedMessage += CRLF
             columnIndex = 0
         }
         justifiedMessage += parsedMessage[cursor]
@@ -135,7 +135,7 @@ fun String.justify(columns: Int = 75): String {
 }
 
 fun String.prependEveryLineWith(prependString: String): String? {
-    return prependString + this.replace(CarriageReturnLineFeed, CarriageReturnLineFeed + prependString)
+    return prependString + this.replace(CRLF, CRLF + prependString)
 }
 
 fun String.indentEveryLineBy(indentSize: Int = 5): String {
@@ -157,12 +157,12 @@ fun String.padSides(totalSize: Int, paddingChar: Char = ' '): String? {
 fun String.padVertical(totalRows: Int, justification: VerticalJustification = VerticalJustification.CENTER, addHorizontalSpaces: Boolean = false): String {
     var message = this
     var paddedMessage: String = message
-    message = this.filterCarriageReturns()
+    message = this.removeCarriageReturns()
     val splitMessage = message.split("\n".toRegex()).toTypedArray()
     if (totalRows <= splitMessage.size) {
         return paddedMessage
     }
-    var emptyLine: String = CarriageReturnLineFeed
+    var emptyLine: String = CRLF
     if (addHorizontalSpaces) {
         var maxHorz = 0
         for (cursor in splitMessage.indices) {
@@ -170,7 +170,7 @@ fun String.padVertical(totalRows: Int, justification: VerticalJustification = Ve
                 maxHorz = splitMessage[cursor].length
             }
         }
-        emptyLine = createStringFromBasisCharacter(' ', maxHorz) + CarriageReturnLineFeed
+        emptyLine = createStringFromBasisCharacter(' ', maxHorz) + CRLF
     }
     var topPadding = (totalRows - splitMessage.size) / 2
     paddedMessage = ""
@@ -184,7 +184,7 @@ fun String.padVertical(totalRows: Int, justification: VerticalJustification = Ve
         paddedMessage += emptyLine
     }
     for (cursor in splitMessage.indices) {
-        paddedMessage += splitMessage[cursor] + CarriageReturnLineFeed
+        paddedMessage += splitMessage[cursor] + CRLF
         pads++
     }
     while (pads < totalRows) {

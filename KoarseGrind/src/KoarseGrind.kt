@@ -26,7 +26,7 @@ package rockabilly.koarsegrind
 
 import rockabilly.toolbox.InlineImage
 import rockabilly.toolbox.QuickTimeStamp
-import rockabilly.toolbox.UnsetString
+import rockabilly.toolbox.UNSET_STRING
 import java.io.File
 import java.nio.file.FileSystems
 import java.nio.file.Files
@@ -56,10 +56,10 @@ internal fun logHeader(title: String): String {
 // This is calculated on the fly the first time it is called.
 // If a "Documents" folder exists off the user's home folder, the Test Results folder goes there.
 // Otherwise it goes in the user's home folder.
-private var defaultParentFolder = UnsetString
+private var defaultParentFolder = UNSET_STRING
 val DEFAULT_PARENT_FOLDER: String
     get() {
-        if (defaultParentFolder == UnsetString) {
+        if (defaultParentFolder == UNSET_STRING) {
             val rootShortName = File.separatorChar + "Test Results"
             var rootPath = "${System.getProperty("user.home")}${File.separatorChar}Documents"
 

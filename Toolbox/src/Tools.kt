@@ -28,6 +28,8 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.AbstractMap.SimpleEntry
+import java.util.zip.CRC32
+import java.util.zip.CheckedInputStream
 import kotlin.collections.ArrayList
 
 val stdout = PrintWriter(System.out)
@@ -46,6 +48,7 @@ fun openForReading(filePath: String?): BufferedReader? {
     // FileShare.Read);
 }
 
+// TODO: Is this the best way in Kotlin? Is it correct?
 fun readLineFromInputStream(rawInputStream: BufferedInputStream): String {
     val result = StringBuilder()
     var lastRead: Int = Int.MIN_VALUE
@@ -62,8 +65,7 @@ fun readLineFromInputStream(rawInputStream: BufferedInputStream): String {
     return result.toString().trim('\r', '\n')// { it <= ' ' } // Intentionally trimming off the carriage return at the end.
 }
 
-
-
+// TODO: Is this the best way in Kotlin? Is it correct?
 // Based on http://stackoverflow.com/questions/5713857/bufferedinputstream-to-string-conversion
 const val BUFFER_SIZE = 1024
 fun readEntireInputStream(rawInputStream: BufferedInputStream): String {
@@ -100,13 +102,11 @@ fun forceDirectoryExistence(directory: String) {
 }
 
 private const val REPLACER = "\u25a2"
-
 fun filterOutNonPrintables(candidate: String): String? {
     return candidate.replace("\\p{C}".toRegex(), REPLACER)
 }
 
 private const val nullString = "(null)"
-
 fun robustGetString(candidate: Any?): String? {
     return if (candidate == null) nullString else try {
         filterOutNonPrintables(candidate.toString())
@@ -137,6 +137,7 @@ fun getShortFileName(completeFilePath: String): String? {
     } else baseExt
 }
 
+// TODO: SHould this still exist? Does Memoir handle it better?
 fun depictFailure(thisFailure: Throwable): String? {
     val stacktraceWriter = StringWriter()
     thisFailure.printStackTrace(PrintWriter(stacktraceWriter))
@@ -203,7 +204,7 @@ fun StringArrayContainsCaseInspecific(
     return false
 }
 
-// Ported this from the legacy code. In Kotlin it might make more sense
+// Ported this from the legacy code. TODO: In Kotlin it might make more sense
 // to use File(<complete-path>).deleteRecursively()
 fun hardDelete(fullPath: String) {
     val check = File(fullPath)
@@ -275,5 +276,18 @@ fun getUrlParameters(url: URL): ArrayList<SimpleEntry<String, String>>? {
         val keyValuePair = thisParam.split("=".toRegex()).toTypedArray()
         result.add(SimpleEntry(keyValuePair[0], keyValuePair[1]))
     }
+    return result
+}
+
+@Throws(IOException::class)
+fun getCRC32(filePath: String?): Long {
+    val file = FileInputStream(filePath)
+    val check = CheckedInputStream(file, CRC32())
+    val instream = BufferedInputStream(check)
+    while (instream.read() != -1) {
+        // Read file in completely
+    }
+    val result = check.checksum.value
+    instream.close()
     return result
 }

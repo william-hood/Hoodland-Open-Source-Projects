@@ -22,7 +22,7 @@
 package rockabilly.koarsegrind
 
 import rockabilly.memoir.*
-import rockabilly.toolbox.UnsetString
+import rockabilly.toolbox.UNSET_STRING
 import rockabilly.toolbox.forceParentDirectoryExistence
 import rockabilly.toolbox.stdout
 import java.io.File
@@ -56,7 +56,7 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
     internal var topLevelMemoir: Memoir? = null
     internal var setupMemoir: Memoir? = null
     internal var cleanupMemoir: Memoir? = null
-    private var parentArtifactsDirectory = UnsetString
+    private var parentArtifactsDirectory = UNSET_STRING
     var priority = TestPriority.NORMAL
     private var executionThread: Thread? = null
     internal var wasSetup = false

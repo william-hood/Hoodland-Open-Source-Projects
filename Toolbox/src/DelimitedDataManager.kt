@@ -26,7 +26,6 @@ import java.io.IOException
 import java.util.*
 
 class DelimitedDataManager<T> {
-    // public static final String DEFAULT_EXTENSION = "csv";
     private var headers: ArrayList<String> = ArrayList()
     val allData: ArrayList<ArrayList<T>> = ArrayList()
     var delimiter = DEFAULT_DELIMITER
@@ -43,9 +42,6 @@ class DelimitedDataManager<T> {
 
     constructor(vararg columnNames: String) : this(DEFAULT_DELIMITER, DEFAULT_SPACING, *columnNames) {}
 
-    // Explicitly prohibit default constructor.
-    private constructor() {}
-
     fun stripDelimiters(input: String?): String? {
         return input!!.replace(delimiter, ' ')
     }
@@ -61,11 +57,11 @@ class DelimitedDataManager<T> {
         }
     }
 
-    @Throws(ImproperObjectConstructionException::class)
-    fun length(): Int {
-        if (headers.size < 1) throw ImproperObjectConstructionException("A "
-                + this.javaClass.simpleName
-                + " must have at least one header column.")
+    val size: Int
+    get() {
+        if (headers.size < 1) {
+            throw ImproperObjectConstructionException("A ${this.javaClass.simpleName} must have at least one header column.")
+        }
         return headers.size
     }
 
@@ -102,7 +98,6 @@ class DelimitedDataManager<T> {
 
     fun toFile(completeFilePath: String, append: Boolean = true) {
         val thisOutputManager = TextOutputManager(completeFilePath, append)
-        // System.out.println(headers.toString());
         thisOutputManager.println(lineOut<String>(headers))
         for (thisData in allData) {
             thisOutputManager.println(lineOut<T>(thisData))
@@ -151,11 +146,8 @@ class DelimitedDataManager<T> {
         fun <T> fromFile(completeFilePath: String, delimitingChar: Char, parser: Parser<T>): DelimitedDataManager<T> {
             val dataFromFile = DelimitedDataManager<T>()
             dataFromFile.delimiter = delimitingChar
-            val fileStream: BufferedReader? = openForReading(completeFilePath)
-
-            if (fileStream == null) {
-                throw IOException("Attempt to open $completeFilePath for reading produced a null BufferedReader.")
-            }
+            val fileStream: BufferedReader = openForReading(completeFilePath)
+                    ?: throw IOException("Attempt to open $completeFilePath for reading produced a null BufferedReader.")
 
             var currentLine = fileStream.readLine()
             if (currentLine != null) dataFromFile.headers = dataFromFile

@@ -25,25 +25,25 @@ enum class DividerTypes {
     SINGLE, DOUBLE
 }
 
-val PlatformNewLine = System.getProperty("line.separator")
-const val CarriageReturnLineFeed = "\r\n"
-const val Copyright = '\u00a9'
-const val RegisteredTM = '\u00ae'
-const val Yen = '\u00a5'
-const val Pound = '\u00a3'
-const val Cent = '\u00a2'
-const val Dollar = '$'
-const val Paragraph = '\u00b6'
-const val OpenAngleQuote = '\u00ab'
-const val CloseAngleQuote = '\u00bb'
-const val Degree = '\u00b0'
-const val Space = ' '
+val PLATFORM_NEWLINE = System.getProperty("line.separator")
+const val CRLF = "\r\n"
+const val COPYRIGHT = '\u00a9'
+const val REGISTERED_TM = '\u00ae'
+const val YEN = '\u00a5'
+const val POUND = '\u00a3'
+const val CENT = '\u00a2'
+const val DOLLAR = '$'
+const val PARAGRAPH = '\u00b6'
+const val OPEN_ANGLE_QUOTE = '\u00ab'
+const val CLOSE_ANGLE_QUOTE = '\u00bb'
+const val DEGREE = '\u00b0'
+const val SPACE = ' '
 
 const val DEFAULT_DIVIDER_LENGTH = 79
 const val SINGLE_DIVIDER = '_'
 const val DOUBLE_DIVIDER = '='
 
-fun divider(typeToUse: DividerTypes, length: Int): String? {
+fun divider(typeToUse: DividerTypes = DividerTypes.SINGLE, length: Int = DEFAULT_DIVIDER_LENGTH): String? {
     var dividerChar = DOUBLE_DIVIDER
     var dividerString = ""
     if (typeToUse === DividerTypes.SINGLE) {
@@ -55,18 +55,6 @@ fun divider(typeToUse: DividerTypes, length: Int): String? {
     return dividerString
 }
 
-fun divider(typeToUse: DividerTypes): String? {
-    return divider(typeToUse, DEFAULT_DIVIDER_LENGTH)
-}
-
-fun divider(length: Int): String? {
-    return divider(DividerTypes.SINGLE, length)
-}
-
-fun divider(): String? {
-    return divider(DEFAULT_DIVIDER_LENGTH)
-}
-
 const val ERASER = '\u0008'
 
-const val UnsetString = "---UNSET---"
+const val UNSET_STRING = "---UNSET---"
