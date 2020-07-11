@@ -37,7 +37,7 @@ class ExampleTest2: Test(
 }
 
 fun main(args: Array<String>) {
-    TestProgram.Run("Koarse Grind Demo")
+    TestProgram.run("Koarse Grind Demo")
 }
 
 // TODO: Verify Manufactured Tests Work

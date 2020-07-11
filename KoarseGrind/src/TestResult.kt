@@ -45,11 +45,11 @@ enum class TestConditionalType {
         val result = TestResult()
 
         if (condition) {
-            result.status = TestStatus.Pass
+            result.status = TestStatus.PASS
         } else {
             when (this) {
-                ASSERTION -> result.status = TestStatus.Fail
-                CONSIDERATION -> result.status = TestStatus.Subjective
+                ASSERTION -> result.status = TestStatus.FAIL
+                CONSIDERATION -> result.status = TestStatus.SUBJECTIVE
                 // Otherwise leave the default status of inconclusive in-place.
             }
         }
@@ -59,7 +59,7 @@ enum class TestConditionalType {
     }
 }
 
-class TestResult (var status: TestStatus = TestStatus.Inconclusive, var description: String = "(no description provided)", vararg associatedFailures: Throwable) {
+class TestResult (var status: TestStatus = TestStatus.INCONCLUSIVE, var description: String = "(no description provided)", vararg associatedFailures: Throwable) {
     val failures = ArrayList<Throwable>()
     val artifacts = ArrayList<Any>()
 

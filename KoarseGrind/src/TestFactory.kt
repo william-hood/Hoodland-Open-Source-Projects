@@ -22,11 +22,11 @@
 package rockabilly.koarsegrind
 
 // A manufactured test has to be produced by a test factory in order to be included in the test run.
-public abstract class ManufacturedTest(Name: String, DetailedDescription: String = UNSET_DESCRIPTION, ID: String = "", vararg Categories: String) : Test(Name, DetailedDescription, ID, *Categories) {
+public abstract class ManufacturedTest(name: String, detailedDescription: String = UNSET_DESCRIPTION, testCaseID: String = "", vararg categories: String) : Test(name, detailedDescription, testCaseID, *categories) {
 }
 
 abstract class TestFactory {
-    val Products = ArrayList<ManufacturedTest>()
+    val products = ArrayList<ManufacturedTest>()
     init { populateProducts() }
 
     // Use this to instantiate manufactured tests and put them into the Products ArrayList

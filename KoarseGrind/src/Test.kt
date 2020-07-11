@@ -123,8 +123,8 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
 
     val OverallStatus: TestStatus
         get() {
-            if ((Results.size < 1)) return TestStatus.Inconclusive
-            var finalValue = TestStatus.Pass
+            if ((Results.size < 1)) return TestStatus.INCONCLUSIVE
+            var finalValue = TestStatus.PASS
             Results.forEach {
                 finalValue = finalValue + it.status
             }
@@ -203,13 +203,13 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
 
 
     // Is virtual/open in C#
-    fun GetResultForFailure(thisFailure: Throwable, section: String = "") = getResultForIncident(TestStatus.Fail, section, thisFailure)
+    fun GetResultForFailure(thisFailure: Throwable, section: String = "") = getResultForIncident(TestStatus.FAIL, section, thisFailure)
 
     // Is virtual/open in C#
-    fun GetResultForPreclusionInSetup(thisPreclusion: Throwable) = getResultForIncident(TestStatus.Inconclusive, SETUP, thisPreclusion)
+    fun GetResultForPreclusionInSetup(thisPreclusion: Throwable) = getResultForIncident(TestStatus.INCONCLUSIVE, SETUP, thisPreclusion)
 
     // Is virtual/open in C#
-    fun GetResultForPreclusion(thisPreclusion: Throwable) = getResultForIncident(TestStatus.Inconclusive, "", thisPreclusion)
+    fun GetResultForPreclusion(thisPreclusion: Throwable) = getResultForIncident(TestStatus.INCONCLUSIVE, "", thisPreclusion)
 
     // Is virtual/open in C#
     fun ReportFailureInCleanup(thisFailure: Throwable, additionalMessage: String = "") {
@@ -253,7 +253,7 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
     }
 
     fun MakeSubjective() {
-        AddResult(TestResult(TestStatus.Subjective, "This test case requires analysis by appropriate personnel to determine pass/fail status"))
+        AddResult(TestResult(TestStatus.SUBJECTIVE, "This test case requires analysis by appropriate personnel to determine pass/fail status"))
     }
 
     // This was virtual/open in the C# version
@@ -296,7 +296,7 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
             } finally {
                 if (!SetupEnforcement(this).matches(before)) {
                     setupResult = false
-                    AddResult(TestResult(TestStatus.Inconclusive, "PROGRAMMING ERROR: It is illegal to change the identifier, name, or priority in Setup.  This must happen in the constructor. Setup may also not add Test Results."))
+                    AddResult(TestResult(TestStatus.INCONCLUSIVE, "PROGRAMMING ERROR: It is illegal to change the identifier, name, or priority in Setup.  This must happen in the constructor. Setup may also not add Test Results."))
                 }
             }
 
@@ -312,7 +312,7 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
                     executionThread = null
                 }
             } else {
-                AddResult(TestResult(TestStatus.Inconclusive, "Declining to perform test case $IdentifiedName because setup method failed."))
+                AddResult(TestResult(TestStatus.INCONCLUSIVE, "Declining to perform test case $IdentifiedName because setup method failed."))
             }
 
             // CLEANUP

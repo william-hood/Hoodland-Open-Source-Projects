@@ -26,19 +26,19 @@ package rockabilly.koarsegrind
 import rockabilly.memoir.*
 
 enum class TestStatus {
-    Inconclusive {
+    INCONCLUSIVE {
         override val memoirIcon = EMOJI_INCONCLUSIVE_TEST
         override val memoirStyle = "decaf_orange_light_roast"
     },
-    Fail {
+    FAIL {
         override val memoirIcon = EMOJI_FAILING_TEST
         override val memoirStyle = "decaf_orange"
     },
-    Subjective {
+    SUBJECTIVE {
         override val memoirIcon = EMOJI_SUBJECTIVE_TEST
         override val memoirStyle = "old_parchment"
     },
-    Pass {
+    PASS {
         override val memoirIcon = EMOJI_PASSING_TEST
         override val memoirStyle = "decaf_green"
     };
@@ -47,35 +47,35 @@ enum class TestStatus {
     abstract val memoirStyle: String
 
     fun isPassing(): Boolean {
-        return this == Pass
+        return this == PASS
     }
 
     fun isFailing(): Boolean {
-        return this == Fail
+        return this == FAIL
     }
 
     fun isInconclusive(): Boolean {
-        return this == Inconclusive
+        return this == INCONCLUSIVE
     }
 
     // Using the + operator in place of CombineWith()
     operator fun plus(theOther: TestStatus): TestStatus {
         when (this) {
-            Subjective -> return Subjective
-            Inconclusive -> {
-                if (theOther == Subjective) return Subjective
-                return Inconclusive
+            SUBJECTIVE -> return SUBJECTIVE
+            INCONCLUSIVE -> {
+                if (theOther == SUBJECTIVE) return SUBJECTIVE
+                return INCONCLUSIVE
             }
-            Fail -> {
-                if (theOther == Subjective) return Subjective
-                if (theOther == Inconclusive) return Inconclusive
-                return Fail
+            FAIL -> {
+                if (theOther == SUBJECTIVE) return SUBJECTIVE
+                if (theOther == INCONCLUSIVE) return INCONCLUSIVE
+                return FAIL
             }
             else -> {
-                if (theOther == Subjective) return Subjective
-                if (theOther == Inconclusive) return Inconclusive
-                if (theOther == Fail) return Fail
-                return Pass
+                if (theOther == SUBJECTIVE) return SUBJECTIVE
+                if (theOther == INCONCLUSIVE) return INCONCLUSIVE
+                if (theOther == FAIL) return FAIL
+                return PASS
             }
         }
     }
@@ -86,7 +86,7 @@ fun Memoir.showTestStatus(thisStatus: TestStatus, message: String) {
 }
 
 fun String.toTestStatus(): TestStatus {
-    if (this.toUpperCase().startsWith("P")) { return TestStatus.Pass }
-    if (this.toUpperCase().startsWith("F")) { return TestStatus.Fail }
-    return TestStatus.Inconclusive
+    if (this.toUpperCase().startsWith("P")) { return TestStatus.PASS }
+    if (this.toUpperCase().startsWith("F")) { return TestStatus.FAIL }
+    return TestStatus.INCONCLUSIVE
 }

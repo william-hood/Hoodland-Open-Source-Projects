@@ -36,36 +36,36 @@ public object TestCollection: ArrayList<Test>() {
     init {
     System.err.println("Ran Init: ${this::class.simpleName}")
     }
-    private var currentTest: Test? = null
+    private var _currentTest: Test? = null
     private var currentArtifactsDirectory = UnsetString
     private var executionThread: Thread? = null
     private var currentCount = Int.MAX_VALUE
 
-    fun Reset() {
+    fun reset() {
         currentCount = Int.MAX_VALUE
-        currentTest?.Interrupt() // C# code did not check if the test was present and did not call Interrupt()
-        currentTest = null
+        _currentTest?.Interrupt() // C# code did not check if the test was present and did not call Interrupt()
+        _currentTest = null
         executionThread?.interrupt() // C# code tried to Abort() three times in a row if not null
         executionThread = null
         currentArtifactsDirectory = UnsetString
     }
 
-    val CurrentTest: String
+    val currentTest: String
         get() {
-            if (currentTest == null) { return UNKNOWN }
-            return currentTest!!.IdentifiedName
+            if (_currentTest == null) { return UNKNOWN }
+            return _currentTest!!.IdentifiedName
         }
 
     // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
-    // Basically this needs to be thread safe.
-    val Progress: Int
+    // TODO: Basically this needs to be thread safe.
+    val progress: Int
         get() {
             if (this.count() < 1) { return 100 }
             if (currentCount >= this.count()) { return 100 }
             var effectiveCount = currentCount.toFloat()
 
             try {
-                effectiveCount += currentTest!!.Progress
+                effectiveCount += _currentTest!!.Progress
             } catch (dontCare: Throwable) {
                 // DELIBERATE NO-OP
             }
@@ -78,13 +78,13 @@ public object TestCollection: ArrayList<Test>() {
     // I'm changing this to require a memoir so it can be logged properly.
     private fun copyResultsToCategories(memoir: Memoir) {
         try {
-            copyCompletely(currentTest!!.ArtifactsDirectory, currentArtifactsDirectory + File.separatorChar + currentTest!!.PrefixedName)
+            copyCompletely(_currentTest!!.ArtifactsDirectory, currentArtifactsDirectory + File.separatorChar + _currentTest!!.PrefixedName)
         } catch (loggedThrowable: Throwable) {
             memoir.error("Koarse Grind was unable to copy the current test results to their permanent location")
             memoir.showThrowable(loggedThrowable)
         } finally {
             //hardDelete(currentTest!!.ArtifactsDirectory)
-            File(currentTest!!.ArtifactsDirectory).deleteRecursively()
+            File(_currentTest!!.ArtifactsDirectory).deleteRecursively()
         }
     }
 
@@ -94,7 +94,7 @@ public object TestCollection: ArrayList<Test>() {
     //
     // Properly doing this might require a custom data structure that a test-runner program would pass in.
     //
-    fun Run(name: String, rootDirectory: String  = "$DEFAULT_PARENT_FOLDER${File.separatorChar}$QuickTimeStamp ${name}") {
+    fun run(name: String, rootDirectory: String  = "$DEFAULT_PARENT_FOLDER${File.separatorChar}$QuickTimeStamp ${name}") {
         currentArtifactsDirectory = rootDirectory
         val expectedFileName = currentArtifactsDirectory + File.separatorChar + "All tests.html"
         forceParentDirectoryExistence(expectedFileName)
@@ -107,7 +107,7 @@ public object TestCollection: ArrayList<Test>() {
                 // Decline to run
                 break
             } else {
-                currentTest = this[currentCount]
+                _currentTest = this[currentCount]
                 /*
                 if (false)//(exclusions.matchesCaseInspecific(currentTest!!.IdentifiedName)) {
                     // Decline to run
@@ -116,20 +116,20 @@ public object TestCollection: ArrayList<Test>() {
                 }
                 */
                 try {
-                    executionThread = thread(start = true) { currentTest!!.RunTest(currentArtifactsDirectory) } // C# used the public Run() function
+                    executionThread = thread(start = true) { _currentTest!!.RunTest(currentArtifactsDirectory) } // C# used the public Run() function
                     executionThread!!.join()
                 } catch (thisFailure: Throwable) {
                     // Uncertain why specifically calling GetResultForPreclusionInSetup()
-                    currentTest!!.AddResult(currentTest!!.GetResultForPreclusionInSetup(thisFailure))
+                    _currentTest!!.AddResult(_currentTest!!.GetResultForPreclusionInSetup(thisFailure))
                 } finally {
                     executionThread = null
-                    overlog.showMemoir(currentTest!!.topLevelMemoir!!, currentTest!!.OverallStatus.memoirIcon, currentTest!!.OverallStatus.memoirStyle)
+                    overlog.showMemoir(_currentTest!!.topLevelMemoir!!, _currentTest!!.OverallStatus.memoirIcon, _currentTest!!.OverallStatus.memoirStyle)
                     this.copyResultsToCategories(overlog)
                 }
             }
         }
 
-        CreateSummaryReport(rootDirectory, overlog)
+        createSummaryReport(rootDirectory, overlog)
         overlog.conclude()
     }
 
@@ -140,10 +140,10 @@ public object TestCollection: ArrayList<Test>() {
     // This may have only been used by the web UI in the old Coarse Gring.
     // Might be needed for an external runner, which also might need the
     // function InterruptCurrentTest() put back. Possibly also Run().
-    fun HaltAllTesting() {
+    fun haltAllTesting() {
         KILL_SWITCH = true
         currentCount = Int.MAX_VALUE
-        currentTest!!.Interrupt() // C# used the public InterruptCurrentTest() function
+        _currentTest!!.Interrupt() // C# used the public InterruptCurrentTest() function
 
         try {
             executionThread?.interrupt()
@@ -155,10 +155,10 @@ public object TestCollection: ArrayList<Test>() {
         }
     }
 
-    val OverallStatus: TestStatus
+    val overallStatus: TestStatus
         get() {
         var tally = 0
-            var result = TestStatus.Pass
+            var result = TestStatus.PASS
             this.forEach {
                 if (it.wasRun) {
                     tally++
@@ -166,11 +166,11 @@ public object TestCollection: ArrayList<Test>() {
                 }
             }
 
-            if (tally < 1) { return TestStatus.Inconclusive }
+            if (tally < 1) { return TestStatus.INCONCLUSIVE }
             return result
     }
 
-    fun CreateSummaryReport(rootDirectory: String, memoir: Memoir = Memoir(forPlainText = stdout)) {
+    fun createSummaryReport(rootDirectory: String, memoir: Memoir = Memoir(forPlainText = stdout)) {
         val fullyQulaifiedSummaryFileName = rootDirectory + File.separatorChar + SUMMARY_FILE_NAME
         memoir.info("Creating Test Suite Summary Report ($fullyQulaifiedSummaryFileName)")
         var summaryReport = DelimitedDataManager<String>("Categorization", "Test Priority", "Test ID", "Name", "Description", "Status", "Reasons")
@@ -197,7 +197,7 @@ public object TestCollection: ArrayList<Test>() {
 
         try {
             val textFile = TextOutputManager(fullyQulaifiedSummaryTextFileName)
-            textFile.println(OverallStatus.toString())
+            textFile.println(overallStatus.toString())
             textFile.flush()
             textFile.close() // Shouldn't need a getter because this is a val
         } catch (thisFailure: Throwable) {

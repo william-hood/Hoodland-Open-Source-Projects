@@ -24,6 +24,7 @@ import rockabilly.koarsegrind.Test
 import rockabilly.koarsegrind.TestCollection
 import rockabilly.koarsegrind.TestFactory
 import rockabilly.memoir.UNKNOWN
+import rockabilly.toolbox.stderr
 import java.io.File
 import kotlin.reflect.full.isSubclassOf
 
@@ -33,7 +34,7 @@ private val testLoader = Thread.currentThread().getContextClassLoader()
 
 object TestProgram {
     // This may have to be changed to take the same arguments as TestCollection
-    fun Run(name: String = UNKNOWN) {
+    fun run(name: String = UNKNOWN) {
         val packages = testLoader.definedPackages
         packages.forEach {
             val resources = testLoader.getResources(it.name.replace('.', File.separatorChar)).asIterator()
@@ -42,7 +43,7 @@ object TestProgram {
             }
         }
 
-        TestCollection.Run(name)
+        TestCollection.run(name)
     }
 
 
@@ -65,11 +66,11 @@ object TestProgram {
                                 }
                             } else if (foundClass.kotlin.isSubclassOf(TestFactory::class)) {
                                 val factory: TestFactory = foundClass.getDeclaredConstructor().newInstance() as TestFactory
-                                TestCollection.addAll(factory.Products)
+                                TestCollection.addAll(factory.products)
                             }
                         } catch (dontCare: Throwable) {
                             // NO-OP
-                            System.err.println(dontCare.message)
+                            stderr.println(dontCare.message)
                         }
                     }
             }
