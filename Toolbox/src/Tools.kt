@@ -41,6 +41,7 @@ val QuickTimeStamp: String
     get() = quickDateFormat.format(LocalDateTime.now())
 
 @Throws(FileNotFoundException::class)
+// TODO: Only used in Delimited Data Manager. Candidate for obsolescence.
 fun openForReading(filePath: String?): BufferedReader? {
     return BufferedReader(FileReader(filePath)) // (filePath,
     // FileMode.Open,
@@ -48,56 +49,17 @@ fun openForReading(filePath: String?): BufferedReader? {
     // FileShare.Read);
 }
 
-// TODO: OBSOLETE
+// Legacy method readLineFromInputStream() is OBSOLETE
 // val check = BufferedReader(InputStreamReader(rawInputStream))
 // check.readLine()
 // There is also readLine for stdin and File.forEachLine() for files...
-//
-fun readLineFromInputStream(rawInputStream: BufferedInputStream): String {
-    val result = StringBuilder()
-    var lastRead: Int = Int.MIN_VALUE
-    while (lastRead != -1) {
-        try {
-            val check = BufferedReader(InputStreamReader(rawInputStream))
-            check.readText()
-            if (rawInputStream.available() < 1) break
-            lastRead = rawInputStream.read()
-            result.append(lastRead.toChar())
-            if (lastRead.toChar() == '\n') break
-        } catch (thisException: IOException) {
-            break
-        }
-    }
-    return result.toString().trim('\r', '\n')// { it <= ' ' } // Intentionally trimming off the carriage return at the end.
-}
 
-// TODO: OBSOLETE
+// Legacy method readEntireInputStream() is OBSOLETE
 //  val check = BufferedReader(InputStreamReader(rawInputStream))
 //  check.readText()
 // File.readLines() can get the whole file as an array of lines
 // Creating the BufferedInputStream as shown above also provides readLines()
-//
-// Based on http://stackoverflow.com/questions/5713857/bufferedinputstream-to-string-conversion
-const val BUFFER_SIZE = 1024
-fun readEntireInputStream(rawInputStream: BufferedInputStream): String {
-    if (rawInputStream.available() > 0) {
-        return String(rawInputStream.readAllBytes())
-    }
-    return ""
-    /*
-    val buffer = ByteArray(BUFFER_SIZE)
-    var bytesRead = 0
-    val result = StringBuilder()
-    try {
-        while (rawInputStream.read(buffer).also { bytesRead = it } != -1) {
-            result.append(String(buffer, 0, bytesRead))
-        }
-    } catch (dontCare: IOException) {
-        // Deliberate NO-OP -- Assume EOF
-    }
-    return result.toString()
-    */
-}
+// String(rawInputStream.readAllBytes())
 
 // Based on http://stackoverflow.com/questions/8668905/directory-does-not-exist-with-filewriter
 fun forceParentDirectoryExistence(fileName: String?) {

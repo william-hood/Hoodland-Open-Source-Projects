@@ -20,9 +20,35 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import rockabilly.koarsegrind.Test
+import rockabilly.koarsegrind.UNSET_DESCRIPTION
 import rockabilly.toolbox.*
 
-class TestReadLineFromInputStream:Test(
+// Start by making a temp folder based on UUID off user folder WITHOUT USING TOOLBOX FUNCTIONS
+// Happy path: New Dir only one level off.
+// Happy path: New Dir one level off, file specified.
+// New dir several folders in.
+// New dir several folders in, existing file specified.
+// Existing Dir only one level off.
+// Existing Dir one level off, file specified.
+// Existing dir several folders in.
+// Existing dir several folders in, nonexistent file specified.
+// Existing dir several folders in, existing file specified.
+// New dir several folders in, part of the path exists.
+// New dir several folders in, part of the path exists, existing file specified.
+
+// Probably need to make the default constructor for Test internal or private.
+// Evaluate what needs to be marked open in the Test class.
+abstract class DirectoryExistenceTest(name: String, detailedDescription: String, testCaseID: String, vararg categories: String): Test(name, detailedDescription, testCaseID, *categories) {
+    override fun setup(): Boolean {
+        return super.setup()
+    }
+
+    override fun cleanup(): Boolean {
+        return super.cleanup()
+    }
+}
+
+class TestReadLineFromInputStream:DirectoryExistenceTest(
         "readLineFromInputStream()",
         "This verfies that toStatusCodeDescription() gets the correct string value for a few given numbers. It is NOT exhaustive.",
         "TB-001",
