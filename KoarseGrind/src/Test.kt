@@ -23,7 +23,6 @@ package rockabilly.koarsegrind
 
 import rockabilly.memoir.*
 import rockabilly.toolbox.UNSET_STRING
-import rockabilly.toolbox.forceParentDirectoryExistence
 import rockabilly.toolbox.stdout
 import java.io.File
 import java.io.PrintWriter
@@ -267,7 +266,10 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
             parentArtifactsDirectory = rootDirectory
             val expectedFileName = artifactsDirectory + File.separatorChar + logFileName
 
-            forceParentDirectoryExistence(expectedFileName)
+            //forceParentDirectoryExistence(expectedFileName)
+            // Force the parent directory to exist...
+            File(expectedFileName).parentFile.mkdirs()
+
             topLevelMemoir = Memoir(name, stdout, PrintWriter(expectedFileName), ::logHeader)
 
             if (detailedDescription != UNSET_DESCRIPTION) {

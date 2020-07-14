@@ -25,7 +25,7 @@
 package rockabilly.koarsegrind
 
 import rockabilly.toolbox.InlineImage
-import rockabilly.toolbox.QuickTimeStamp
+import rockabilly.toolbox.quickTimeStamp
 import rockabilly.toolbox.UNSET_STRING
 import java.io.File
 import java.nio.file.FileSystems
@@ -50,7 +50,7 @@ internal val HEADER_ICON = object:InlineImage() {
 }.toString()
 
 internal fun logHeader(title: String): String {
-    return "<table style=\"margin-left: 0; margin-right: 0\"><tr><td>\r\n\r\n$HEADER_ICON\r\n\r\n</td><td><h1>$title</h1>\r\nPowered by Koarse Grind\r\n&nbsp;&nbsp;<small><i>Initiated $QuickTimeStamp</i></small></td></tr></table>\r\n<hr>\r\n\r\n"
+    return "<table style=\"margin-left: 0; margin-right: 0\"><tr><td>\r\n\r\n$HEADER_ICON\r\n\r\n</td><td><h1>$title</h1>\r\nPowered by Koarse Grind\r\n&nbsp;&nbsp;<small><i>Initiated $quickTimeStamp</i></small></td></tr></table>\r\n<hr>\r\n\r\n"
 }
 
 // This is calculated on the fly the first time it is called.

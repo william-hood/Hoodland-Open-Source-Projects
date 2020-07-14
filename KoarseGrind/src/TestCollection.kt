@@ -78,7 +78,8 @@ public object TestCollection: ArrayList<Test>() {
     // I'm changing this to require a memoir so it can be logged properly.
     private fun copyResultsToCategories(memoir: Memoir) {
         try {
-            copyCompletely(_currentTest!!.artifactsDirectory, currentArtifactsDirectory + File.separatorChar + _currentTest!!.prefixedName)
+            //copyCompletely(_currentTest!!.artifactsDirectory, currentArtifactsDirectory + File.separatorChar + _currentTest!!.prefixedName)
+            File(_currentTest!!.artifactsDirectory).copyRecursively(File(currentArtifactsDirectory + File.separatorChar + _currentTest!!.prefixedName), true)
         } catch (loggedThrowable: Throwable) {
             memoir.error("Koarse Grind was unable to copy the current test results to their permanent location")
             memoir.showThrowable(loggedThrowable)
@@ -94,10 +95,13 @@ public object TestCollection: ArrayList<Test>() {
     //
     // Properly doing this might require a custom data structure that a test-runner program would pass in.
     //
-    fun run(name: String, rootDirectory: String  = "$DEFAULT_PARENT_FOLDER${File.separatorChar}$QuickTimeStamp ${name}") {
+    fun run(name: String, rootDirectory: String  = "$DEFAULT_PARENT_FOLDER${File.separatorChar}$quickTimeStamp ${name}") {
         currentArtifactsDirectory = rootDirectory
         val expectedFileName = currentArtifactsDirectory + File.separatorChar + "All tests.html"
-        forceParentDirectoryExistence(expectedFileName)
+        //forceParentDirectoryExistence(expectedFileName)
+        // Force the parent directory to exist...
+        File(expectedFileName).parentFile.mkdirs()
+
         val overlog = Memoir(name, null, PrintWriter(expectedFileName), ::logHeader)
 
         for (indexCount in 0..(this.count() - 1)) {

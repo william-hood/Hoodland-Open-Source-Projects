@@ -20,37 +20,49 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import rockabilly.koarsegrind.Test
-import rockabilly.koarsegrind.UNSET_DESCRIPTION
+import rockabilly.memoir.showThrowable
 import rockabilly.toolbox.*
+import java.io.File
 
 // Start by making a temp folder based on UUID off user folder WITHOUT USING TOOLBOX FUNCTIONS
-// Happy path: New Dir only one level off.
 // Happy path: New Dir one level off, file specified.
-// New dir several folders in.
 // New dir several folders in, existing file specified.
-// Existing Dir only one level off.
 // Existing Dir one level off, file specified.
-// Existing dir several folders in.
 // Existing dir several folders in, nonexistent file specified.
 // Existing dir several folders in, existing file specified.
-// New dir several folders in, part of the path exists.
 // New dir several folders in, part of the path exists, existing file specified.
 
-// Probably need to make the default constructor for Test internal or private.
-// Evaluate what needs to be marked open in the Test class.
 abstract class DirectoryExistenceTest(name: String, detailedDescription: String, testCaseID: String, vararg categories: String): Test(name, detailedDescription, testCaseID, *categories) {
+    protected val tmpFolder = getUserHomeFolder() + File.separatorChar + quickTimeStamp
+
     override fun setup(): Boolean {
-        return super.setup()
+        try {
+            log.info("Creating folder $tmpFolder")
+            File(tmpFolder).mkdir()
+        } catch (loggedException: Throwable) {
+            log.showThrowable(loggedException)
+            return false
+        }
+
+        return true
     }
 
     override fun cleanup(): Boolean {
-        return super.cleanup()
+        try {
+            log.info("Deleting folder $tmpFolder and all its contents")
+            File(tmpFolder).deleteRecursively()
+        } catch (loggedException: Throwable) {
+            log.showThrowable(loggedException)
+            return false
+        }
+
+        return true
     }
 }
 
 class TestReadLineFromInputStream:DirectoryExistenceTest(
-        "readLineFromInputStream()",
-        "This verfies that toStatusCodeDescription() gets the correct string value for a few given numbers. It is NOT exhaustive.",
+        "forceParentDirectoryExistence()",
+        "This verfies that forceParentDirectoryExistence() creates the parent directory of the specified file.",
         "TB-001",
         "Toolbox", "StatusCode", "All"
 ) {

@@ -37,7 +37,7 @@ val stderr = PrintWriter(System.err)
 
 private val quickDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd kk-mm-ss.SSS")
 
-val QuickTimeStamp: String
+val quickTimeStamp: String
     get() = quickDateFormat.format(LocalDateTime.now())
 
 @Throws(FileNotFoundException::class)
@@ -61,18 +61,18 @@ fun openForReading(filePath: String?): BufferedReader? {
 // Creating the BufferedInputStream as shown above also provides readLines()
 // String(rawInputStream.readAllBytes())
 
+// Legacy function forceParentDirectoryExistence() is probably OBSOLETE.
+// Use Files.createDirectories(dest.getParent()) or File(fileName).parentFile.mkdirs()
+/*
 // Based on http://stackoverflow.com/questions/8668905/directory-does-not-exist-with-filewriter
 fun forceParentDirectoryExistence(fileName: String?) {
     var file: File? = File(fileName)
     var parent_directory = file!!.parentFile
     parent_directory?.mkdirs()
-    parent_directory = null
-    file = null
 }
+ */
 
-fun forceDirectoryExistence(directory: String) {
-    forceParentDirectoryExistence(directory + File.separator + "DELTHIS.txt")
-}
+// Legacy function forceDirectoryExistence() is OBSOLETE. Use File.mkdirs()
 
 private const val REPLACER = "\u25a2"
 fun filterOutNonPrintables(candidate: String): String? {
@@ -177,32 +177,9 @@ fun StringArrayContainsCaseInspecific(
     return false
 }
 
-// Ported this from the legacy code.
-// TODO: In Kotlin it might make more sense to use File(<complete-path>).deleteRecursively()
-fun hardDelete(fullPath: String) {
-    val check = File(fullPath)
-    if (check.isDirectory) {
-        val contents = check.list()
-        for (thisFile in contents) {
-            hardDelete(fullPath + File.separator + thisFile)
-        }
-    }
-    check.delete()
-}
+// Legacy function hardDelete() is OBSOLETE: Use File(<complete-path>).deleteRecursively()
 
-@Throws(IOException::class)
-fun copyCompletely(sourcePath: String, destinationPath: String) {
-    val check = File(sourcePath)
-    if (check.isDirectory) {
-        val contents = check.list()
-        for (thisFile in contents) {
-            copyCompletely(sourcePath + File.separator + thisFile, destinationPath + File.separator + thisFile)
-        }
-    } else {
-        forceParentDirectoryExistence(destinationPath)
-        Files.copy(check.toPath(), File(destinationPath).toPath())
-    }
-}
+// Legacy function copyCompletely() is OBSOLETE: Use File(<complete-path>).copyRecursively()
 
 fun sortMarkupTags(target: String): ArrayList<String>? {
     val result = ArrayList<String>()

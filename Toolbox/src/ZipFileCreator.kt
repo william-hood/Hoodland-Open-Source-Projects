@@ -46,7 +46,11 @@ class ZipFileCreator {
 
         // Create the actual ZIP file
         val byteBuffer = ByteArray(1024)
-        forceParentDirectoryExistence(fullPathToOutputFile)
+
+        //forceParentDirectoryExistence(fullPathToOutputFile)
+        // Force the parent directory to exist...
+        File(fullPathToOutputFile).parentFile.mkdirs()
+
         var zipOutput: ZipOutputStream? = ZipOutputStream(FileOutputStream(fullPathToOutputFile))
         for (thisFilePath in filesToAdd!!) {
             var reader: FileInputStream? = FileInputStream(File(thisFilePath))

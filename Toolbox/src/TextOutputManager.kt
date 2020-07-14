@@ -21,6 +21,7 @@
 
 package rockabilly.toolbox
 
+import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 import java.io.PrintWriter
@@ -38,7 +39,10 @@ class TextOutputManager(filename: String = UNSET_STRING, append: Boolean = false
                 internalPrintWriter = PrintWriter(System.out)
             } else {
                 try {
-                    forceParentDirectoryExistence(expectedFileName)
+                    //forceParentDirectoryExistence(expectedFileName)
+                    // Force the parent directory to exist...
+                    File(expectedFileName).parentFile.mkdirs()
+
                     internalPrintWriter = PrintWriter(FileWriter(
                             expectedFileName, shouldAppend))
                 } catch (dontCare: IOException) {
