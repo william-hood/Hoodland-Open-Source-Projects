@@ -21,6 +21,7 @@
 
 package rockabilly.toolbox
 
+// Used by and with DelimitedDataManager
 interface Parser<T> {
     fun parseMethod(stringToParse: String): T
 }

@@ -29,7 +29,6 @@ import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
-
 // Based on http://examples.javacodegeeks.com/core-java/util/zip/create-zip-file-from-multiple-files-with-zipoutputstream/
 class ZipFileCreator {
     private var filesToAdd: ArrayList<String>? = null
@@ -51,25 +50,22 @@ class ZipFileCreator {
         // Force the parent directory to exist...
         File(fullPathToOutputFile).parentFile.mkdirs()
 
-        var zipOutput: ZipOutputStream? = ZipOutputStream(FileOutputStream(fullPathToOutputFile))
+        var zipOutput: ZipOutputStream = ZipOutputStream(FileOutputStream(fullPathToOutputFile))
         for (thisFilePath in filesToAdd!!) {
-            var reader: FileInputStream? = FileInputStream(File(thisFilePath))
-            var zipPath: String? = thisFilePath.substring(fullPathToRoot.length + 1)
+            var reader = FileInputStream(File(thisFilePath))
+            var zipPath = thisFilePath.substring(fullPathToRoot.length + 1)
 
             // Debug - Leave Commented Out
             //System.out.println(zipPath);
-            zipOutput!!.putNextEntry(ZipEntry(zipPath))
+            zipOutput.putNextEntry(ZipEntry(zipPath))
             var length: Int
-            while (reader!!.read(byteBuffer).also { length = it } > 0) {
+            while (reader.read(byteBuffer).also { length = it } > 0) {
                 zipOutput.write(byteBuffer, 0, length)
             }
             zipOutput.closeEntry()
             reader.close()
-            zipPath = null
-            reader = null
         }
-        zipOutput!!.close()
-        zipOutput = null
+        zipOutput.close()
     }
 
     private fun recurse(fullPathToRoot: String) {

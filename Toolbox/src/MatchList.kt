@@ -48,7 +48,7 @@ class MatchList : ArrayList<String> {
         return false
     }
 
-    fun containsCaseInspecific(candidateString: String?): Boolean {
+    fun containsCaseInspecific(candidateString: String): Boolean {
         for (thisListedString in this) {
             if (thisListedString.equals(candidateString, ignoreCase = true)) return true
         }

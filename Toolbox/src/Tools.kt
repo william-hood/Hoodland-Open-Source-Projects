@@ -19,11 +19,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+// NOTE: See comments at end of file regarding methods from the Java & C# code that are now obsolete.
+
 package rockabilly.toolbox
 
 import java.io.*
 import java.net.URL
-import java.nio.file.Files
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -41,38 +42,9 @@ val quickTimeStamp: String
     get() = quickDateFormat.format(LocalDateTime.now())
 
 @Throws(FileNotFoundException::class)
-// TODO: Only used in Delimited Data Manager. Candidate for obsolescence.
-fun openForReading(filePath: String?): BufferedReader? {
-    return BufferedReader(FileReader(filePath)) // (filePath,
-    // FileMode.Open,
-    // FileAccess.Read,
-    // FileShare.Read);
+fun openForReading(filePath: String): BufferedReader {
+    return BufferedReader(FileReader(filePath))
 }
-
-// Legacy method readLineFromInputStream() is OBSOLETE
-// val check = BufferedReader(InputStreamReader(rawInputStream))
-// check.readLine()
-// There is also readLine for stdin and File.forEachLine() for files...
-
-// Legacy method readEntireInputStream() is OBSOLETE
-//  val check = BufferedReader(InputStreamReader(rawInputStream))
-//  check.readText()
-// File.readLines() can get the whole file as an array of lines
-// Creating the BufferedInputStream as shown above also provides readLines()
-// String(rawInputStream.readAllBytes())
-
-// Legacy function forceParentDirectoryExistence() is probably OBSOLETE.
-// Use Files.createDirectories(dest.getParent()) or File(fileName).parentFile.mkdirs()
-/*
-// Based on http://stackoverflow.com/questions/8668905/directory-does-not-exist-with-filewriter
-fun forceParentDirectoryExistence(fileName: String?) {
-    var file: File? = File(fileName)
-    var parent_directory = file!!.parentFile
-    parent_directory?.mkdirs()
-}
- */
-
-// Legacy function forceDirectoryExistence() is OBSOLETE. Use File.mkdirs()
 
 private const val REPLACER = "\u25a2"
 fun filterOutNonPrintables(candidate: String): String? {
@@ -90,36 +62,16 @@ fun robustGetString(candidate: Any?): String? {
     }
 }
 
-fun getOperatingSystemName(): String? {
+fun getOperatingSystemName(): String {
     return System.getProperty("os.name")
 }
 
-fun getCurrentWorkingDirectory(): String? {
+fun getCurrentWorkingDirectory(): String {
     return System.getProperty("user.dir")
 }
 
-fun getUserHomeFolder(): String? {
+fun getUserHomeFolder(): String {
     return System.getProperty("user.home")
-}
-
-fun getShortFileName(completeFilePath: String): String? {
-    val baseExt = completeFilePath.substring(completeFilePath
-            .lastIndexOf(File.separatorChar) + 1)
-    return if (completeFilePath.contains(".")) {
-        baseExt.substring(0, baseExt.lastIndexOf('.'))
-    } else baseExt
-}
-
-// TODO: Should this still exist? Does Memoir handle it better?
-fun depictFailure(thisFailure: Throwable): String? {
-    val stacktraceWriter = StringWriter()
-    thisFailure.printStackTrace(PrintWriter(stacktraceWriter))
-    /*
-		 * Throwable cause = thisFailure.getCause(); if (cause != null) {
-		 * stacktraceWriter.append(Symbols.NewLine);
-		 * stacktraceWriter.append("Caused by " + FX.arrow());
-		 * stacktraceWriter.append(depictFailure(cause)); }
-		 */return stacktraceWriter.toString()
 }
 
 // From http://stackoverflow.com/questions/2546078/java-random-long-number-in-0-x-n-range
@@ -177,10 +129,6 @@ fun StringArrayContainsCaseInspecific(
     return false
 }
 
-// Legacy function hardDelete() is OBSOLETE: Use File(<complete-path>).deleteRecursively()
-
-// Legacy function copyCompletely() is OBSOLETE: Use File(<complete-path>).copyRecursively()
-
 fun sortMarkupTags(target: String): ArrayList<String>? {
     val result = ArrayList<String>()
     var thisString = StringBuilder()
@@ -213,13 +161,12 @@ fun sortMarkupTags(target: String): ArrayList<String>? {
     }
     if (thisString.length > 0) {
         result.add(thisString.toString())
-        thisString = StringBuilder()
     }
     return result
 }
 
 // Based on http://stackoverflow.com/questions/13592236/parse-a-uri-string-into-name-value-collection
-fun getUrlParameters(url: URL): ArrayList<SimpleEntry<String, String>>? {
+fun getUrlParametersAsNameValuePairs(url: URL): ArrayList<SimpleEntry<String, String>> {
     val result = ArrayList<SimpleEntry<String, String>>()
     val params = url.query.split("&".toRegex()).toTypedArray()
     for (thisParam in params) {
@@ -230,7 +177,7 @@ fun getUrlParameters(url: URL): ArrayList<SimpleEntry<String, String>>? {
 }
 
 @Throws(IOException::class)
-fun getCRC32(filePath: String?): Long {
+fun getCRC32(filePath: String): Long {
     val file = FileInputStream(filePath)
     val check = CheckedInputStream(file, CRC32())
     val instream = BufferedInputStream(check)
@@ -241,3 +188,57 @@ fun getCRC32(filePath: String?): Long {
     instream.close()
     return result
 }
+
+// Legacy method readLineFromInputStream() is OBSOLETE
+// val check = BufferedReader(InputStreamReader(rawInputStream))
+// check.readLine()
+// There is also readLine for stdin and File.forEachLine() for files...
+
+// Legacy method readEntireInputStream() is OBSOLETE
+//  val check = BufferedReader(InputStreamReader(rawInputStream))
+//  check.readText()
+// File.readLines() can get the whole file as an array of lines
+// Creating the BufferedInputStream as shown above also provides readLines()
+// String(rawInputStream.readAllBytes())
+
+// Legacy function forceParentDirectoryExistence() is probably OBSOLETE.
+// Use Files.createDirectories(dest.getParent()) or File(fileName).parentFile.mkdirs()
+/*
+// Based on http://stackoverflow.com/questions/8668905/directory-does-not-exist-with-filewriter
+fun forceParentDirectoryExistence(fileName: String?) {
+    var file: File? = File(fileName)
+    var parent_directory = file!!.parentFile
+    parent_directory?.mkdirs()
+}
+ */
+
+// Legacy function forceDirectoryExistence() is OBSOLETE. Use File.mkdirs()
+
+// Legacy function getShortFileName() is OBSOLETE: Use File("myFile.txt").nameWithoutExtension
+/*
+fun getShortFileName(completeFilePath: String): String? {
+    val baseExt = completeFilePath.substring(completeFilePath
+            .lastIndexOf(File.separatorChar) + 1)
+    return if (completeFilePath.contains(".")) {
+        baseExt.substring(0, baseExt.lastIndexOf('.'))
+    } else baseExt
+}
+ */
+
+// Obsoleting this in favor of a namesake function in Memoir
+/*
+fun depictFailure(thisFailure: Throwable): String? {
+    val stacktraceWriter = StringWriter()
+    thisFailure.printStackTrace(PrintWriter(stacktraceWriter))
+    /*
+		 * Throwable cause = thisFailure.getCause(); if (cause != null) {
+		 * stacktraceWriter.append(Symbols.NewLine);
+		 * stacktraceWriter.append("Caused by " + FX.arrow());
+		 * stacktraceWriter.append(depictFailure(cause)); }
+		 */return stacktraceWriter.toString()
+}
+ */
+
+// Legacy function hardDelete() is OBSOLETE: Use File(<complete-path>).deleteRecursively()
+
+// Legacy function copyCompletely() is OBSOLETE: Use File(<complete-path>).copyRecursively()

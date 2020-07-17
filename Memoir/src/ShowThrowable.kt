@@ -21,12 +21,14 @@
 
 package rockabilly.memoir
 
+import java.io.ByteArrayOutputStream
+import java.io.PrintWriter
 import java.time.LocalDateTime
 import java.util.*
 
 private const val DEFAULT_STACKTRACE = "(no stacktrace)"
 
-fun Memoir.showThrowable(target: Throwable, timeStamp: LocalDateTime = LocalDateTime.now(), plainTextIndent: String = ""): String {
+fun Memoir.showThrowable(target: Throwable, timeStamp: LocalDateTime? = LocalDateTime.now(), plainTextIndent: String = ""): String {
     val result = StringBuilder("<div class=\"object exception\">\r\n")
     val name = target.javaClass.simpleName
     val htmlStackTrace = StringBuilder(DEFAULT_STACKTRACE)
@@ -83,7 +85,7 @@ fun Memoir.showThrowable(target: Throwable, timeStamp: LocalDateTime = LocalDate
                 this.echoPlainText("$plainTextIndent$plainTextLine", timeStamp = timeStamp)
             }
         } else {
-            // TODO: Confirm if this is a deliberate NO-OP
+            // TODO: Confirm from the C# code if this is a deliberate NO-OP
         }
     }
 
@@ -121,4 +123,14 @@ fun Memoir.showThrowable(target: Throwable, timeStamp: LocalDateTime = LocalDate
     this.echoPlainText("$plainTextIndent$EMOJI_TEXT_MEMOIR_CONCLUDE", timeStamp = timeStamp)
     this.echoPlainText("", timeStamp = timeStamp)
     return result.toString()
+}
+
+// TODO: Rather than echoPlainText() each line, make make more sense to use a StringBuilder and echo once at the end???
+fun depictFailure(thisFailure: Throwable): String {
+    val stream = ByteArrayOutputStream()
+    val printWriter = PrintWriter(stream)
+    val memoir = Memoir(thisFailure.javaClass.simpleName, printWriter)
+    memoir.showThrowable(thisFailure, null)
+    memoir.conclude()
+    return String(stream.toByteArray())
 }
