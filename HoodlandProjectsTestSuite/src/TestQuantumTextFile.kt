@@ -34,14 +34,14 @@ again today.
 Gee, I wish
 he'd go away!"""
 
-class TestQuantumTextFileFirstWrite:QuantumTextFileTest(
+class TestQuantumTextFileFirstWrite:Test(
         "QuantumTextFile - First Write Test",
         "When a QuantumTextFile is created, the file should not exist before it is written, and should exist after the first write.",
         "TB-QT-01",
         "Toolbox", "QuantumTextFile", "All"
 ) {
     override fun performTest() {
-        val fileName = "$tmpFolder${File.separatorChar}TBTO01.txt"
+        val fileName = "$artifactsDirectory${File.separatorChar}TBTO01.txt"
         val file = File(fileName)
         assert.shouldBeTrue(Files.notExists(file.toPath()), "The file ${file.name} should not exist at the beginning of the test")
         log.info("Creating the QuantumTextFile")
@@ -61,14 +61,14 @@ class TestQuantumTextFileFirstWrite:QuantumTextFileTest(
     }
 }
 
-class TestQuantumTextFileClosedBeforeWrite:QuantumTextFileTest(
+class TestQuantumTextFileClosedBeforeWrite:Test(
         "QuantumTextFile - Close Before Write",
         "When a QuantumTextFile is created, then closed before anything is written, no actual file on the disk should be created.",
         "TB-QT-02",
         "Toolbox", "QuantumTextFile", "All"
 ) {
     override fun performTest() {
-        val fileName = "$tmpFolder${File.separatorChar}TBTO02.txt"
+        val fileName = "$artifactsDirectory${File.separatorChar}TBTO02.txt"
         val file = File(fileName)
         assert.shouldBeTrue(Files.notExists(file.toPath()), "The file ${file.name} should not exist at the beginning of the test")
         log.info("Creating the QuantumTextFile")
@@ -79,14 +79,14 @@ class TestQuantumTextFileClosedBeforeWrite:QuantumTextFileTest(
     }
 }
 
-class TestQuantumTextFileAppendFalse:QuantumTextFileTest(
+class TestQuantumTextFileAppendFalse:Test(
         "QuantumTextFile - Append Set to False",
         "Setting the 'append' parameter of the constructor to 'false' should clobber the file if it already exists.",
         "TB-QT-03",
         "Toolbox", "QuantumTextFile", "All"
 ) {
     override fun performTest() {
-        val fileName = "$tmpFolder${File.separatorChar}TBTO03.txt"
+        val fileName = "$artifactsDirectory${File.separatorChar}TBTO03.txt"
         val file = File(fileName)
         log.info("Creating pre-existing file ${file.name}")
         file.writeText(fileContent)
@@ -107,14 +107,14 @@ class TestQuantumTextFileAppendFalse:QuantumTextFileTest(
     }
 }
 
-class TestQuantumTextFileAppendDefault:QuantumTextFileTest(
+class TestQuantumTextFileAppendDefault:Test(
         "QuantumTextFile - Append Left Default",
         "Not supplying the 'append' parameter should behave as if it was et to 'false'.",
         "TB-QT-04",
         "Toolbox", "QuantumTextFile", "All"
 ) {
     override fun performTest() {
-        val fileName = "$tmpFolder${File.separatorChar}TBTO04.txt"
+        val fileName = "$artifactsDirectory${File.separatorChar}TBTO04.txt"
         val file = File(fileName)
         log.info("Creating pre-existing file ${file.name}")
         file.writeText(fileContent)
@@ -135,14 +135,14 @@ class TestQuantumTextFileAppendDefault:QuantumTextFileTest(
     }
 }
 
-class TestQuantumTextFileAppendTrue:QuantumTextFileTest(
+class TestQuantumTextFileAppendTrue:Test(
         "QuantumTextFile - Append Set to True",
         "Setting the 'append' parameter of the constructor to true should append the file if it already exists.",
         "TB-QT-05",
         "Toolbox", "QuantumTextFile", "All"
 ) {
     override fun performTest() {
-        val fileName = "$tmpFolder${File.separatorChar}TBTO05.txt"
+        val fileName = "$artifactsDirectory${File.separatorChar}TBTO05.txt"
         val file = File(fileName)
         log.info("Creating pre-existing file ${file.name}")
         file.writeText(fileContent)
@@ -163,14 +163,14 @@ class TestQuantumTextFileAppendTrue:QuantumTextFileTest(
     }
 }
 
-class TestQuantumTextFileAppendNonexistant:QuantumTextFileTest(
+class TestQuantumTextFileAppendNonexistant:Test(
         "QuantumTextFile - Append to Nonexistent File",
         "When a QuantumTextFile is created with append set to true, the file should be created as normal if it doesn't already exist.",
         "TB-QT-06",
         "Toolbox", "QuantumTextFile", "All"
 ) {
     override fun performTest() {
-        val fileName = "$tmpFolder${File.separatorChar}TBTO06.txt"
+        val fileName = "$artifactsDirectory${File.separatorChar}TBTO06.txt"
         val file = File(fileName)
         assert.shouldBeTrue(Files.notExists(file.toPath()), "The file ${file.name} should not exist at the beginning of the test")
         log.info("Creating the QuantumTextFile")
@@ -182,18 +182,5 @@ class TestQuantumTextFileAppendNonexistant:QuantumTextFileTest(
 
         val createdFileContents = file.readText()
         assert.shouldBeEqual(createdFileContents, fileContent, "The newly created file's content should be as expected")
-    }
-}
-
-abstract class QuantumTextFileTest(name: String, detailedDescription: String, testCaseID: String, vararg categories: String): Test(name, detailedDescription, testCaseID, *categories) {
-    protected var tmpFolder = ""
-    private var tmpFolderFile: File? = null
-
-    override fun setup() {
-        log.info("Creating sandbox folder $tmpFolder")
-        tmpFolder = artifactsDirectory + File.separatorChar + "(this is a test artifact)"
-        tmpFolderFile = File(tmpFolder)
-        tmpFolderFile!!.mkdir()
-        assert.shouldBeTrue(Files.exists(tmpFolderFile!!.toPath()), "Before setup() finishes, the folder $tmpFolder should be confirmed to exist.")
     }
 }

@@ -26,20 +26,20 @@ interface Parser<T> {
     fun parseMethod(stringToParse: String): T
 }
 
-class IntParser : Parser<Int> {
+object IntParser : Parser<Int> {
     override fun parseMethod(stringToParse: String): Int {
         return stringToParse.toInt()
     }
 }
 
-class FloatParser : Parser<Float> {
+object FloatParser : Parser<Float> {
     override fun parseMethod(stringToParse: String): Float {
         return stringToParse.toFloat()
     }
 }
 
-class StringParser : Parser<String> {
+object StringParser : Parser<String> {
     override fun parseMethod(stringToParse: String): String {
-        return stringToParse
+        return stringToParse.trim()
     }
 }

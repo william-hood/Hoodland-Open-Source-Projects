@@ -190,7 +190,7 @@ public object TestCollection: ArrayList<Test>() {
 
         try {
             // Try to append to an existing one
-            summaryReport = MatrixFile.read(fullyQulaifiedSummaryFileName, StringParser())
+            summaryReport = MatrixFile.read(fullyQulaifiedSummaryFileName, StringParser)
         } catch(dontCare: Throwable) {
             // Deliberate NO-OP
             // Leave the summaryReport as created above

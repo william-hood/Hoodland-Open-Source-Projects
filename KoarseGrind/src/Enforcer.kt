@@ -46,7 +46,7 @@ class Enforcer(conditionalType: TestConditionalType, owner: Test) {
 
     fun shouldBeEqual(candidateA: Any?, candidateB: Any?, explanation: String = "Expected equal values. (Actual values were $candidateA and $candidateB)") {
         if (candidateA != null) {
-            enforce(candidateA.equals(candidateB), explanation)
+            enforce(candidateA == candidateB, explanation)
         } else {
             enforce(candidateB == null, explanation)
         }
@@ -54,7 +54,7 @@ class Enforcer(conditionalType: TestConditionalType, owner: Test) {
 
     fun shouldNotBeEqual(candidateA: Any?, candidateB: Any?, explanation: String = "Expected unequal values. (Actual values were $candidateA and $candidateB)") {
         if (candidateA != null) {
-            enforce(!candidateA.equals(candidateB), explanation)
+            enforce(candidateA != candidateB, explanation)
         } else {
             enforce(candidateB != null, explanation)
         }

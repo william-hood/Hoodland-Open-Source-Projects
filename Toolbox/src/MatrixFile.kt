@@ -53,6 +53,12 @@ class MatrixFile<T> {
         allData.add(newDataRow)
     }
 
+    fun addDataRow(vararg newData: T) {
+        val result = ArrayList<T>()
+        result.addAll(newData)
+        addDataRow(result)
+    }
+
     fun removeDataRow(columnName: String, value: T) {
         val dataRow = getDataRow(columnName, value)
         if (dataRow != null) {
@@ -94,7 +100,7 @@ class MatrixFile<T> {
                 lineOutBuilder.append(delimiter)
                 lineOutBuilder.append(createStringFromBasisCharacter(' ', spacing))
             }
-            lineOutBuilder.append(dataRow[cursor])
+            lineOutBuilder.append(dataRow[cursor].toString().trim())
         }
         return lineOutBuilder.toString()
     }
