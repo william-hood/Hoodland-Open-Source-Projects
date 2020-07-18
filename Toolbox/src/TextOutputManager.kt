@@ -53,10 +53,13 @@ class TextOutputManager(filename: String = UNSET_STRING, append: Boolean = false
         }
     }
 
-    fun println(output: String?) {
+    fun println(output: String) {
+        print("$output$CRLF")
+    }
+
+    fun print(output: String) {
         createPrintWriterIfNeeded()
         internalPrintWriter!!.print(output)
-        internalPrintWriter!!.print(CRLF)
     }
 
     fun flush() {

@@ -20,16 +20,21 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import hoodland.opensource.koarsegrind.Test
-import hoodland.opensource.memoir.showThrowable
 import hoodland.opensource.toolbox.*
 import java.io.File
 import java.nio.file.Files
-import java.nio.file.Path
 
-// TODO: File should not exist until first write.
-// TODO: If File closed before write it does not exist.
 // TODO: File will be appended to if append set to true.
-// TODO: File will NOT be appended to if append set to false.
+
+private const val clobber = "The file's been clobbered!!! Bwa-ha-haaaaa!!!"
+private const val fileContent = """The other day,
+upon the stair,
+I saw a man,
+who wasn't there.
+He wasn't there
+again today.
+Gee, I wish
+he'd go away!"""
 
 class TestTextOutputManagerFirstWrite:TextOutputManagerTest(
         "TextOutputManager - First Write Test",
@@ -37,26 +42,149 @@ class TestTextOutputManagerFirstWrite:TextOutputManagerTest(
         "TB-TO-01",
         "Toolbox", "TextOutputManager", "All"
 ) {
-
     override fun performTest() {
         val fileName = "$tmpFolder${File.separatorChar}TBTO01.txt"
         val file = File(fileName)
-        assert.shouldBeTrue(Files.notExists(file.toPath()), "The file $fileName should not exist at the beginning of the test.")
+        assert.shouldBeTrue(Files.notExists(file.toPath()), "The file ${file.name} should not exist at the beginning of the test")
         log.info("Creating the TextOutputManager")
         val candidate = TextOutputManager(fileName, false)
-        assert.shouldBeTrue(Files.notExists(file.toPath()), "The file $fileName should STILL not exist after creating the TextOutputManager.")
+        assert.shouldBeTrue(Files.notExists(file.toPath()), "The file should STILL not exist after creating the TextOutputManager")
         log.info("Flushing the newly created TextOutputManager before anything is written")
         candidate.flush()
-        assert.shouldBeTrue(Files.notExists(file.toPath()), "The file $fileName should also STILL not exist if the unused TextOutputManager is flushed.")
-        candidate.println("OK, the file can be written now.")
+        assert.shouldBeTrue(Files.notExists(file.toPath()), "The file should also STILL not exist if the unused TextOutputManager is flushed")
+        candidate.print(fileContent)
         candidate.flush()
-        assert.shouldBeTrue(Files.exists(file.toPath()), "Now that the TextOutput manager has been written to and flushed, The file $fileName should exist.")
+        assert.shouldBeTrue(Files.exists(file.toPath()), "Now that the TextOutput manager has been written to and flushed, The file ${file.name} should exist")
         log.info("Closing the TextOutputManager")
-        assert.shouldBeTrue(Files.exists(file.toPath()), "The file $fileName should still exist after the TextOutputManager is closed.")
+        assert.shouldBeTrue(Files.exists(file.toPath()), "The file should still exist after the TextOutputManager is closed")
 
+        val createdFileContents = file.readText()
+        assert.shouldBeEqual(createdFileContents, fileContent, "The newly created file's content should be as expected")
     }
+}
+
+class TestTextOutputManagerClosedBeforeWrite:TextOutputManagerTest(
+        "TextOutputManager - Close Before Write",
+        "When a TextOutputManager is created, then closed before anything is written, no actual file on the disk should be created.",
+        "TB-TO-02",
+        "Toolbox", "TextOutputManager", "All"
+) {
+    override fun performTest() {
+        val fileName = "$tmpFolder${File.separatorChar}TBTO02.txt"
+        val file = File(fileName)
+        assert.shouldBeTrue(Files.notExists(file.toPath()), "The file ${file.name} should not exist at the beginning of the test")
+        log.info("Creating the TextOutputManager")
+        val candidate = TextOutputManager(fileName, false)
+        log.info("Closing the newly created TextOutputManager before anything is written")
+        candidate.close()
+        assert.shouldBeTrue(Files.notExists(file.toPath()), "The file should STILL not exist if the unused TextOutputManager is closed")
+    }
+}
+
+class TestTextOutputManagerAppendFalse:TextOutputManagerTest(
+        "TextOutputManager - Append Set to False",
+        "Setting the 'append' parameter of the constructor to 'false' should clobber the file if it already exists.",
+        "TB-TO-03",
+        "Toolbox", "TextOutputManager", "All"
+) {
+    override fun performTest() {
+        val fileName = "$tmpFolder${File.separatorChar}TBTO03.txt"
+        val file = File(fileName)
+        log.info("Creating pre-existing file ${file.name}")
+        file.writeText(fileContent)
+
+        val createdFileContents = file.readText()
+        assert.shouldBeEqual(createdFileContents, fileContent, "The newly created file's content should be as expected")
 
 
+        log.info("Creating the TextOutputManager with 'append' explicitly set to false")
+        val candidate = TextOutputManager(fileName, false)
+        log.info("Clobbering the file with new contents")
+        candidate.print(clobber)
+        candidate.flush()
+        candidate.close()
+
+        val clobberedFileContents = file.readText()
+        assert.shouldBeEqual(clobberedFileContents, clobber, "The file should now only have the new contents")
+    }
+}
+
+class TestTextOutputManagerAppendDefault:TextOutputManagerTest(
+        "TextOutputManager - Append Left Default",
+        "Not supplying the 'append' parameter should behave as if it was et to 'false'.",
+        "TB-TO-04",
+        "Toolbox", "TextOutputManager", "All"
+) {
+    override fun performTest() {
+        val fileName = "$tmpFolder${File.separatorChar}TBTO04.txt"
+        val file = File(fileName)
+        log.info("Creating pre-existing file ${file.name}")
+        file.writeText(fileContent)
+
+        val createdFileContents = file.readText()
+        assert.shouldBeEqual(createdFileContents, fileContent, "The newly created file's content should be as expected")
+
+
+        log.info("Creating the TextOutputManager with 'append' not specified")
+        val candidate = TextOutputManager(fileName)
+        log.info("Clobbering the file with new contents")
+        candidate.print(clobber)
+        candidate.flush()
+        candidate.close()
+
+        val clobberedFileContents = file.readText()
+        assert.shouldBeEqual(clobberedFileContents, clobber, "The file should now only have the new contents")
+    }
+}
+
+class TestTextOutputManagerAppendTrue:TextOutputManagerTest(
+        "TextOutputManager - Append Set to True",
+        "Setting the 'append' parameter of the constructor to true should append the file if it already exists.",
+        "TB-TO-05",
+        "Toolbox", "TextOutputManager", "All"
+) {
+    override fun performTest() {
+        val fileName = "$tmpFolder${File.separatorChar}TBTO05.txt"
+        val file = File(fileName)
+        log.info("Creating pre-existing file ${file.name}")
+        file.writeText(fileContent)
+
+        val createdFileContents = file.readText()
+        assert.shouldBeEqual(createdFileContents, fileContent, "The newly created file's content should be as expected")
+
+
+        log.info("Creating the TextOutputManager with 'append' explicitly set to true")
+        val candidate = TextOutputManager(fileName, true)
+        log.info("Appending the file with new contents")
+        candidate.print(clobber)
+        candidate.flush()
+        candidate.close()
+
+        val appendedFileContents = file.readText()
+        assert.shouldBeEqual(appendedFileContents, "$fileContent$clobber", "The file should now have the old contents immediately followed by the new contents")
+    }
+}
+
+class TestTextOutputManagerAppendNonexistant:TextOutputManagerTest(
+        "TextOutputManager - Append to Nonexistent File",
+        "When a TextOutputManager is created with append set to true, the file should be created as normal if it doesn't already exist.",
+        "TB-TO-06",
+        "Toolbox", "TextOutputManager", "All"
+) {
+    override fun performTest() {
+        val fileName = "$tmpFolder${File.separatorChar}TBTO06.txt"
+        val file = File(fileName)
+        assert.shouldBeTrue(Files.notExists(file.toPath()), "The file ${file.name} should not exist at the beginning of the test")
+        log.info("Creating the TextOutputManager")
+        val candidate = TextOutputManager(fileName, true)
+        candidate.print(fileContent)
+        candidate.flush()
+        assert.shouldBeTrue(Files.exists(file.toPath()), "Now that the TextOutput manager has been written to and flushed, The file ${file.name} should exist")
+        log.info("Closing the TextOutputManager")
+
+        val createdFileContents = file.readText()
+        assert.shouldBeEqual(createdFileContents, fileContent, "The newly created file's content should be as expected")
+    }
 }
 
 abstract class TextOutputManagerTest(name: String, detailedDescription: String, testCaseID: String, vararg categories: String): Test(name, detailedDescription, testCaseID, *categories) {
