@@ -20,6 +20,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import hoodland.opensource.koarsegrind.Test
+import hoodland.opensource.memoir.showObject
 import hoodland.opensource.toolbox.*
 import java.io.File
 
@@ -62,6 +63,9 @@ class TestMatrixFileTest:Test(
         val originalRow4 = original.getDataRow("First Column", "So")
         val copyRow4 = copy.getDataRow("First Column", "So")
         assert.shouldBeEqual(originalRow4, copyRow4, "Original's fourth row should be the same as the copy's")
+
+        log.showObject(original, "Original")
+        log.showObject(copy, "Copy")
 
         log.info("Writing a copy file based on the read-in data")
         copy.write(copyFileName)
