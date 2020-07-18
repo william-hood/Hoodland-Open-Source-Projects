@@ -26,7 +26,10 @@ import java.io.FileWriter
 import java.io.IOException
 import java.io.PrintWriter
 
-class TextOutputManager(filename: String = UNSET_STRING, append: Boolean = false, outputStream: PrintWriter? = null) {
+/**
+ * Prepares a text output file, but no file is actually created until and unless it is written to.
+ */
+class QuantumTextFile(filename: String = UNSET_STRING, append: Boolean = false, outputStream: PrintWriter? = null) {
     // Creates a file with header only if the first call to write is made.
     // Need method to properly flush and close. ???
     private var internalPrintWriter = outputStream
@@ -43,8 +46,7 @@ class TextOutputManager(filename: String = UNSET_STRING, append: Boolean = false
                     // Force the parent directory to exist...
                     File(expectedFileName).parentFile.mkdirs()
 
-                    internalPrintWriter = PrintWriter(FileWriter(
-                            expectedFileName, shouldAppend))
+                    internalPrintWriter = PrintWriter(FileWriter(expectedFileName, shouldAppend))
                 } catch (dontCare: IOException) {
                     internalPrintWriter = PrintWriter(System.out)
                     println("WARNING: Could not create output file ($expectedFileName).  Reverting to standard console output.")

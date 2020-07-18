@@ -24,8 +24,6 @@ import hoodland.opensource.toolbox.*
 import java.io.File
 import java.nio.file.Files
 
-// TODO: File will be appended to if append set to true.
-
 private const val clobber = "The file's been clobbered!!! Bwa-ha-haaaaa!!!"
 private const val fileContent = """The other day,
 upon the stair,
@@ -36,56 +34,56 @@ again today.
 Gee, I wish
 he'd go away!"""
 
-class TestTextOutputManagerFirstWrite:TextOutputManagerTest(
-        "TextOutputManager - First Write Test",
-        "When a TextOutputManager is created, the file should not exist before it is written, and should exist after the first write.",
-        "TB-TO-01",
-        "Toolbox", "TextOutputManager", "All"
+class TestQuantumTextFileFirstWrite:QuantumTextFileTest(
+        "QuantumTextFile - First Write Test",
+        "When a QuantumTextFile is created, the file should not exist before it is written, and should exist after the first write.",
+        "TB-QT-01",
+        "Toolbox", "QuantumTextFile", "All"
 ) {
     override fun performTest() {
         val fileName = "$tmpFolder${File.separatorChar}TBTO01.txt"
         val file = File(fileName)
         assert.shouldBeTrue(Files.notExists(file.toPath()), "The file ${file.name} should not exist at the beginning of the test")
-        log.info("Creating the TextOutputManager")
-        val candidate = TextOutputManager(fileName, false)
-        assert.shouldBeTrue(Files.notExists(file.toPath()), "The file should STILL not exist after creating the TextOutputManager")
-        log.info("Flushing the newly created TextOutputManager before anything is written")
+        log.info("Creating the QuantumTextFile")
+        val candidate = QuantumTextFile(fileName, false)
+        assert.shouldBeTrue(Files.notExists(file.toPath()), "The file should STILL not exist after creating the QuantumTextFile")
+        log.info("Flushing the newly created QuantumTextFile before anything is written")
         candidate.flush()
-        assert.shouldBeTrue(Files.notExists(file.toPath()), "The file should also STILL not exist if the unused TextOutputManager is flushed")
+        assert.shouldBeTrue(Files.notExists(file.toPath()), "The file should also STILL not exist if the unused QuantumTextFile is flushed")
         candidate.print(fileContent)
         candidate.flush()
         assert.shouldBeTrue(Files.exists(file.toPath()), "Now that the TextOutput manager has been written to and flushed, The file ${file.name} should exist")
-        log.info("Closing the TextOutputManager")
-        assert.shouldBeTrue(Files.exists(file.toPath()), "The file should still exist after the TextOutputManager is closed")
+        log.info("Closing the QuantumTextFile")
+        assert.shouldBeTrue(Files.exists(file.toPath()), "The file should still exist after the QuantumTextFile is closed")
 
         val createdFileContents = file.readText()
         assert.shouldBeEqual(createdFileContents, fileContent, "The newly created file's content should be as expected")
     }
 }
 
-class TestTextOutputManagerClosedBeforeWrite:TextOutputManagerTest(
-        "TextOutputManager - Close Before Write",
-        "When a TextOutputManager is created, then closed before anything is written, no actual file on the disk should be created.",
-        "TB-TO-02",
-        "Toolbox", "TextOutputManager", "All"
+class TestQuantumTextFileClosedBeforeWrite:QuantumTextFileTest(
+        "QuantumTextFile - Close Before Write",
+        "When a QuantumTextFile is created, then closed before anything is written, no actual file on the disk should be created.",
+        "TB-QT-02",
+        "Toolbox", "QuantumTextFile", "All"
 ) {
     override fun performTest() {
         val fileName = "$tmpFolder${File.separatorChar}TBTO02.txt"
         val file = File(fileName)
         assert.shouldBeTrue(Files.notExists(file.toPath()), "The file ${file.name} should not exist at the beginning of the test")
-        log.info("Creating the TextOutputManager")
-        val candidate = TextOutputManager(fileName, false)
-        log.info("Closing the newly created TextOutputManager before anything is written")
+        log.info("Creating the QuantumTextFile")
+        val candidate = QuantumTextFile(fileName, false)
+        log.info("Closing the newly created QuantumTextFile before anything is written")
         candidate.close()
-        assert.shouldBeTrue(Files.notExists(file.toPath()), "The file should STILL not exist if the unused TextOutputManager is closed")
+        assert.shouldBeTrue(Files.notExists(file.toPath()), "The file should STILL not exist if the unused QuantumTextFile is closed")
     }
 }
 
-class TestTextOutputManagerAppendFalse:TextOutputManagerTest(
-        "TextOutputManager - Append Set to False",
+class TestQuantumTextFileAppendFalse:QuantumTextFileTest(
+        "QuantumTextFile - Append Set to False",
         "Setting the 'append' parameter of the constructor to 'false' should clobber the file if it already exists.",
-        "TB-TO-03",
-        "Toolbox", "TextOutputManager", "All"
+        "TB-QT-03",
+        "Toolbox", "QuantumTextFile", "All"
 ) {
     override fun performTest() {
         val fileName = "$tmpFolder${File.separatorChar}TBTO03.txt"
@@ -97,8 +95,8 @@ class TestTextOutputManagerAppendFalse:TextOutputManagerTest(
         assert.shouldBeEqual(createdFileContents, fileContent, "The newly created file's content should be as expected")
 
 
-        log.info("Creating the TextOutputManager with 'append' explicitly set to false")
-        val candidate = TextOutputManager(fileName, false)
+        log.info("Creating the QuantumTextFile with 'append' explicitly set to false")
+        val candidate = QuantumTextFile(fileName, false)
         log.info("Clobbering the file with new contents")
         candidate.print(clobber)
         candidate.flush()
@@ -109,11 +107,11 @@ class TestTextOutputManagerAppendFalse:TextOutputManagerTest(
     }
 }
 
-class TestTextOutputManagerAppendDefault:TextOutputManagerTest(
-        "TextOutputManager - Append Left Default",
+class TestQuantumTextFileAppendDefault:QuantumTextFileTest(
+        "QuantumTextFile - Append Left Default",
         "Not supplying the 'append' parameter should behave as if it was et to 'false'.",
-        "TB-TO-04",
-        "Toolbox", "TextOutputManager", "All"
+        "TB-QT-04",
+        "Toolbox", "QuantumTextFile", "All"
 ) {
     override fun performTest() {
         val fileName = "$tmpFolder${File.separatorChar}TBTO04.txt"
@@ -125,8 +123,8 @@ class TestTextOutputManagerAppendDefault:TextOutputManagerTest(
         assert.shouldBeEqual(createdFileContents, fileContent, "The newly created file's content should be as expected")
 
 
-        log.info("Creating the TextOutputManager with 'append' not specified")
-        val candidate = TextOutputManager(fileName)
+        log.info("Creating the QuantumTextFile with 'append' not specified")
+        val candidate = QuantumTextFile(fileName)
         log.info("Clobbering the file with new contents")
         candidate.print(clobber)
         candidate.flush()
@@ -137,11 +135,11 @@ class TestTextOutputManagerAppendDefault:TextOutputManagerTest(
     }
 }
 
-class TestTextOutputManagerAppendTrue:TextOutputManagerTest(
-        "TextOutputManager - Append Set to True",
+class TestQuantumTextFileAppendTrue:QuantumTextFileTest(
+        "QuantumTextFile - Append Set to True",
         "Setting the 'append' parameter of the constructor to true should append the file if it already exists.",
-        "TB-TO-05",
-        "Toolbox", "TextOutputManager", "All"
+        "TB-QT-05",
+        "Toolbox", "QuantumTextFile", "All"
 ) {
     override fun performTest() {
         val fileName = "$tmpFolder${File.separatorChar}TBTO05.txt"
@@ -153,8 +151,8 @@ class TestTextOutputManagerAppendTrue:TextOutputManagerTest(
         assert.shouldBeEqual(createdFileContents, fileContent, "The newly created file's content should be as expected")
 
 
-        log.info("Creating the TextOutputManager with 'append' explicitly set to true")
-        val candidate = TextOutputManager(fileName, true)
+        log.info("Creating the QuantumTextFile with 'append' explicitly set to true")
+        val candidate = QuantumTextFile(fileName, true)
         log.info("Appending the file with new contents")
         candidate.print(clobber)
         candidate.flush()
@@ -165,45 +163,37 @@ class TestTextOutputManagerAppendTrue:TextOutputManagerTest(
     }
 }
 
-class TestTextOutputManagerAppendNonexistant:TextOutputManagerTest(
-        "TextOutputManager - Append to Nonexistent File",
-        "When a TextOutputManager is created with append set to true, the file should be created as normal if it doesn't already exist.",
-        "TB-TO-06",
-        "Toolbox", "TextOutputManager", "All"
+class TestQuantumTextFileAppendNonexistant:QuantumTextFileTest(
+        "QuantumTextFile - Append to Nonexistent File",
+        "When a QuantumTextFile is created with append set to true, the file should be created as normal if it doesn't already exist.",
+        "TB-QT-06",
+        "Toolbox", "QuantumTextFile", "All"
 ) {
     override fun performTest() {
         val fileName = "$tmpFolder${File.separatorChar}TBTO06.txt"
         val file = File(fileName)
         assert.shouldBeTrue(Files.notExists(file.toPath()), "The file ${file.name} should not exist at the beginning of the test")
-        log.info("Creating the TextOutputManager")
-        val candidate = TextOutputManager(fileName, true)
+        log.info("Creating the QuantumTextFile")
+        val candidate = QuantumTextFile(fileName, true)
         candidate.print(fileContent)
         candidate.flush()
         assert.shouldBeTrue(Files.exists(file.toPath()), "Now that the TextOutput manager has been written to and flushed, The file ${file.name} should exist")
-        log.info("Closing the TextOutputManager")
+        log.info("Closing the QuantumTextFile")
 
         val createdFileContents = file.readText()
         assert.shouldBeEqual(createdFileContents, fileContent, "The newly created file's content should be as expected")
     }
 }
 
-abstract class TextOutputManagerTest(name: String, detailedDescription: String, testCaseID: String, vararg categories: String): Test(name, detailedDescription, testCaseID, *categories) {
+abstract class QuantumTextFileTest(name: String, detailedDescription: String, testCaseID: String, vararg categories: String): Test(name, detailedDescription, testCaseID, *categories) {
     protected var tmpFolder = ""
     private var tmpFolderFile: File? = null
 
     override fun setup() {
-        log.info("Creating temporary folder $tmpFolder")
+        log.info("Creating sandbox folder $tmpFolder")
         tmpFolder = artifactsDirectory + File.separatorChar + "(this is a test artifact)"
         tmpFolderFile = File(tmpFolder)
         tmpFolderFile!!.mkdir()
         assert.shouldBeTrue(Files.exists(tmpFolderFile!!.toPath()), "Before setup() finishes, the folder $tmpFolder should be confirmed to exist.")
     }
-
-    /*
-    override fun cleanup() {
-            log.info("Deleting temporary folder $tmpFolder and all its contents")
-            File(tmpFolder).deleteRecursively()
-        assert.shouldBeTrue(Files.notExists(tmpFolderFile.toPath()), "Temporary folder $tmpFolder should NOT exist after cleaning up")
-    }
-     */
 }

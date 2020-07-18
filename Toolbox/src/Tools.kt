@@ -166,28 +166,31 @@ fun sortMarkupTags(target: String): ArrayList<String>? {
 }
 
 // Based on http://stackoverflow.com/questions/13592236/parse-a-uri-string-into-name-value-collection
-fun getUrlParametersAsNameValuePairs(url: URL): ArrayList<SimpleEntry<String, String>> {
-    val result = ArrayList<SimpleEntry<String, String>>()
-    val params = url.query.split("&".toRegex()).toTypedArray()
-    for (thisParam in params) {
-        val keyValuePair = thisParam.split("=".toRegex()).toTypedArray()
-        result.add(SimpleEntry(keyValuePair[0], keyValuePair[1]))
-    }
-    return result
-}
+val URL.queryParamsAsNameValuePairs : ArrayList<SimpleEntry<String, String>>
+        get() {
+            val result = ArrayList<SimpleEntry<String, String>>()
+            val params = this.query.split("&".toRegex()).toTypedArray()
+            for (thisParam in params) {
+                val keyValuePair = thisParam.split("=".toRegex()).toTypedArray()
+                result.add(SimpleEntry(keyValuePair[0], keyValuePair[1]))
+            }
+            return result
+        }
 
-@Throws(IOException::class)
-fun getCRC32(filePath: String): Long {
-    val file = FileInputStream(filePath)
-    val check = CheckedInputStream(file, CRC32())
-    val instream = BufferedInputStream(check)
-    while (instream.read() != -1) {
-        // Read file in completely
+val File.crc32ChecksumValue: Long
+    get() {
+        val midStream = CheckedInputStream(this.inputStream(), CRC32())
+        val readStream = BufferedInputStream(midStream)
+        try {
+            while (readStream.read() != -1) {
+                // Read the file in completely
+            }
+        } finally {
+            readStream.close()
+        }
+
+        return midStream.checksum.value
     }
-    val result = check.checksum.value
-    instream.close()
-    return result
-}
 
 // Legacy method readLineFromInputStream() is OBSOLETE
 // val check = BufferedReader(InputStreamReader(rawInputStream))

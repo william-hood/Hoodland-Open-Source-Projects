@@ -43,6 +43,7 @@ internal class TestPhaseContext(val memoir: Memoir) {
         }
 }
 
+// TODO: Test priority has to matter or be taken out.
 enum class TestPriority {
     HAPPY_PATH, CRITICAL, NORMAL, LOW
 }

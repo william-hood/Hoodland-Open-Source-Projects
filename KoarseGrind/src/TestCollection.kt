@@ -186,11 +186,11 @@ public object TestCollection: ArrayList<Test>() {
     fun createSummaryReport(rootDirectory: String, memoir: Memoir = Memoir(forPlainText = stdout)) {
         val fullyQulaifiedSummaryFileName = rootDirectory + File.separatorChar + SUMMARY_FILE_NAME
         memoir.info("Creating Test Suite Summary Report ($fullyQulaifiedSummaryFileName)")
-        var summaryReport = DelimitedDataManager<String>("Categorization", "Test Priority", "Test ID", "Name", "Description", "Status", "Reasons")
+        var summaryReport = MatrixFile<String>("Categorization", "Test Priority", "Test ID", "Name", "Description", "Status", "Reasons")
 
         try {
             // Try to append to an existing one
-            summaryReport = DelimitedDataManager.fromFile(fullyQulaifiedSummaryFileName, StringParser())
+            summaryReport = MatrixFile.read(fullyQulaifiedSummaryFileName, StringParser())
         } catch(dontCare: Throwable) {
             // Deliberate NO-OP
             // Leave the summaryReport as created above
@@ -202,14 +202,14 @@ public object TestCollection: ArrayList<Test>() {
             }
         }
 
-        summaryReport.toFile(fullyQulaifiedSummaryFileName)
+        summaryReport.write(fullyQulaifiedSummaryFileName)
 
 
         // Section below creates a single line file stating the overall status
         val fullyQulaifiedSummaryTextFileName = rootDirectory + File.separatorChar + SUMMARY_TEXTFILE_NAME
 
         try {
-            val textFile = TextOutputManager(fullyQulaifiedSummaryTextFileName)
+            val textFile = QuantumTextFile(fullyQulaifiedSummaryTextFileName)
             textFile.println(overallStatus.toString())
             textFile.flush()
             textFile.close() // Shouldn't need a getter because this is a val

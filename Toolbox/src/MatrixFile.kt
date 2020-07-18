@@ -25,7 +25,10 @@ import java.io.BufferedReader
 import java.io.IOException
 import java.util.*
 
-class DelimitedDataManager<T> {
+/**
+ * Manages a new or existing file with delimited data, such as comma or tab separated values.
+ */
+class MatrixFile<T> {
     private var headers: ArrayList<String> = ArrayList()
     val allData: ArrayList<ArrayList<T>> = ArrayList()
     var delimiter = DEFAULT_DELIMITER
@@ -96,8 +99,8 @@ class DelimitedDataManager<T> {
         return lineOutBuilder.toString()
     }
 
-    fun toFile(completeFilePath: String, append: Boolean = true) {
-        val thisOutputManager = TextOutputManager(completeFilePath, append)
+    fun write(completeFilePath: String, append: Boolean = true) {
+        val thisOutputManager = QuantumTextFile(completeFilePath, append)
         thisOutputManager.println(lineOut<String>(headers))
         for (thisData in allData) {
             thisOutputManager.println(lineOut<T>(thisData))
@@ -137,14 +140,14 @@ class DelimitedDataManager<T> {
         const val DEFAULT_SPACING = 1
 
         @Throws(IOException::class)
-        fun <T> fromFile(completeFilePath: String, parser: Parser<T>): DelimitedDataManager<T> {
-            return fromFile(completeFilePath,
+        fun <T> read(completeFilePath: String, parser: Parser<T>): MatrixFile<T> {
+            return read(completeFilePath,
                     DEFAULT_DELIMITER, parser)
         }
 
         @Throws(IOException::class)
-        fun <T> fromFile(completeFilePath: String, delimitingChar: Char, parser: Parser<T>): DelimitedDataManager<T> {
-            val dataFromFile = DelimitedDataManager<T>()
+        fun <T> read(completeFilePath: String, delimitingChar: Char, parser: Parser<T>): MatrixFile<T> {
+            val dataFromFile = MatrixFile<T>()
             dataFromFile.delimiter = delimitingChar
             val fileStream: BufferedReader = openForReading(completeFilePath)
                     ?: throw IOException("Attempt to open $completeFilePath for reading produced a null BufferedReader.")

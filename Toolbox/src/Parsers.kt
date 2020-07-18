@@ -21,7 +21,7 @@
 
 package hoodland.opensource.toolbox
 
-// Used by and with DelimitedDataManager
+// Used by and with MatrixFile
 interface Parser<T> {
     fun parseMethod(stringToParse: String): T
 }
