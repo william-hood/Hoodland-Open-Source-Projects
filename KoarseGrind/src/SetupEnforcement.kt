@@ -25,9 +25,7 @@ package hoodland.opensource.koarsegrind
 //  * The name of the test
 //  * The test case ID
 //  * The priority level of the test
-//  * Adding results in Setup is also forbidden.
 internal class SetupEnforcement(basis: Test) {
-    private val contentSize = basis.Results.size //Should this be .count() ???
     private val name = basis.name
     private val identifier = basis.identifier
     private val priority = basis.priority
@@ -35,7 +33,6 @@ internal class SetupEnforcement(basis: Test) {
     fun matches(candidate: SetupEnforcement): Boolean {
         if (identifier != candidate.identifier) return false
         if (name != candidate.name) return false
-        if (contentSize != candidate.contentSize) return false
         return if (priority !== candidate.priority) false else true
     }
 }

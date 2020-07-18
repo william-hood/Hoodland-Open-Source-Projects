@@ -28,6 +28,21 @@ import java.io.File
 import java.io.PrintWriter
 import kotlin.concurrent.thread
 
+internal class TestPhaseContext(val memoir: Memoir) {
+    val results = ArrayList<TestResult>()
+
+    val overallStatus: TestStatus
+        get() {
+            if ((results.size < 1)) return TestStatus.INCONCLUSIVE
+            var finalValue = TestStatus.PASS
+            results.forEach {
+                finalValue = finalValue + it.status
+            }
+
+            return finalValue;
+        }
+}
+
 enum class TestPriority {
     HAPPY_PATH, CRITICAL, NORMAL, LOW
 }
@@ -45,16 +60,17 @@ internal const val SETUP = "setup"
 internal const val CLEANUP = "cleanup"
 internal const val UNSET_DESCRIPTION = "(no details)"
 
-abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTION, testCaseID: String = "", vararg categories: String) {
+abstract class Test (internal val name: String, private val detailedDescription: String = UNSET_DESCRIPTION, internal val identifier: String = "", vararg categories: String) {
     // Client code must implement or override
-    open fun setup(): Boolean { return true }
-    open fun cleanup(): Boolean { return true }
+    open fun setup() { setupContext.results.add(TestResult(TestStatus.PASS, "(no user-supplied setup)")) }
+    open fun cleanup() { setupContext.results.add(TestResult(TestStatus.PASS, "(no user-supplied cleanup)")) }
     abstract fun performTest();
 
     // Class Members
-    internal var topLevelMemoir: Memoir? = null
-    internal var setupMemoir: Memoir? = null
-    internal var cleanupMemoir: Memoir? = null
+    internal val setupContext = TestPhaseContext(Memoir("Setup - Test $identifiedName", stdout))
+    internal val cleanupContext = TestPhaseContext(Memoir("Cleanup -  Test $identifiedName", stdout))
+    internal var testContext: TestPhaseContext? = null
+
     private var parentArtifactsDirectory = UNSET_STRING
     var priority = TestPriority.NORMAL
     private var executionThread: Thread? = null
@@ -67,19 +83,7 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
     protected val require = Enforcer(TestConditionalType.REQUIREMENT, this)
     protected val consider = Enforcer(TestConditionalType.CONSIDERATION, this)
 
-    //Should this be internal???
-    val Results = ArrayList<TestResult>()
-
-    // For readability these are now passed into the base constructor
-    // and are no longer abstract properties
-    internal var identifier = testCaseID
-    internal var name = name
-    private var detailedDescription = detailedDescription
     private var categories: Array<out String> = categories
-
-    // If there's ever some reason to call it something other than a test, change this.
-    open protected val echelonName = "Test"
-
     private val categorization: String
         get() {
             val result = StringBuilder()
@@ -92,14 +96,20 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
         }
 
     val log: Memoir
-     get() {
-         if (wasRun) { return cleanupMemoir!! }
-         if (wasSetup) { return topLevelMemoir!! }
-         return setupMemoir!!
-     }
+     get() = currentContext.memoir
+
+    val results: ArrayList<TestResult>
+            get() = currentContext.results
+
+    internal val currentContext: TestPhaseContext
+        get() {
+            if (wasRun) { return cleanupContext }
+            if (wasSetup) { return testContext!! }
+            return setupContext
+        }
 
     // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
-    // Basically this needs to be thread safe.
+    // TODO: This needs to be thread safe.
     internal val progress: Float
     get() {
         // According to https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/synchronized.html
@@ -115,19 +125,15 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
 
     // For some reason in the C# version this was open/virtual
     fun addResult(thisResult: TestResult) {
-        topLevelMemoir!!.showTestResult((thisResult)) // Should be Log instead of topLevelMemoir???
-        Results.add(thisResult)
+        val context = currentContext
+        context.memoir.showTestResult((thisResult)) // Should be Log instead of topLevelMemoir???
+        context.results.add(thisResult)
     }
 
     val overallStatus: TestStatus
         get() {
-            if ((Results.size < 1)) return TestStatus.INCONCLUSIVE
-            var finalValue = TestStatus.PASS
-            Results.forEach {
-                finalValue = finalValue + it.status
-            }
-
-            return finalValue;
+            if (! setupContext.overallStatus.isPassing()) return TestStatus.INCONCLUSIVE
+            return testContext!!.overallStatus
         }
 
     // Is virtual/open in C#
@@ -165,7 +171,8 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
             result.add(filterForSummary(overallStatus.toString()))
 
             val reasoning = StringBuilder()
-            Results.forEach {
+            // TODO: Determine if setup/cleanup results should be included here.
+            testContext!!.results.forEach {
                 if (! it.status.isPassing()) {
                     if (reasoning.length > 0) {
                         reasoning.append("; ")
@@ -209,33 +216,26 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
     // Is virtual/open in C#
     fun getResultForPreclusion(thisPreclusion: Throwable) = getResultForIncident(TestStatus.INCONCLUSIVE, "", thisPreclusion)
 
-    // Is virtual/open in C#
-    fun reportFailureInCleanup(thisFailure: Throwable, additionalMessage: String = "") {
-        var message = StringBuilder()
-        if (additionalMessage.length > 0) { message.append(" ") }
-        message.append(additionalMessage)
+    // Is virtual/open in C# and called "reportFailureInCleanup()"
+    fun getResultForFailureInCleanup(thisPreclusion: Throwable) = getResultForIncident(TestStatus.SUBJECTIVE, CLEANUP, thisPreclusion)
 
-        // This is a direct translation from C#. Spacing looks suspicious... ???
-        topLevelMemoir!!.error("$identifiedName$CLEANUP: An unanticipated failure occurred$additionalMessage.") // Should be Log instead of topLevelMemoir???
-        topLevelMemoir!!.showThrowable(thisFailure)
-    }
-
+    /* TODO: Delete this block when no longer needed
     private val indicateSetup: Memoir
         get() = Memoir("Setup - $echelonName $identifiedName", stdout)
 
     private val indicateCleanup: Memoir
         get() = Memoir("Cleanup - $echelonName $identifiedName", stdout)
 
+    // indicateBody never used
     private val indicateBody: Memoir
         get() = Memoir("$echelonName $identifiedName", stdout)
+     */
 
-    // C# version used topLevelMemoir. This would not work during Setup() or Cleanup()
     fun waitSeconds(howMany: Long) {
         log.info("Waiting $howMany seconds...", INFO_ICON)
         Thread.sleep(1000 * howMany)
     }
 
-    // C# version used topLevelMemoir. This would not work during Setup() or Cleanup()
     fun waitMilliseconds(howMany: Long) {
         log.info("Waiting $howMany milliseconds...", INFO_ICON)
         Thread.sleep(howMany)
@@ -251,7 +251,7 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
     }
 
     fun makeSubjective() {
-        addResult(TestResult(TestStatus.SUBJECTIVE, "This test case requires analysis by appropriate personnel to determine pass/fail status"))
+        testContext!!.results.add(TestResult(TestStatus.SUBJECTIVE, "This test case requires analysis by appropriate personnel to determine pass/fail status"))
     }
 
     // This was virtual/open in the C# version
@@ -260,8 +260,6 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
             // Decline to run
             // Deliberate NO-OP
         } else {
-            var setupResult = true
-            var cleanupResult = true
             parentArtifactsDirectory = rootDirectory
             val expectedFileName = artifactsDirectory + File.separatorChar + logFileName
 
@@ -269,40 +267,39 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
             // Force the parent directory to exist...
             File(expectedFileName).parentFile.mkdirs()
 
-            topLevelMemoir = Memoir(name, stdout, PrintWriter(expectedFileName), ::logHeader)
+            testContext = TestPhaseContext(Memoir(name, stdout, PrintWriter(expectedFileName), ::logHeader))
 
             if (detailedDescription != UNSET_DESCRIPTION) {
-                topLevelMemoir!!.writeToHTML("<small><i>$detailedDescription</i></small>", EMOJI_TEXT_BLANK_LINE)
+                testContext!!.memoir.writeToHTML("<small><i>$detailedDescription</i></small>", EMOJI_TEXT_BLANK_LINE)
             }
 
-            topLevelMemoir!!.skipLine()
+            testContext!!.memoir.skipLine()
             val before = SetupEnforcement(this)
 
             // SETUP
             try {
-                setupMemoir = indicateSetup
                 try {
-                    setupResult = setup()
+                    setup()
                 } finally {
                     wasSetup = true
-                    if (setupMemoir!!.wasUsed) {
+                    if (setupContext.memoir.wasUsed) {
                         var style = "decaf_orange_light_roast"
-                        if (setupResult) { style = "decaf_green_light_roast" }
-                        topLevelMemoir!!.showMemoir(setupMemoir!!, EMOJI_SETUP, style)
+                        if (setupContext.overallStatus.isPassing()) { style = "decaf_green_light_roast" }
+                        testContext!!.memoir.showMemoir(setupContext.memoir, EMOJI_SETUP, style)
                     }
                 }
             } catch (thisFailure: Throwable) {
-                setupResult = false
+                // setupResult = false
                 addResult(getResultForPreclusionInSetup(thisFailure))
             } finally {
                 if (!SetupEnforcement(this).matches(before)) {
-                    setupResult = false
-                    addResult(TestResult(TestStatus.INCONCLUSIVE, "PROGRAMMING ERROR: It is illegal to change the identifier, name, or priority in Setup.  This must happen in the constructor. Setup may also not add Test Results."))
+                    // setupResult = false
+                    addResult(TestResult(TestStatus.INCONCLUSIVE, "PROGRAMMING ERROR: It is illegal to change the identifier, name, or priority in Setup.  This must happen in the constructor."))
                 }
             }
 
             // RUN THE ACTUAL TEST
-            if (setupResult && (! KILL_SWITCH)) {
+            if (setupContext.overallStatus.isPassing() && (! KILL_SWITCH)) {
                 try {
                     executionThread = thread(start = true) { performTest() }
                     executionThread!!.join()
@@ -317,25 +314,24 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
             }
 
             // CLEANUP
-            cleanupMemoir = indicateCleanup
             try {
-                cleanupResult = cleanup()
+                cleanup()
                 wasCleanedUp = true
             } catch (thisFailure: Throwable) {
-                reportFailureInCleanup(thisFailure)
+                addResult(getResultForFailureInCleanup(thisFailure))
             } finally {
-                if (cleanupMemoir!!.wasUsed) {
+                if (cleanupContext.memoir.wasUsed) {
                     var style = "decaf_orange_light_roast"
-                    if (cleanupResult) { style = "decaf_green_light_roast" }
-                    topLevelMemoir!!.showMemoir(cleanupMemoir!!, EMOJI_CLEANUP, style)
+                    if (cleanupContext.overallStatus.isPassing()) { style = "decaf_green_light_roast" }
+                    testContext!!.memoir.showMemoir(cleanupContext.memoir, EMOJI_CLEANUP, style)
                 }
             }
 
             val overall = overallStatus.toString()
             val emoji = overallStatus.memoirIcon
-            topLevelMemoir!!.writeToHTML("<h2>Overall Status: $overall</h2>", emoji)
-            topLevelMemoir!!.echoPlainText("Overall Status: $overall", emoji)
-            topLevelMemoir!!.conclude()
+            testContext!!.memoir.writeToHTML("<h2>Overall Status: $overall</h2>", emoji)
+            testContext!!.memoir.echoPlainText("Overall Status: $overall", emoji)
+            testContext!!.memoir.conclude()
         }
     }
 }

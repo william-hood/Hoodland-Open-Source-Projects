@@ -63,36 +63,19 @@ abstract class TextOutputManagerTest(name: String, detailedDescription: String, 
     protected var tmpFolder = ""
     private var tmpFolderFile: File? = null
 
-    override fun setup(): Boolean {
-        try {
-            log.info("Creating temporary folder $tmpFolder")
-            tmpFolder = artifactsDirectory + File.separatorChar + quickTimeStamp
-            tmpFolderFile = File(tmpFolder)
-            tmpFolderFile!!.mkdir()
-        } catch (loggedException: Throwable) {
-            log.showThrowable(loggedException)
-            return false
-        }
-
-        // TODO: We need to allow asserions in setup and cleanup.
-        //       This means separate results lists for those phases and they no longer return true or false.
-        log.info("Setup will only return true if temporary folder $tmpFolder was successfully created")
-        return Files.exists(tmpFolderFile!!.toPath())
+    override fun setup() {
+        log.info("Creating temporary folder $tmpFolder")
+        tmpFolder = artifactsDirectory + File.separatorChar + "(this is a test artifact)"
+        tmpFolderFile = File(tmpFolder)
+        tmpFolderFile!!.mkdir()
+        assert.shouldBeTrue(Files.exists(tmpFolderFile!!.toPath()), "Before setup() finishes, the folder $tmpFolder should be confirmed to exist.")
     }
 
     /*
-    override fun cleanup(): Boolean {
-        try {
+    override fun cleanup() {
             log.info("Deleting temporary folder $tmpFolder and all its contents")
             File(tmpFolder).deleteRecursively()
-        } catch (loggedException: Throwable) {
-            log.showThrowable(loggedException)
-            return false
-        }
-
-        val result = Files.notExists(tmpFolderFile.toPath())
-        assert.shouldBeTrue(result, "Temporary folder $tmpFolder should NOT exist after cleaning up")
-        return result
+        assert.shouldBeTrue(Files.notExists(tmpFolderFile.toPath()), "Temporary folder $tmpFolder should NOT exist after cleaning up")
     }
      */
 }

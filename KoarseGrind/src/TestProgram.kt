@@ -26,11 +26,13 @@ import hoodland.opensource.koarsegrind.TestFactory
 import hoodland.opensource.memoir.UNKNOWN
 import hoodland.opensource.toolbox.stderr
 import java.io.File
+import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.full.isSubclassOf
 
 
 // Based on https://dzone.com/articles/get-all-classes-within-package
 private val testLoader = Thread.currentThread().getContextClassLoader()
+private val preclusions = ArrayList<Throwable>()
 
 object TestProgram {
     // This may have to be changed to take the same arguments as TestCollection
@@ -43,7 +45,7 @@ object TestProgram {
             }
         }
 
-        TestCollection.run(name)
+        TestCollection.run(name, preclusiveFailures = preclusions)
     }
 
 
@@ -68,9 +70,13 @@ object TestProgram {
                                 val factory: TestFactory = foundClass.getDeclaredConstructor().newInstance() as TestFactory
                                 TestCollection.addAll(factory.products)
                             }
+                        } catch (materialFailure: InvocationTargetException) {
+                            preclusions.add(materialFailure)
                         } catch (dontCare: Throwable) {
-                            // NO-OP
-                            stderr.println(dontCare.message)
+                            // DELIBERATE NO-OP
+                            // Kotlin will hemorrhage exceptions during the process of identifying legitimate tests.
+                            // Use the line below if there is need to identify failures that matter.
+                            // addResult(getResultForFailureInCleanup(dontCare))
                         }
                     }
             }

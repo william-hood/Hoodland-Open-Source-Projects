@@ -96,7 +96,7 @@ public object TestCollection: ArrayList<Test>() {
     //
     // Properly doing this might require a custom data structure that a test-runner program would pass in.
     //
-    fun run(name: String, rootDirectory: String  = "$DEFAULT_PARENT_FOLDER${File.separatorChar}$quickTimeStamp ${name}") {
+    fun run(name: String, rootDirectory: String  = "$DEFAULT_PARENT_FOLDER${File.separatorChar}$quickTimeStamp ${name}", preclusiveFailures: ArrayList<Throwable>? = null) {
         currentArtifactsDirectory = rootDirectory
         val expectedFileName = currentArtifactsDirectory + File.separatorChar + "All tests.html"
         //forceParentDirectoryExistence(expectedFileName)
@@ -104,6 +104,14 @@ public object TestCollection: ArrayList<Test>() {
         File(expectedFileName).parentFile.mkdirs()
 
         val overlog = Memoir(name, null, PrintWriter(expectedFileName), ::logHeader)
+        if (preclusiveFailures != null) {
+            if (preclusiveFailures.size > 0) {
+                overlog.error("Failures were indicated while starting Koarse Grind!")
+                preclusiveFailures.forEach {
+                    overlog.showThrowable(it)
+                }
+            }
+        }
 
         for (indexCount in 0..(this.count() - 1)) {
             currentCount = indexCount
@@ -128,7 +136,7 @@ public object TestCollection: ArrayList<Test>() {
                     _currentTest!!.addResult(_currentTest!!.getResultForPreclusionInSetup(thisFailure))
                 } finally {
                     executionThread = null
-                    overlog.showMemoir(_currentTest!!.topLevelMemoir!!, _currentTest!!.overallStatus.memoirIcon, _currentTest!!.overallStatus.memoirStyle)
+                    overlog.showMemoir(_currentTest!!.testContext!!.memoir, _currentTest!!.overallStatus.memoirIcon, _currentTest!!.overallStatus.memoirStyle)
                     this.copyResultsToCategories(overlog)
                 }
             }
