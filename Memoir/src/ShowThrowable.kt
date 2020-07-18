@@ -19,7 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package rockabilly.memoir
+package hoodland.opensource.memoir
 
 import java.io.ByteArrayOutputStream
 import java.io.PrintWriter
@@ -84,8 +84,6 @@ fun Memoir.showThrowable(target: Throwable, timeStamp: LocalDateTime? = LocalDat
 
                 this.echoPlainText("$plainTextIndent$plainTextLine", timeStamp = timeStamp)
             }
-        } else {
-            // TODO: Confirm from the C# code if this is a deliberate NO-OP
         }
     }
 

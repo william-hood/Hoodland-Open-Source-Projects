@@ -19,7 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package rockabilly.toolbox
+package hoodland.opensource.toolbox
 
 // Based on http://en.wikipedia.org/wiki/Hexavigesimal
 class SubnameFactory(startingIndex: Long = 0, totalPlaces: Int = 0) {

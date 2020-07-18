@@ -19,13 +19,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-import rockabilly.koarsegrind.Test
-import rockabilly.toolbox.*
+import hoodland.opensource.koarsegrind.Test
+import hoodland.opensource.toolbox.*
 
 class TestStatusCodeDescription:Test(
         "Int.toStatusCodeDescription()",
         "This verfies that toStatusCodeDescription() gets the correct string value for a few given numbers. It is NOT exhaustive.",
-        "TB-001",
+        "TB-SC-01",
         "Toolbox", "StatusCode", "All"
 ) {
     override fun performTest() {
@@ -39,7 +39,7 @@ class TestStatusCodeDescription:Test(
 class TestErrorStatusCode:Test(
         "Int.isErrorStatusCode",
         "This verfies that Int.isErrorStatusCode gets the correct Boolean value for a few given numbers, reading 'true' for 4xx and 5xx. It is NOT exhaustive.",
-        "TB-002",
+        "TB-SC-02",
         "Toolbox", "StatusCode", "All"
 ) {
     override fun performTest() {
@@ -56,7 +56,7 @@ class TestErrorStatusCode:Test(
 class TestSuccessfulStatusCode:Test(
         "Int.isSuccessfulStatusCode",
         "This verfies that Int.isSuccessfulStatusCode gets the correct Boolean value for a few given numbers, reading 'true' for 2xx. It is NOT exhaustive.",
-        "TB-003",
+        "TB-SC-03",
         "Toolbox", "StatusCode", "All"
 ) {
     override fun performTest() {
@@ -73,7 +73,7 @@ class TestSuccessfulStatusCode:Test(
 class TestValidStatusCode:Test(
         "Int.isValidStatusCode",
         "This verfies that Int.isValidStatusCode gets the correct Boolean value for a few given numbers, reading 'true' for anything between 100 and 599. It is NOT exhaustive.",
-        "TB-004",
+        "TB-SC-04",
         "Toolbox", "StatusCode", "All"
 ) {
     override fun performTest() {
@@ -90,7 +90,7 @@ class TestValidStatusCode:Test(
 class TestInvalidStatusCode:Test(
         "Int.isInvalidStatusCode",
         "This verfies that Int.isInvalidStatusCode gets the correct Boolean value for a few given numbers, reading 'true' for anything NOT between 100 and 599. It is NOT exhaustive.",
-        "TB-005",
+        "TB-SC-05",
         "Toolbox", "StatusCode", "All"
 ) {
     override fun performTest() {

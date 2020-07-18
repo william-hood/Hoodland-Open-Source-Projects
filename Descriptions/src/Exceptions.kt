@@ -19,7 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package rockabilly.descriptions
+package hoodland.opensource.descriptions
 
 class InappropriateDescriptionException : Exception("The requested description is not appropriate for this type.")
 class NoValueException : Exception("Fields described as DEFAULT have no value to get, so getDescribedValue() should never be called.")

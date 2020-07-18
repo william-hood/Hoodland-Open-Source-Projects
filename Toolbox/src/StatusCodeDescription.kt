@@ -19,7 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package rockabilly.toolbox
+package hoodland.opensource.toolbox
 /*
 	 * from http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html
 	 *

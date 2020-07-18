@@ -22,11 +22,11 @@
 // C#/Java Log() is replaced by extension function Memoir.ShowTestResult()
 // Workflow Change: In Java/C# you would use TestResult.From<whatever>. In Kotlin use <whatever>.toTestResult()
 
-package rockabilly.koarsegrind
+package hoodland.opensource.koarsegrind
 
-import rockabilly.toolbox.InlineImage
-import rockabilly.toolbox.quickTimeStamp
-import rockabilly.toolbox.UNSET_STRING
+import hoodland.opensource.toolbox.InlineImage
+import hoodland.opensource.toolbox.quickTimeStamp
+import hoodland.opensource.toolbox.UNSET_STRING
 import java.io.File
 import java.nio.file.FileSystems
 import java.nio.file.Files

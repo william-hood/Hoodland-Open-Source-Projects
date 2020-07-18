@@ -19,7 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package rockabilly.memoir
+package hoodland.opensource.memoir
 
 const val EMOJI_SETUP = "🛠"
 const val EMOJI_CLEANUP = "🧹"

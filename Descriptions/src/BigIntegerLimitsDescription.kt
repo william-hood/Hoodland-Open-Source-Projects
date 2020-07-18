@@ -19,9 +19,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package rockabilly.descriptions
+package hoodland.opensource.descriptions
 
-import rockabilly.descriptions.LimitsDescription
+import hoodland.opensource.descriptions.LimitsDescription
 import java.math.BigInteger
 
 abstract class BigIntegerLimitsDescription : LimitsDescription<BigInteger?>() {

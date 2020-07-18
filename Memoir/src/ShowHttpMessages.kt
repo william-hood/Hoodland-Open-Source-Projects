@@ -19,10 +19,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package rockabilly.memoir
+package hoodland.opensource.memoir
 
-import rockabilly.toolbox.isSuccessfulStatusCode
-import rockabilly.toolbox.toStatusCodeDescription
+import hoodland.opensource.toolbox.isSuccessfulStatusCode
+import hoodland.opensource.toolbox.toStatusCodeDescription
 import java.net.http.HttpClient
 import java.net.http.HttpHeaders
 import java.net.http.HttpRequest

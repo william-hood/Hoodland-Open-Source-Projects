@@ -21,9 +21,9 @@
 
 // C#/Java Log() is replaced by extension function Memoir.ShowTestStatus()
 
-package rockabilly.koarsegrind
+package hoodland.opensource.koarsegrind
 
-import rockabilly.memoir.*
+import hoodland.opensource.memoir.*
 
 enum class TestStatus {
     INCONCLUSIVE {

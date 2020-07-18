@@ -19,8 +19,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-import rockabilly.memoir.*
-import rockabilly.toolbox.stdout
+import hoodland.opensource.memoir.*
+import hoodland.opensource.toolbox.stdout
 import java.io.File
 import java.net.URI
 import java.net.http.HttpRequest

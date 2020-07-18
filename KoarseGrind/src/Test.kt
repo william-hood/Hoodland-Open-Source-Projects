@@ -19,11 +19,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package rockabilly.koarsegrind
+package hoodland.opensource.koarsegrind
 
-import rockabilly.memoir.*
-import rockabilly.toolbox.UNSET_STRING
-import rockabilly.toolbox.stdout
+import hoodland.opensource.memoir.*
+import hoodland.opensource.toolbox.UNSET_STRING
+import hoodland.opensource.toolbox.stdout
 import java.io.File
 import java.io.PrintWriter
 import kotlin.concurrent.thread
@@ -92,12 +92,11 @@ abstract class Test (name: String, detailedDescription: String = UNSET_DESCRIPTI
         }
 
     val log: Memoir
-     get() = // https://stackoverflow.com/questions/4065518/java-how-to-get-the-caller-function-name/46590924
-         when (Thread.currentThread().stackTrace[1].methodName) { // slot [2]???
-             "Setup" -> this.setupMemoir!!
-             "Cleanup" -> this.cleanupMemoir!!
-             else -> this.topLevelMemoir!!
-         }
+     get() {
+         if (wasRun) { return cleanupMemoir!! }
+         if (wasSetup) { return topLevelMemoir!! }
+         return setupMemoir!!
+     }
 
     // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
     // Basically this needs to be thread safe.

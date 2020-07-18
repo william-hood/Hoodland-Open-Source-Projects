@@ -19,9 +19,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package rockabilly.koarsegrind
+package hoodland.opensource.koarsegrind
 
-import rockabilly.toolbox.UNSET_STRING
+import hoodland.opensource.toolbox.UNSET_STRING
 
 private const val DEFAULT_SHOULD_BE_FALSE_EXPLANATION = "Expected boolean false. (Actual value was "
 class Enforcer(conditionalType: TestConditionalType, owner: Test) {

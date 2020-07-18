@@ -22,10 +22,10 @@
 // C#/Java Log() is replaced by extension function Memoir.ShowTestResult()
 // Workflow Change: In Java/C# you would use TestResult.From<whatever>. In Kotlin use <whatever>.toTestResult()
 
-package rockabilly.koarsegrind
+package hoodland.opensource.koarsegrind
 
-import rockabilly.memoir.Memoir
-import rockabilly.memoir.showThrowable
+import hoodland.opensource.memoir.Memoir
+import hoodland.opensource.memoir.showThrowable
 
 val SUMMARY_HEADERS = arrayOf("Criterion", "Status", "Artifacts", "Failures")
 

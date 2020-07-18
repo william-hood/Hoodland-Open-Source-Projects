@@ -19,12 +19,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-import rockabilly.koarsegrind.ManufacturedTest
-import rockabilly.koarsegrind.Test
-import rockabilly.koarsegrind.TestCollection
-import rockabilly.koarsegrind.TestFactory
-import rockabilly.memoir.UNKNOWN
-import rockabilly.toolbox.stderr
+import hoodland.opensource.koarsegrind.ManufacturedTest
+import hoodland.opensource.koarsegrind.Test
+import hoodland.opensource.koarsegrind.TestCollection
+import hoodland.opensource.koarsegrind.TestFactory
+import hoodland.opensource.memoir.UNKNOWN
+import hoodland.opensource.toolbox.stderr
 import java.io.File
 import kotlin.reflect.full.isSubclassOf
 

@@ -1,4 +1,4 @@
-import rockabilly.koarsegrind.Test
+import hoodland.opensource.koarsegrind.Test
 
 class ExampleTest1:Test(
         "Sample Test Number One",

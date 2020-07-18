@@ -19,12 +19,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package rockabilly.koarsegrind
+package hoodland.opensource.koarsegrind
 
-import rockabilly.memoir.Memoir
-import rockabilly.memoir.showThrowable
-import rockabilly.memoir.UNKNOWN
-import rockabilly.toolbox.*
+import hoodland.opensource.memoir.Memoir
+import hoodland.opensource.memoir.showThrowable
+import hoodland.opensource.memoir.UNKNOWN
+import hoodland.opensource.toolbox.*
 import java.io.File
 import java.io.PrintWriter
 import kotlin.concurrent.thread
@@ -57,7 +57,8 @@ public object TestCollection: ArrayList<Test>() {
         }
 
     // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
-    // TODO: Basically this needs to be thread safe.
+    // TODO: Make this thread-safe as it was in the C# version.
+    //       Low priority unles developing an external test runner such as the old web UI.
     val progress: Int
         get() {
             if (this.count() < 1) { return 100 }

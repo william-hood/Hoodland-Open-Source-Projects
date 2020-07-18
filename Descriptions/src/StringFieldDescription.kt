@@ -19,13 +19,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package rockabilly.descriptions
+package hoodland.opensource.descriptions
 
-import rockabilly.toolbox.CRLF
-
-// ALL FIELD DESCRIPTIONS NEED A TOSTRING() METHOD AND A CYCLING CLASS.
-// TODO: MAKE IT POSSIBLE TO EASILY CREATE LETTERED SUB-CASES THAT ITERATE ALL POSSIBILITIES
-//       (Note during Kotlin port: StringFieldSubnameDescription may be exactly this.)
+import hoodland.opensource.toolbox.CRLF
 
 open class StringFieldDescription() : FieldDescription<String>() {
     var target = StringFieldTargets.HAPPY_PATH

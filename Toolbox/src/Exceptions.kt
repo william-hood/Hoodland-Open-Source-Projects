@@ -19,7 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package rockabilly.toolbox
+package hoodland.opensource.toolbox
 
 class ImpossibleCodePathException : Exception("A point in the code was reached that should not be possible to get to.")
 class ImproperObjectConstructionException(message: String) : Exception("An object was created in a way that precludes actual use: $message")

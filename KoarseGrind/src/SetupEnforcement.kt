@@ -19,7 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package rockabilly.koarsegrind
+package hoodland.opensource.koarsegrind
 
 // Client code is prohibited from using Setup to alter
 //  * The name of the test

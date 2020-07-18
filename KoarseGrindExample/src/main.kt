@@ -19,7 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-import rockabilly.koarsegrind.Test
+import hoodland.opensource.koarsegrind.Test
 
 class ExampleTest2: Test(
         "Sample Test Number Two",
@@ -41,4 +41,4 @@ fun main(args: Array<String>) {
 }
 
 // TODO: Verify Manufactured Tests Work
-// TODO: Example for Rockabilly Descriptions
+// TODO: Example for Descriptions

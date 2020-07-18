@@ -19,9 +19,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package rockabilly.descriptions
+package hoodland.opensource.descriptions
 
-import rockabilly.toolbox.UNSET_STRING
+import hoodland.opensource.toolbox.UNSET_STRING
 
 class FailureDescription {
     private var _failureType: Class<out Throwable>? = null

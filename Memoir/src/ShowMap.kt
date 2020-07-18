@@ -19,7 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-package rockabilly.memoir
+package hoodland.opensource.memoir
 
 import java.time.LocalDateTime
 import java.util.*

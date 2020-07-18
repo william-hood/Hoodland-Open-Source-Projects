@@ -18,7 +18,7 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-package rockabilly.descriptions
+package hoodland.opensource.descriptions
 
 abstract class FloatLimitsDescription : LimitsDescription<Float>() {
     @Throws(InappropriateDescriptionException::class)
