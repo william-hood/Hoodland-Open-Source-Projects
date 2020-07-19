@@ -52,6 +52,7 @@ internal const val MEMOIR_LOG_STYLING = """
 
         [class*='lvl-'] {
             display: none;
+            cursor: auto;
         }
 
         input:checked~[class*='lvl-'] {
@@ -202,6 +203,10 @@ internal const val MEMOIR_LOG_STYLING = """
             padding: 0.4em 0.4em;
             border-collapse: collapse;
             border: 0.02em solid black;
+        }
+        
+        label {
+            cursor: pointer;
         }
     </style>
 """
