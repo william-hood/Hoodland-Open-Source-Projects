@@ -21,14 +21,24 @@
 
 package hoodland.opensource.koarsegrind
 
-// A manufactured test has to be produced by a test factory in order to be included in the test run.
+/**
+ * A manufactured test has to be produced by a test factory in order to be included in the test run.
+ * This provides the option of constructing tests on-the-fly at runtime.
+ */
 public abstract class ManufacturedTest(name: String, detailedDescription: String = UNSET_DESCRIPTION, testCaseID: String = "", vararg categories: String) : Test(name, detailedDescription, testCaseID, *categories) {
 }
 
+/**
+ * A TestFactory generates an ArrayList of ManufacturedTest objects. As with stand-alone tests, TestFactories
+ * will be instantiated at runtime, automatically calling populateProducts(). Any manufactured tests sitting in
+ * the products ArrayList will then be run as if they were stand-alone tests.
+ */
 abstract class TestFactory {
     val products = ArrayList<ManufacturedTest>()
     init { populateProducts() }
 
-    // Use this to instantiate manufactured tests and put them into the Products ArrayList
+    /**
+     * Use this to instantiate manufactured tests and put them into the Products ArrayList
+     */
     abstract fun populateProducts()
 }

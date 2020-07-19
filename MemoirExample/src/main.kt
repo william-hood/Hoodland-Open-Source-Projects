@@ -46,9 +46,10 @@ fun main(args: Array<String>) {
         //val request = HttpRequest(HttpVerb.GET, "http://vbcknxfwztdmlhrs.neverssl.com/online")
         //val request = HttpRequest(HttpVerb.GET, "http://cnn.com")
         // http://openjdk.java.net/
+        // https://www.wunderground.com/weather/us/ny/rochester
 
         val request = HttpRequest.newBuilder()
-                .uri(URI.create("http://vbcknxfwztdmlhrs.neverssl.com/online"))
+                .uri(URI.create("https://www.w3schools.com/cssref/pr_class_cursor.asp"))
                 .build()
         memoir.showObject(request)
 

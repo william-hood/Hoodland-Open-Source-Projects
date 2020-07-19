@@ -61,30 +61,37 @@ internal const val SETUP = "setup"
 internal const val CLEANUP = "cleanup"
 internal const val UNSET_DESCRIPTION = "(no details)"
 
-abstract class Test (internal val name: String, private val detailedDescription: String = UNSET_DESCRIPTION, internal val identifier: String = "", vararg categories: String) {
+abstract class Test (
+        internal val name: String,
+        private val detailedDescription: String = UNSET_DESCRIPTION,
+        internal val identifier: String = "",
+        vararg categories: String) {
+        private var categories: Array<out String> = categories
+        internal val setupContext = TestPhaseContext(Memoir("Setup - Test $identifiedName", stdout))
+        internal val cleanupContext = TestPhaseContext(Memoir("Cleanup -  Test $identifiedName", stdout))
+        internal var testContext: TestPhaseContext? = null
+        private var parentArtifactsDirectory = UNSET_STRING
+        private var executionThread: Thread? = null
+        internal var wasSetup = false
+        internal var wasRun = false
+        internal var wasCleanedUp = false
+
+        // Assertions
+        protected val assert = Enforcer(TestConditionalType.ASSERTION, this)
+        protected val require = Enforcer(TestConditionalType.REQUIREMENT, this)
+        protected val consider = Enforcer(TestConditionalType.CONSIDERATION, this)
+
     // Client code must implement or override
     open fun setup() { setupContext.results.add(TestResult(TestStatus.PASS, "(no user-supplied setup)")) }
     open fun cleanup() { setupContext.results.add(TestResult(TestStatus.PASS, "(no user-supplied cleanup)")) }
-    abstract fun performTest();
+    abstract fun performTest()
 
-    // Class Members
-    internal val setupContext = TestPhaseContext(Memoir("Setup - Test $identifiedName", stdout))
-    internal val cleanupContext = TestPhaseContext(Memoir("Cleanup -  Test $identifiedName", stdout))
-    internal var testContext: TestPhaseContext? = null
+    /**
+     * This defaults to Normal. You may override it with a different priority if you wish.
+     * It is possible to specify running only tests of a certain priority when running the whole collection.
+     */
+    open val priority: TestPriority = TestPriority.NORMAL
 
-    private var parentArtifactsDirectory = UNSET_STRING
-    var priority = TestPriority.NORMAL
-    private var executionThread: Thread? = null
-    internal var wasSetup = false
-    internal var wasRun = false
-    internal var wasCleanedUp = false
-
-    // Assertions
-    protected val assert = Enforcer(TestConditionalType.ASSERTION, this)
-    protected val require = Enforcer(TestConditionalType.REQUIREMENT, this)
-    protected val consider = Enforcer(TestConditionalType.CONSIDERATION, this)
-
-    private var categories: Array<out String> = categories
     private val categorization: String
         get() {
             val result = StringBuilder()

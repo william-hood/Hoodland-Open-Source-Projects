@@ -19,8 +19,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-import hoodland.opensource.koarsegrind.Test
-
 fun main(args: Array<String>) {
     TestProgram.run("Test Suite - Hoodland Open Source Projects")
 }
