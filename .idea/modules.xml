@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/ChangeScan/ChangeScan.iml" filepath="$PROJECT_DIR$/ChangeScan/ChangeScan.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ChangeScanCore/ChangeScanCore.iml" filepath="$PROJECT_DIR$/ChangeScanCore/ChangeScanCore.iml" />
       <module fileurl="file://$PROJECT_DIR$/Descriptions/Descriptions.iml" filepath="$PROJECT_DIR$/Descriptions/Descriptions.iml" />
       <module fileurl="file://$PROJECT_DIR$/HoodlandProjectsTestSuite/HoodlandProjectsTestSuite.iml" filepath="$PROJECT_DIR$/HoodlandProjectsTestSuite/HoodlandProjectsTestSuite.iml" />
       <module fileurl="file://$PROJECT_DIR$/KoarseGrind/KoarseGrind.iml" filepath="$PROJECT_DIR$/KoarseGrind/KoarseGrind.iml" />
