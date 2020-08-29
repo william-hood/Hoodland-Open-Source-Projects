@@ -38,7 +38,8 @@ fun Memoir.showHttpRequest(request: HttpRequest) {
         queries.addAll(uri.query.split('&')) // Starts with ?
     }
 
-    result.append("<center><h2>${request.method()} ${uri.path}</h2>")
+    val textRendition = "${request.method()} ${uri.path}"
+    result.append("<center><h2>$textRendition</h2>")
     result.append("<small><b><i>${uri.host}</i></b></small>")
 
     // Hide the Full URL
@@ -74,9 +75,7 @@ fun Memoir.showHttpRequest(request: HttpRequest) {
     result.append("<br>${renderHeadersAndBody(request.headers(), request.bodyPublisher().toString())}")
 
     writeToHTML(result.toString(), EMOJI_OUTGOING)
-
-    // TODO: Plaintext version
-    //if (PlaintextRendition != null) { EchoPlainText(PlaintextRendition, EMOJI_OUTGOING) }
+    echoPlainText(textRendition, EMOJI_OUTGOING)
 }
 
 fun Memoir.showHttpResponse(response: HttpResponse<*>) {
@@ -87,13 +86,13 @@ fun Memoir.showHttpResponse(response: HttpResponse<*>) {
     val result = java.lang.StringBuilder("<div class=\"incoming $style\">\r\n")
 
     // Status code & description
-    result.append("<center><h2>$statusCode ${statusCode.toStatusCodeDescription()}</h2>")
+    val textRendition = "$statusCode ${statusCode.toStatusCodeDescription()}"
+    result.append("<center><h2>$textRendition</h2>")
 
     result.append(renderHeadersAndBody(response.headers(), response.body().toString()))
 
     writeToHTML(result.toString(), EMOJI_INCOMING)
-    // TODO: Plaintext version
-    //if (PlaintextRendition != null) { EchoPlainText(PlaintextRendition, EMOJI_INCOMING) }
+    echoPlainText(textRendition, EMOJI_INCOMING)
 }
 
 private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: String): String {
@@ -165,7 +164,6 @@ private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: Str
         }
     }
 
-    //result.append("</div>")
     return result.toString()
 }
 

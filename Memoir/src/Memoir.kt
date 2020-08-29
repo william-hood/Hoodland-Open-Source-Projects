@@ -102,8 +102,8 @@ class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null
         }
 
         var dateTime = "                        "
-        if (timeStamp != null) {
-            dateTime = timeStamp.format(PLAINTEXT_DATETIME_FORMATTER)
+        timeStamp?.let {
+            dateTime = it.format(PLAINTEXT_DATETIME_FORMATTER)
         }
 
         printWriter_PlainText.println("$dateTime\t$emoji\t$message")
@@ -119,9 +119,9 @@ class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null
         var date = "&nbsp;"
         var time = "&nbsp;"
 
-        if (timeStamp != null) {
-            date = timeStamp.format(HTML_DATE_FORMATTER)
-            time = timeStamp.format(HTML_TIME_FORMATTER)
+        timeStamp?.let {
+            date = it.format(HTML_DATE_FORMATTER)
+            time = it.format(HTML_TIME_FORMATTER)
         }
 
         content.append("<tr><td class=\"min\"><small>$date</small></td><td>&nbsp;</td><td class=\"min\"><small>$time</small></td><td>&nbsp;</td><td><h2>$emoji</h2></td><td>$message</td></tr>\r\n")

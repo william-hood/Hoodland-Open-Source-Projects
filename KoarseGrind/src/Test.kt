@@ -180,7 +180,7 @@ abstract class Test (
 
             val reasoning = StringBuilder()
             // TODO: Determine if setup/cleanup results should be included here.
-            testContext!!.results.forEach {
+            testContext?.results?.forEach {
                 if (! it.status.isPassing()) {
                     if (reasoning.length > 0) {
                         reasoning.append("; ")
@@ -226,18 +226,6 @@ abstract class Test (
 
     // Is virtual/open in C# and called "reportFailureInCleanup()"
     fun getResultForFailureInCleanup(thisPreclusion: Throwable) = getResultForIncident(TestStatus.SUBJECTIVE, CLEANUP, thisPreclusion)
-
-    /* TODO: Delete this block when no longer needed
-    private val indicateSetup: Memoir
-        get() = Memoir("Setup - $echelonName $identifiedName", stdout)
-
-    private val indicateCleanup: Memoir
-        get() = Memoir("Cleanup - $echelonName $identifiedName", stdout)
-
-    // indicateBody never used
-    private val indicateBody: Memoir
-        get() = Memoir("$echelonName $identifiedName", stdout)
-     */
 
     fun waitSeconds(howMany: Long) {
         log.info("Waiting $howMany seconds...", INFO_ICON)
