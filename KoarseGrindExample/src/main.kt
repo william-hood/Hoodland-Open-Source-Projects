@@ -33,6 +33,11 @@ class ExampleTest2: Test(
 
         assert.shouldBeTrue(true, "Whelp, 'Guess I'll just brute-force the dang thing as passing!")
         require.shouldBeEqual(true, false, "Actually, this should make it inconclusive.")
+        try {
+            throw NullPointerException("Whaaaaat? Isn't Kotlin supposed to avoid these???")
+        } catch (thisException: Throwable) {
+            addResult(getResultForFailure(thisException))
+        }
     }
 }
 

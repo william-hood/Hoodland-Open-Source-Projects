@@ -75,9 +75,15 @@ class TestResult (var status: TestStatus = TestStatus.INCONCLUSIVE, var descript
 }
 
 fun Memoir.showTestResult(thisResult: TestResult) {
-    // TODO: Should this be a subordinate memoir???
-    this.showTestStatus(thisResult.status, thisResult.description)
-    thisResult.failures.forEach {
-        this.showThrowable(it)
+    // If there are throwables associated with this, use a subordinate memoir
+    if (thisResult.failures.size > 0) {
+        val subordinate = Memoir(thisResult.description)
+        thisResult.failures.forEach {
+            subordinate.showThrowable(it)
+        }
+
+        this.showMemoir(subordinate, thisResult.status.memoirIcon, thisResult.status.memoirStyle)
+    } else {
+        this.showTestStatus(thisResult.status, thisResult.description)
     }
 }

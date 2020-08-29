@@ -134,7 +134,7 @@ abstract class Test (
     // For some reason in the C# version this was open/virtual
     fun addResult(thisResult: TestResult) {
         val context = currentContext
-        context.memoir.showTestResult((thisResult)) // Should be Log instead of topLevelMemoir???
+        context.memoir.showTestResult((thisResult))
         context.results.add(thisResult)
     }
 
