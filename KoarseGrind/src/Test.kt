@@ -265,7 +265,6 @@ abstract class Test (
             }
 
             testContext!!.memoir.skipLine()
-            val before = SetupEnforcement(this)
 
             // SETUP
             try {
@@ -281,10 +280,6 @@ abstract class Test (
                 }
             } catch (thisFailure: Throwable) {
                 addResult(getResultForPreclusionInSetup(thisFailure))
-            } finally {
-                if (!SetupEnforcement(this).matches(before)) {
-                    addResult(TestResult(TestStatus.INCONCLUSIVE, "PROGRAMMING ERROR: It is illegal to change the identifier, name, or priority in Setup.  This must happen in the constructor."))
-                }
             }
 
             // RUN THE ACTUAL TEST
