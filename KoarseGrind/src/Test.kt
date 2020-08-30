@@ -111,8 +111,19 @@ abstract class Test (
 
     internal val currentContext: TestPhaseContext
         get() {
+            if (wasSetup) {
+                if (! setupContext.overallStatus.isPassing()) {
+                    return cleanupContext
+                }
+
+                testContext?.let {
+                    return it
+                }
+
+                return cleanupContext
+            }
+
             if (wasRun) { return cleanupContext }
-            if (wasSetup) { return testContext!! }
             return setupContext
         }
 
@@ -124,8 +135,9 @@ abstract class Test (
         // "Deprecated: Synchronization on any object is not supported on every platform and will be removed from the common standard library soon."
         synchronized(this) {
             var result: Float = 0.toFloat()
-            if (wasSetup) result += 0.33.toFloat()
-            if (wasRun) result += 0.34.toFloat()
+            val check = currentContext
+            if (check === testContext) result += 0.33.toFloat()
+            if (check === cleanupContext) result += 0.34.toFloat()
             if (wasCleanedUp) result += 0.33.toFloat()
             return result
         }
@@ -179,12 +191,13 @@ abstract class Test (
             result.add(filterForSummary(overallStatus.toString()))
 
             val reasoning = StringBuilder()
-            // TODO: Determine if setup/cleanup results should be included here.
-            testContext?.results?.forEach {
-                if (! it.status.isPassing()) {
-                    if (reasoning.length > 0) {
-                        reasoning.append("; ")
-                    }
+
+            arrayOf(this.setupContext, this.testContext, this.cleanupContext).forEach { thisPhase ->
+                thisPhase?.results?.forEach {
+                    if (! it.status.isPassing()) {
+                        if (reasoning.length > 0) {
+                            reasoning.append("; ")
+                        }
                         reasoning.append(it.description)
 
                         if (it.hasFailures) {
@@ -196,6 +209,7 @@ abstract class Test (
                                 reasoning.append(thisFailure.javaClass.simpleName)
                             }
                         }
+                    }
                 }
             }
 
@@ -285,11 +299,9 @@ abstract class Test (
                     }
                 }
             } catch (thisFailure: Throwable) {
-                // setupResult = false
                 addResult(getResultForPreclusionInSetup(thisFailure))
             } finally {
                 if (!SetupEnforcement(this).matches(before)) {
-                    // setupResult = false
                     addResult(TestResult(TestStatus.INCONCLUSIVE, "PROGRAMMING ERROR: It is illegal to change the identifier, name, or priority in Setup.  This must happen in the constructor."))
                 }
             }
