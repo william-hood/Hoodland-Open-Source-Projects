@@ -40,3 +40,15 @@ class ExampleTest3B:Test(
         assert.shouldBeEqual(true, false, "Actually, this should make it fail.")
     }
 }
+
+class ExampleTest4:Test(
+        "Test Four",
+        "I dunno. It's the 4'th test.",
+        "",
+        "Simple", "All", "Example", "Forth"
+) {
+    override fun performTest() {
+        log.info("Didn't bother with an identifier")
+        log.info("Didn't bother with an assertion")
+    }
+}

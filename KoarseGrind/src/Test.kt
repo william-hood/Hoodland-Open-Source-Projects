@@ -110,11 +110,8 @@ abstract class Test (
         }
 
     // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
-    // TODO: This needs to be thread safe.
     internal val progress: Float
     get() {
-        // According to https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/synchronized.html
-        // "Deprecated: Synchronization on any object is not supported on every platform and will be removed from the common standard library soon."
         synchronized(this) {
             var result: Float = 0.toFloat()
             val check = currentContext

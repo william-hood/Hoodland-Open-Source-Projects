@@ -57,21 +57,21 @@ public object TestCollection: ArrayList<Test>() {
         }
 
     // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
-    // TODO: Make this thread-safe as it was in the C# version.
-    //       Low priority unles developing an external test runner such as the old web UI.
     val progress: Int
         get() {
-            if (this.count() < 1) { return 100 }
-            if (currentCount >= this.count()) { return 100 }
-            var effectiveCount = currentCount.toFloat()
+            synchronized(this) {
+                if (this.count() < 1) { return 100 }
+                if (currentCount >= this.count()) { return 100 }
+                var effectiveCount = currentCount.toFloat()
 
-            try {
-                effectiveCount += _currentTest!!.progress
-            } catch (dontCare: Throwable) {
-                // DELIBERATE NO-OP
+                try {
+                    effectiveCount += _currentTest!!.progress
+                } catch (dontCare: Throwable) {
+                    // DELIBERATE NO-OP
+                }
+
+                return round((effectiveCount / this.count()) * 100).toInt()
             }
-
-            return round((effectiveCount / this.count()) * 100).toInt()
         }
 
     // The C# version contains a large #region "Old way that uses category folders"
