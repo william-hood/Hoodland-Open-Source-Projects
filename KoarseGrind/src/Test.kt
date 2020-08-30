@@ -43,18 +43,6 @@ internal class TestPhaseContext(val memoir: Memoir) {
         }
 }
 
-// TODO: Test priority has to matter or be taken out.
-enum class TestPriority {
-    HAPPY_PATH, CRITICAL, NORMAL, LOW
-}
-
-fun String.toTestPriority(): TestPriority {
-    if (this.toUpperCase().startsWith("N")) { return TestPriority.NORMAL }
-    if (this.toUpperCase().startsWith("L")) { return TestPriority.LOW }
-    if (this.toUpperCase().startsWith("C")) { return TestPriority.CRITICAL }
-    return TestPriority.HAPPY_PATH
-}
-
 internal const val INFO_ICON = "ℹ️"
 internal const val IN_PROGRESS_NAME = "(test in progress)"
 internal const val SETUP = "setup"
@@ -66,7 +54,7 @@ abstract class Test (
         private val detailedDescription: String = UNSET_DESCRIPTION,
         internal val identifier: String = "",
         vararg categories: String) {
-        private var categories: Array<out String> = categories
+        internal var categories: Array<out String> = categories
         internal val setupContext = TestPhaseContext(Memoir("Setup - Test $identifiedName", stdout))
         internal val cleanupContext = TestPhaseContext(Memoir("Cleanup -  Test $identifiedName", stdout))
         internal var testContext: TestPhaseContext? = null
@@ -85,12 +73,6 @@ abstract class Test (
     open fun setup() { setupContext.results.add(TestResult(TestStatus.PASS, "(no user-supplied setup)")) }
     open fun cleanup() { setupContext.results.add(TestResult(TestStatus.PASS, "(no user-supplied cleanup)")) }
     abstract fun performTest()
-
-    /**
-     * This defaults to Normal. You may override it with a different priority if you wish.
-     * It is possible to specify running only tests of a certain priority when running the whole collection.
-     */
-    open val priority: TestPriority = TestPriority.NORMAL
 
     private val categorization: String
         get() {
@@ -184,7 +166,6 @@ abstract class Test (
         get() {
             val result = ArrayList<String>()
             result.add(filterForSummary(categorization))
-            result.add(filterForSummary(priority.toString()))
             result.add(filterForSummary(identifier))
             result.add(filterForSummary(name))
             result.add(filterForSummary(detailedDescription))

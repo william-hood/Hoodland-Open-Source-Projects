@@ -24,15 +24,21 @@ package hoodland.opensource.koarsegrind
 // Client code is prohibited from using Setup to alter
 //  * The name of the test
 //  * The test case ID
-//  * The priority level of the test
+//  * The selection of categories
+// TODO: Verify whether or not this is impossible in the Kotlin version. If it is, remove this.
 internal class SetupEnforcement(basis: Test) {
     private val name = basis.name
     private val identifier = basis.identifier
-    private val priority = basis.priority
+    private val categories = Array<String>(basis.categories.size){""}
+
+    init {
+        basis.categories.copyInto(categories)
+    }
 
     fun matches(candidate: SetupEnforcement): Boolean {
         if (identifier != candidate.identifier) return false
         if (name != candidate.name) return false
-        return if (priority !== candidate.priority) false else true
+        if (! categories.contentEquals(candidate.categories)) return false
+        return true
     }
 }

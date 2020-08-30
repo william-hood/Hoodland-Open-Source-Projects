@@ -186,7 +186,7 @@ public object TestCollection: ArrayList<Test>() {
     fun createSummaryReport(rootDirectory: String, memoir: Memoir = Memoir(forPlainText = stdout)) {
         val fullyQulaifiedSummaryFileName = rootDirectory + File.separatorChar + SUMMARY_FILE_NAME
         memoir.info("Creating Test Suite Summary Report ($fullyQulaifiedSummaryFileName)")
-        var summaryReport = MatrixFile<String>("Categorization", "Test Priority", "Test ID", "Name", "Description", "Status", "Reasons")
+        var summaryReport = MatrixFile<String>("Categorization", "Test ID", "Name", "Description", "Status", "Reasons")
 
         try {
             // Try to append to an existing one
