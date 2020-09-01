@@ -10,6 +10,7 @@
 - There is an example project for the Memoir logging system when used as a stand-alone module.
 - A second example program exists for Koarse Grind, which uses Memoir for its logging.
 - There is also a partial start on a set of Koarse Grind tests for my "extreme legacy" projects which also serves as an example.
+- The HTML-based output logs will appear in a folder titled "Test Results" off of your Documents directory.
 - If you're really ambitious you could even look at the old C# version.
 
 ***Known Issues***
