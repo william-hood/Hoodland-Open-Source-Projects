@@ -17,7 +17,7 @@
 - Currently tests are only found and run in the default package. (Meaning do not declare a package at the top of the file.)
 - TestFactories (for "manufactured tests") are not being found. That feature will not be usable until I can resolve it.
 - The "Descriptions" module was mechanically translated from the old Java version, and needs to be properly "Kotlin-ized". Expect major churn there until this bullet point goes away.
-- Running Koarse Grind as a compiled JAR file duplicates each test it finds. Use it from soruce code for now.
+- Running Koarse Grind as a compiled JAR file duplicates each test it finds. Use it from source code for now.
 
 ## Long Version
 
