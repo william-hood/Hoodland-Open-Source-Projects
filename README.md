@@ -10,7 +10,14 @@
 - There is an example project for the Memoir logging system when used as a stand-alone module.
 - A second example program exists for Koarse Grind, which uses Memoir for its logging.
 - There is also a partial start on a set of Koarse Grind tests for my "extreme legacy" projects which also serves as an example.
+- The HTML-based output logs will appear in a folder titled "Test Results" off of your Documents directory.
 - If you're really ambitious you could even look at the old C# version.
+
+***Known Issues***
+- Currently tests are only found and run in the default package. (Meaning do not declare a package at the top of the file.)
+- TestFactories (for "manufactured tests") are not being found. That feature will not be usable until I can resolve it.
+- The "Descriptions" module was mechanically translated from the old Java version, and needs to be properly "Kotlin-ized". Expect major churn there until this bullet point goes away.
+- Running Koarse Grind as a compiled JAR file duplicates each test it finds. Use it from source code for now.
 
 ## Long Version
 
