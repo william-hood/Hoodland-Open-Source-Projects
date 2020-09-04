@@ -270,8 +270,8 @@ abstract class Test (
                 } finally {
                     wasSetup = true
                     if (setupContext.memoir.wasUsed) {
-                        var style = "decaf_orange_light_roast"
-                        if (setupContext.overallStatus.isPassing()) { style = "decaf_green_light_roast" }
+                        var style = "implied_bad"
+                        if (setupContext.overallStatus.isPassing()) { style = "implied_good" }
                         testContext!!.memoir.showMemoir(setupContext.memoir, EMOJI_SETUP, style)
                     }
                 }
@@ -291,7 +291,9 @@ abstract class Test (
                     executionThread = null
                 }
             } else {
-                addResult(TestResult(TestStatus.INCONCLUSIVE, "Declining to perform test case $identifiedName because setup method failed."))
+                val thisResult = TestResult(TestStatus.INCONCLUSIVE, "Declining to perform test case $identifiedName because setup method failed.")
+                testContext!!.memoir.showTestResult((thisResult))
+                testContext!!.results.add(thisResult)
             }
 
             // CLEANUP
@@ -302,8 +304,8 @@ abstract class Test (
                 addResult(getResultForFailureInCleanup(thisFailure))
             } finally {
                 if (cleanupContext.memoir.wasUsed) {
-                    var style = "decaf_orange_light_roast"
-                    if (cleanupContext.overallStatus.isPassing()) { style = "decaf_green_light_roast" }
+                    var style = "implied_bad"
+                    if (cleanupContext.overallStatus.isPassing()) { style = "implied_good" }
                     testContext!!.memoir.showMemoir(cleanupContext.memoir, EMOJI_CLEANUP, style)
                 }
             }
