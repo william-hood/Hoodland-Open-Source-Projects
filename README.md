@@ -14,7 +14,6 @@
 - If you're really ambitious you could even look at the old C# version.
 
 ***Known Issues***
-- Currently tests are only found and run in the default package. (Meaning do not declare a package at the top of the file.)
 - Running Koarse Grind as a compiled JAR file duplicates each test it finds. Use it from source code for now.
 
 ## Long Version
