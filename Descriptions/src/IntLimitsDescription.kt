@@ -21,12 +21,10 @@
 package hoodland.opensource.descriptions
 
 abstract class IntLimitsDescription : LimitsDescription<Int>() {
-    @Throws(InappropriateDescriptionException::class)
-    override fun isWithinLimits(candidate: Int): Boolean {
-        return candidate <= upperLimit && candidate >= lowerLimit
+    override fun contain(candidate: Int): Boolean {
+        return candidate <= upper && candidate >= lower
     }
 
-    @get:Throws(InappropriateDescriptionException::class)
-    override val isZeroInLimits: Boolean
-        get() = isWithinLimits(0)
+    override val containZero: Boolean
+        get() = contain(0)
 }

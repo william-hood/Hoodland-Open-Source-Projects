@@ -24,16 +24,16 @@ import hoodland.opensource.descriptions.StringFieldTargets
 import hoodland.opensource.toolbox.SubnameFactory
 
 class StringFieldSubnameDescription : StringFieldDescription {
-    constructor(BasisValue: String) : super(BasisValue) {
+    constructor(basisValue: String) : super(basisValue) {
         subname = SubnameFactory()
     }
 
-    constructor(InitialIndex: Long) : super() {
-        subname = SubnameFactory(InitialIndex)
+    constructor(initialIndex: Long) : super("") {
+        subname = SubnameFactory(initialIndex)
     }
 
-    constructor(BasisValue: String, InitialIndex: Long) : super(BasisValue) {
-        subname = SubnameFactory(InitialIndex)
+    constructor(basisValue: String, initialIndex: Long) : super(basisValue) {
+        subname = SubnameFactory(initialIndex)
     }
 
     var subname: SubnameFactory? = null
@@ -44,10 +44,15 @@ class StringFieldSubnameDescription : StringFieldDescription {
             if (target === StringFieldTargets.HAPPY_PATH
                     || target === StringFieldTargets.EXPLICIT) {
                 val tmp = StringBuilder()
+
                 if (basisValue != null) {
                     tmp.append(basisValue)
                 }
-                tmp.append(subname!!.nextSubname)
+
+                subname?.let {
+                    tmp.append(it.nextSubname)
+                }
+
                 return tmp.toString()
             }
             return super.describedValue

@@ -24,19 +24,11 @@ package hoodland.opensource.descriptions
 import java.math.BigInteger
 import java.util.*
 
-class BigIntegerFieldDescription : ValueFieldDescription<BigInteger> {
-    constructor(
-            limitsDescription: LimitsDescription<BigInteger>) : super(limitsDescription) {
-    }
+class BigIntegerFieldDescription(basisValue: BigInteger, limits: BigIntegerLimitsDescription) : ValueFieldDescription<BigInteger>(basisValue, limits) {
 
-    constructor() : super() {}
-    constructor(BasisValue: BigInteger) : super(BasisValue) {}
-
-    @get:Throws(InappropriateDescriptionException::class)
     override val positiveMinisculeValue: BigInteger
         get() = BigInteger.ONE
 
-    @get:Throws(InappropriateDescriptionException::class)
     override val positiveModerateValue: BigInteger
         get() = BigInteger.valueOf(100.toLong())
 
@@ -56,37 +48,30 @@ class BigIntegerFieldDescription : ValueFieldDescription<BigInteger> {
             throw InappropriateDescriptionException()
         }
 
-    @get:Throws(InappropriateDescriptionException::class)
-    override val zeroOrOrigin: BigInteger
+    override val zero: BigInteger
         get() = BigInteger.ZERO
 
-    @Throws(InappropriateDescriptionException::class)
     override fun add(x: BigInteger, y: BigInteger): BigInteger {
         return x.add(y)
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun subtract(x: BigInteger, y: BigInteger): BigInteger {
         return x.subtract(y)
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun multiply(x: BigInteger, y: BigInteger): BigInteger {
         return x.multiply(y)
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun divide(x: BigInteger, y: BigInteger): BigInteger {
         return x.divide(y)
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun half(x: BigInteger): BigInteger {
         return divide(x, BigInteger.valueOf(2.toLong()))
     }
 
     // Based on https://www.tutorialspoint.com/how-to-generate-a-random-biginteger-value-in-java
-    @Throws(InappropriateDescriptionException::class)
     override fun random(min: BigInteger, max: BigInteger): BigInteger {
         val delta = max.subtract(min)
         val random = Random()

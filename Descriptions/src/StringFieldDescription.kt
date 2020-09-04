@@ -23,18 +23,15 @@ package hoodland.opensource.descriptions
 
 import hoodland.opensource.toolbox.CRLF
 
-open class StringFieldDescription() : FieldDescription<String>() {
+open class StringFieldDescription(basisValue: String) : FieldDescription<String>(basisValue) {
     var target = StringFieldTargets.HAPPY_PATH
     private val HTML_HACK = "<html><head><title>TITLE</title></head><body>Howdy</body></html>"
     private val SQL_HACK = "SELECT 'Hello, World!';"
     private val JAVASCRIPT_HACK = "function displayDate(){document.getElementById(\"demo\").innerHTML=Date();}"
     private val XML_HACK = "<?xml version=\"1.0\"?><soap:Envelope xmlns:soap=\"http://www.w3.org/2001/12/soap-envelope\" soap:encodingStyle=\"http://www.w3.org/2001/12/soap-encoding\"><soap:Body xmlns:m=\"http://www.example.org/stock\"><m:GetStockPrice><m:StockName>IBM</m:StockName></m:GetStockPrice></soap:Body></soap:Envelope>"
 
-    constructor(BasisValue: String) : this() { this.basisValue = BasisValue }
-
-    override fun hasSpecificHappyValue(): Boolean {
-        return target === StringFieldTargets.HAPPY_PATH && basisValue != null
-    }
+    override val hasSpecificHappyValue: Boolean
+        get() = target === StringFieldTargets.HAPPY_PATH && basisValue != null
 
     override val isExplicit: Boolean
         get() = (target === StringFieldTargets.EXPLICIT)
@@ -129,7 +126,7 @@ open class StringFieldDescription() : FieldDescription<String>() {
         return if (target === StringFieldTargets.EXPLICIT) "$target ($basisValue)" else target.toString()
     }
 
-    override fun setExplicitValue(value: String) {
+    override fun useExplicitValue(value: String?) {
         basisValue = value
         target = StringFieldTargets.EXPLICIT
     }

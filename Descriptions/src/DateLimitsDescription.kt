@@ -22,20 +22,16 @@ package hoodland.opensource.descriptions
 
 import java.time.LocalDate
 
-abstract class DateLimitsDescription {
-    @get:Throws(InappropriateDescriptionException::class)
-    abstract val upperLimit: LocalDate
+abstract class DateLimitsDescription : LimitsDescription<LocalDate>() {
 
-    @get:Throws(InappropriateDescriptionException::class)
-    abstract val lowerLimit: LocalDate
-
-    @Throws(InappropriateDescriptionException::class)
-    fun isWithinLimits(candidate: LocalDate): Boolean {
-        if (candidate.toEpochDay() <= lowerLimit.toEpochDay()) return false
-        return if (candidate.toEpochDay() >= upperLimit.toEpochDay()) false else true
+    override fun contain(candidate: LocalDate): Boolean {
+        if (candidate.toEpochDay() <= lower.toEpochDay()) return false
+        return if (candidate.toEpochDay() >= upper.toEpochDay()) false else true
     }
 
-    @get:Throws(InappropriateDescriptionException::class)
-    val isPresentInLimits: Boolean
-        get() = isWithinLimits(LocalDate.now())
+    override val containZero: Boolean
+        get() = contain(LocalDate.now())
+
+    val containPresent: Boolean
+        get() = containZero
 }

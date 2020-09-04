@@ -21,12 +21,11 @@
 package hoodland.opensource.descriptions
 
 abstract class LongLimitsDescription : LimitsDescription<Long>() {
-    @Throws(InappropriateDescriptionException::class)
-    override fun isWithinLimits(candidate: Long): Boolean {
-        return candidate <= upperLimit && candidate >= lowerLimit
+
+    override fun contain(candidate: Long): Boolean {
+        return candidate <= upper && candidate >= lower
     }
 
-    @get:Throws(InappropriateDescriptionException::class)
-    override val isZeroInLimits: Boolean
-        get() = isWithinLimits(0.toLong())
+    override val containZero: Boolean
+        get() = contain(0.toLong())
 }

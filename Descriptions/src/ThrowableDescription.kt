@@ -19,14 +19,16 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+// TODO: This is mechanically translated directly from the old Java version. Leaving as-is for now, but might be re-written as from-scratch Kotlin at a later time.
+
 package hoodland.opensource.descriptions
 
 import hoodland.opensource.toolbox.UNSET_STRING
 
-class FailureDescription {
+class ThrowableDescription {
     private var _failureType: Class<out Throwable>? = null
     private var _messageSubstring = ""
-    private var _cause: FailureDescription? = null
+    private var _cause: ThrowableDescription? = null
     private var _failureTypePartialName: String = UNSET_STRING
 
     constructor(failureType: Class<out Throwable>?,
@@ -36,7 +38,7 @@ class FailureDescription {
     }
 
     constructor(failureType: Class<out Throwable>?,
-                messageSubstring: String, cause: FailureDescription?) : this(failureType, messageSubstring) {
+                messageSubstring: String, cause: ThrowableDescription?) : this(failureType, messageSubstring) {
         this._cause = cause
     }
 

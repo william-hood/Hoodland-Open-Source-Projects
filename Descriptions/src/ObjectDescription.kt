@@ -21,6 +21,5 @@
 package hoodland.opensource.descriptions
 
 abstract class ObjectDescription<T> {
-    @get:Throws(NoValueException::class, InappropriateDescriptionException::class)
     abstract val describedObject: T
 }

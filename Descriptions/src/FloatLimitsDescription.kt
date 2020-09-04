@@ -21,12 +21,10 @@
 package hoodland.opensource.descriptions
 
 abstract class FloatLimitsDescription : LimitsDescription<Float>() {
-    @Throws(InappropriateDescriptionException::class)
-    override fun isWithinLimits(candidate: Float): Boolean {
-        return candidate <= upperLimit && candidate >= lowerLimit
+    override fun contain(candidate: Float): Boolean {
+        return candidate <= upper && candidate >= lower
     }
 
-    @get:Throws(InappropriateDescriptionException::class)
-    override val isZeroInLimits: Boolean
-        get() = isWithinLimits(0.toFloat())
+    override val containZero: Boolean
+        get() = contain(0.toFloat())
 }

@@ -74,7 +74,7 @@ class DateFieldDescription() : FieldDescription<LocalDate>() {
     }
 
     val sizeInDays: Long
-        get() = bounds!!.upperLimit.toEpochDay() - bounds!!.lowerLimit.toEpochDay()
+        get() = bounds!!.upper.toEpochDay() - bounds!!.lower.toEpochDay()
 
     override val describedValue: LocalDate?
         get() {
@@ -86,29 +86,29 @@ class DateFieldDescription() : FieldDescription<LocalDate>() {
                 DateFieldTargets.HAPPY_PATH -> {
                     if (basisValue == null) {
                         if (!isLimited) throw InappropriateDescriptionException()
-                        return middle(bounds!!.lowerLimit, bounds!!.upperLimit)
+                        return middle(bounds!!.lower, bounds!!.upper)
                     }
                     return basisValue
                 }
                 DateFieldTargets.MAXIMUM_POSSIBLE_VALUE -> return maximumPossibleValue
                 DateFieldTargets.MINIMUM_POSSIBLE_VALUE -> return minimumPossibleValue
-                DateFieldTargets.AT_LOWER_LIMIT -> return bounds!!.lowerLimit
-                DateFieldTargets.AT_UPPER_LIMIT -> return bounds!!.upperLimit
+                DateFieldTargets.AT_LOWER_LIMIT -> return bounds!!.lower
+                DateFieldTargets.AT_UPPER_LIMIT -> return bounds!!.upper
                 DateFieldTargets.AT_PRESENT -> return present
                 DateFieldTargets.NULL -> return null
-                DateFieldTargets.RANDOM_WITHIN_LIMITS -> return random(bounds!!.lowerLimit.plusDays(1), bounds!!.upperLimit.minusDays(1))
+                DateFieldTargets.RANDOM_WITHIN_LIMITS -> return random(bounds!!.lower.plusDays(1), bounds!!.upper.minusDays(1))
                 DateFieldTargets.SLIGHTLY_IN_FUTURE -> return positiveMinisculeValue
                 DateFieldTargets.SLIGHTLY_IN_PAST -> return negativeMinisculeValue
-                DateFieldTargets.SLIGHTLY_BEYOND_LOWER_LIMIT -> return bounds!!.lowerLimit.minusDays(1)
-                DateFieldTargets.SLIGHTLY_BEYOND_UPPER_LIMIT -> return bounds!!.upperLimit.plusDays(1)
-                DateFieldTargets.SLIGHTLY_WITHIN_LOWER_LIMIT -> return bounds!!.lowerLimit.plusDays(1)
-                DateFieldTargets.SLIGHTLY_WITHIN_UPPER_LIMIT -> return bounds!!.upperLimit.minusDays(1)
+                DateFieldTargets.SLIGHTLY_BEYOND_LOWER_LIMIT -> return bounds!!.lower.minusDays(1)
+                DateFieldTargets.SLIGHTLY_BEYOND_UPPER_LIMIT -> return bounds!!.upper.plusDays(1)
+                DateFieldTargets.SLIGHTLY_WITHIN_LOWER_LIMIT -> return bounds!!.lower.plusDays(1)
+                DateFieldTargets.SLIGHTLY_WITHIN_UPPER_LIMIT -> return bounds!!.upper.minusDays(1)
                 DateFieldTargets.WELL_IN_FUTURE -> return positiveModerateValue
                 DateFieldTargets.WELL_IN_PAST -> return negativeModerateValue
-                DateFieldTargets.WELL_BEYOND_LOWER_LIMIT -> return bounds!!.lowerLimit.minusDays(400)
-                DateFieldTargets.WELL_BEYOND_UPPER_LIMIT -> return bounds!!.upperLimit.plusDays(400)
-                DateFieldTargets.WELL_WITHIN_LOWER_LIMIT -> return bounds!!.lowerLimit.plusDays(400)
-                DateFieldTargets.WELL_WITHIN_UPPER_LIMIT -> return bounds!!.upperLimit.minusDays(400)
+                DateFieldTargets.WELL_BEYOND_LOWER_LIMIT -> return bounds!!.lower.minusDays(400)
+                DateFieldTargets.WELL_BEYOND_UPPER_LIMIT -> return bounds!!.upper.plusDays(400)
+                DateFieldTargets.WELL_WITHIN_LOWER_LIMIT -> return bounds!!.lower.plusDays(400)
+                DateFieldTargets.WELL_WITHIN_UPPER_LIMIT -> return bounds!!.upper.minusDays(400)
                 DateFieldTargets.SLIGHTLY_ABOVE_MINIMUM -> return minimumPossibleValue.plusDays(1)
                 DateFieldTargets.SLIGHTLY_BELOW_MAXIMUM -> return maximumPossibleValue.minusDays(1)
                 DateFieldTargets.FIVE_DIGIT_YEAR -> return LocalDate.of(10000 + present.year, present.month, present.dayOfMonth)
@@ -125,9 +125,8 @@ class DateFieldDescription() : FieldDescription<LocalDate>() {
             }
         }
 
-    override fun hasSpecificHappyValue(): Boolean {
-        return target === DateFieldTargets.HAPPY_PATH && basisValue != null
-    }
+    override val hasSpecificHappyValue: Boolean
+        get() = (target === DateFieldTargets.HAPPY_PATH) && (basisValue != null)
 
     override val isExplicit: Boolean
         get() = (target === DateFieldTargets.EXPLICIT)
@@ -135,7 +134,7 @@ class DateFieldDescription() : FieldDescription<LocalDate>() {
     override val isDefault: Boolean
     get() = (target === DateFieldTargets.DEFAULT)
 
-    override fun setExplicitValue(value: LocalDate) {
+    override fun useExplicitValue(value: LocalDate?) {
         basisValue = value
         target = DateFieldTargets.EXPLICIT
     }

@@ -1,4 +1,9 @@
+import hoodland.opensource.descriptions.StringFieldDescription
+import hoodland.opensource.descriptions.StringFieldTargets
+import hoodland.opensource.koarsegrind.ManufacturedTest
 import hoodland.opensource.koarsegrind.Test
+import hoodland.opensource.koarsegrind.TestFactory
+import hoodland.opensource.toolbox.SubnameFactory
 
 class ExampleTest1:Test(
         "Sample Test Number One",
@@ -41,14 +46,34 @@ class ExampleTest3B:Test(
     }
 }
 
-class ExampleTest4:Test(
-        "Test Four",
-        "I dunno. It's the 4'th test.",
-        "",
-        "Simple", "All", "Example", "Forth"
-) {
+class ManufacturedTestExample(
+        name: String,
+        detailedDescription: String,
+        identifier: String,
+        val testData: String?)
+    : ManufacturedTest(name, detailedDescription, identifier,
+        "Manufactured", "Descriptions", "All", "Example") {
     override fun performTest() {
-        log.info("Didn't bother with an identifier")
-        log.info("Didn't bother with an assertion")
+        log.info("Let's pretend we're sending this string into a database, REST call, or whatever else.")
+        assert.shouldBeTrue(true, "This string worked: $testData")
     }
+}
+
+class TestFactoryExample: TestFactory() {
+    override fun populateProducts() {
+        val subname = SubnameFactory()
+        val testDataGenerator = StringFieldDescription("The rain in Spain stays mainly on the plain.")
+
+        StringFieldTargets.values().forEach {
+            if (it != StringFieldTargets.DEFAULT) {
+                testDataGenerator.target = it
+                products.add(ManufacturedTestExample(
+                        "Show messed up string: ${it.toString()}",
+                        "This is just an example of using the Descriptions module to generate test data. This particular case modifies a basis string to meet the test data criterion. In this case: ${it.toString()}",
+                        subname.nextSubname,
+                        testDataGenerator.describedValue))
+            }
+        }
+    }
+
 }

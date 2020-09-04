@@ -21,61 +21,53 @@
 package hoodland.opensource.descriptions
 
 import hoodland.opensource.toolbox.randomInteger
+import kotlin.math.roundToInt
 
+class IntFieldDescription(basisValue: Int, limits: IntLimitsDescription) : ValueFieldDescription<Int>(basisValue, limits) {
 
-class IntFieldDescription : ValueFieldDescription<Int> {
-    constructor(limitsDescription: LimitsDescription<Int>) : super(limitsDescription) {}
-    constructor() : super() {}
-    constructor(BasisValue: Int) : super(BasisValue) {}
-
-    @get:Throws(InappropriateDescriptionException::class)
     override val positiveMinisculeValue: Int
         get() = 1
 
-    // PROBLEM: If limits are from 0 to 30 this is not moderate.
-    @get:Throws(InappropriateDescriptionException::class)
     override val positiveModerateValue: Int
-        get() =// PROBLEM: If limits are from 0 to 30 this is not moderate.
-            100
+        get() {
+            if (limits.upper > 200) {
+                return 100
+            }
 
-    @get:Throws(InappropriateDescriptionException::class)
+            val result = limits.upper / 3
+            if (result < 2) { throw InappropriateDescriptionException() }
+            return result
+        }
+
     override val maximumPossibleValue: Int
         get() = Int.MAX_VALUE
 
-    @get:Throws(InappropriateDescriptionException::class)
     override val minimumPossibleValue: Int
         get() = Int.MIN_VALUE
 
-    @get:Throws(InappropriateDescriptionException::class)
-    override val zeroOrOrigin: Int
+    override val zero: Int
         get() = 0
 
-    @Throws(InappropriateDescriptionException::class)
     override fun add(x: Int, y: Int): Int {
         return x + y
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun subtract(x: Int, y: Int): Int {
         return x - y
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun multiply(x: Int, y: Int): Int {
         return x * y
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun divide(x: Int, y: Int): Int {
-        return Math.round(x / y.toFloat())
+        return (x.toDouble() / y.toDouble()).roundToInt()
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun half(x: Int): Int {
         return divide(x, 2)
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun random(min: Int, max: Int): Int {
         return add(min, randomInteger(min, max))
     }

@@ -73,5 +73,4 @@ fun main(args: Array<String>) {
     TestProgram.run("Koarse Grind Demo")
 }
 
-// TODO: Verify Manufactured Tests Work
-// TODO: Example for Descriptions
+// TODO: More/Better examples for Descriptions
