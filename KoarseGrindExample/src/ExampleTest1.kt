@@ -45,7 +45,7 @@ class ExampleTest3B:Test(
         assert.shouldBeEqual(true, false, "Actually, this should make it fail.")
     }
 }
-
+/*
 class ManufacturedTestExample(
         name: String,
         detailedDescription: String,
@@ -77,3 +77,4 @@ class TestFactoryExample: TestFactory() {
     }
 
 }
+*/

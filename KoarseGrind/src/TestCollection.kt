@@ -30,6 +30,8 @@ import java.io.PrintWriter
 import kotlin.concurrent.thread
 import kotlin.math.round
 
+// TODO: TestCollection needs to be nestable so that there can be sub-groupings of tests.
+
 private const val FOLDER_FOR_ALL_TESTS = "All Tests"
 
 public object TestCollection: ArrayList<Test>() {
