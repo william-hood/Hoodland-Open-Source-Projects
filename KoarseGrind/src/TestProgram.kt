@@ -19,15 +19,16 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-import hoodland.opensource.koarsegrind.ManufacturedTest
-import hoodland.opensource.koarsegrind.Test
-import hoodland.opensource.koarsegrind.TestCollection
-import hoodland.opensource.koarsegrind.TestFactory
+import hoodland.opensource.koarsegrind.*
+import hoodland.opensource.koarsegrind.SUMMARY_FILE_NAME
+import hoodland.opensource.koarsegrind.SUMMARY_TEXTFILE_NAME
 import hoodland.opensource.memoir.Memoir
 import hoodland.opensource.memoir.UNKNOWN
 import hoodland.opensource.memoir.showThrowable
-import hoodland.opensource.toolbox.getCurrentWorkingDirectory
-import hoodland.opensource.toolbox.stderr
+import hoodland.opensource.toolbox.MatrixFile
+import hoodland.opensource.toolbox.QuantumTextFile
+import hoodland.opensource.toolbox.StringParser
+import hoodland.opensource.toolbox.stdout
 import java.io.File
 import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.full.isSubclassOf
@@ -43,23 +44,57 @@ private val debuggingMemoir = Memoir("\uD83D\uDC1E DEBUG", null, debugFile.print
 object TestProgram {
     // This may have to be changed to take the same arguments as TestCollection
     fun run(name: String = UNKNOWN) {
+        val rootCollection = TestCollection(name)
         val packages = testLoader.definedPackages
         packages.forEach {
             val resources = testLoader.getResources(it.name.replace('.', File.separatorChar)).asIterator()
             resources.forEach {
-                recursiveIdentify(File(it.file))
+                recursiveIdentify(rootCollection, File(it.file))
             }
         }
 
-        TestCollection.run(name, preclusiveFailures = preclusions)
-
+        val rootLog = rootCollection.run(preclusions)
+        createSummaryReport(rootCollection, rootLog)
+        rootLog.conclude()
         debuggingMemoir.conclude()
     }
 
+    fun createSummaryReport(rootCollection: TestCollection, memoir: Memoir = Memoir(forPlainText = stdout)) {
+        val fullyQualifiedSummaryFileName = rootCollection.rootDirectory + File.separatorChar + SUMMARY_FILE_NAME
+        memoir.info("Creating Test Suite Summary Report ($fullyQualifiedSummaryFileName)")
+        var summaryReport = MatrixFile<String>("Categorization", "Test ID", "Name", "Description", "Status", "Reasons")
 
-    // TODO: Properly handle Jar files in the class
+        try {
+            // Try to append to an existing one
+            summaryReport = MatrixFile.read(fullyQualifiedSummaryFileName, StringParser)
+        } catch(dontCare: Throwable) {
+            // Deliberate NO-OP
+            // Leave the summaryReport as created above
+        }
+
+        rootCollection.gatherForReport(summaryReport)
+
+        summaryReport.write(fullyQualifiedSummaryFileName)
+
+
+        // Section below creates a single line file stating the overall status
+        val fullyQualifiedSummaryTextFileName = rootCollection.rootDirectory + File.separatorChar + SUMMARY_TEXTFILE_NAME
+
+        try {
+            val textFile = QuantumTextFile(fullyQualifiedSummaryTextFileName)
+            textFile.println(rootCollection.overallStatus.toString())
+            textFile.flush()
+            textFile.close() // Shouldn't need a getter because this is a val
+        } catch (thisFailure: Throwable) {
+            memoir.error("Did not successfully create the overall status text file $fullyQualifiedSummaryTextFileName")
+            memoir.showThrowable(thisFailure)
+        }
+    }
+
+
+    // TODO: Properly handle Jar files in the classpath
     // TODO: Make KG properly usable as a JAR package
-    private fun recursiveIdentify(candidate: File) {
+    private fun recursiveIdentify(rootCollection: TestCollection, candidate: File) {
         debuggingMemoir.info("PATH ${candidate.absolutePath}")
 
         if (candidate.exists()) {
@@ -67,7 +102,7 @@ object TestProgram {
             check.forEach {
                 if (it.isDirectory) {
                     if (!it.name.contains(".")) {
-                        recursiveIdentify(it)
+                        recursiveIdentify(rootCollection, it)
                     }
                 } else if (it.name.toLowerCase().endsWith(".class")) {
                     var attemptName = it.invariantSeparatorsPath.replace('/', '.')
@@ -81,11 +116,11 @@ object TestProgram {
                             if (foundClass.kotlin.isSubclassOf(Test::class)) {
                                 if (!(foundClass.kotlin.isSubclassOf(ManufacturedTest::class))) {
                                     val foundTestInstance: Test = foundClass.getDeclaredConstructor().newInstance() as Test
-                                    TestCollection.add(foundTestInstance)
+                                    rootCollection.add(foundTestInstance)
                                 }
                             } else if (foundClass.kotlin.isSubclassOf(TestFactory::class)) {
                                 val factory: TestFactory = foundClass.getDeclaredConstructor().newInstance() as TestFactory
-                                TestCollection.addAll(factory.products)
+                                rootCollection.add(factory.products)
                             }
                         } catch (materialFailure: InvocationTargetException) {
                             debuggingMemoir.showThrowable(materialFailure)

@@ -50,10 +50,10 @@ internal const val CLEANUP = "cleanup"
 internal const val UNSET_DESCRIPTION = "(no details)"
 
 abstract class Test (
-        internal val name: String,
+        override val name: String,
         private val detailedDescription: String = UNSET_DESCRIPTION,
         internal val identifier: String = "",
-        vararg categories: String) {
+        vararg categories: String): TestEchelon {
         internal var categories: Array<out String> = categories
         internal val setupContext = TestPhaseContext(Memoir("Setup - Test $identifiedName", stdout))
         internal val cleanupContext = TestPhaseContext(Memoir("Cleanup -  Test $identifiedName", stdout))
@@ -129,8 +129,9 @@ abstract class Test (
         context.results.add(thisResult)
     }
 
-    val overallStatus: TestStatus
+    override val overallStatus: TestStatus
         get() {
+            // Previous version also used INCONCLUSIVE if !wasRun
             if (! setupContext.overallStatus.isPassing()) return TestStatus.INCONCLUSIVE
             return testContext!!.overallStatus
         }

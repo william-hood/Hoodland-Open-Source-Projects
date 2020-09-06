@@ -30,11 +30,14 @@ import java.io.PrintWriter
 import kotlin.concurrent.thread
 import kotlin.math.round
 
-// TODO: TestCollection needs to be nestable so that there can be sub-groupings of tests.
+interface TestEchelon {
+    val name: String
+    val overallStatus: TestStatus
+}
 
 private const val FOLDER_FOR_ALL_TESTS = "All Tests"
 
-public object TestCollection: ArrayList<Test>() {
+public class TestCollection(override val name: String): ArrayList<TestEchelon>(), TestEchelon {
     init {
     System.err.println("Ran Init: ${this::class.simpleName}")
     }
@@ -42,6 +45,7 @@ public object TestCollection: ArrayList<Test>() {
     private var currentArtifactsDirectory = UNSET_STRING
     private var executionThread: Thread? = null
     private var currentCount = Int.MAX_VALUE
+    internal var rootDirectory: String = UNSET_STRING
 
     fun reset() {
         currentCount = Int.MAX_VALUE
@@ -76,29 +80,17 @@ public object TestCollection: ArrayList<Test>() {
             }
         }
 
-    // The C# version contains a large #region "Old way that uses category folders"
-    // C# version also took no parameters and logged to console.
-    // I'm changing this to require a memoir so it can be logged properly.
-    private fun copyResultsToCategories(memoir: Memoir) {
-        try {
-            //copyCompletely(_currentTest!!.artifactsDirectory, currentArtifactsDirectory + File.separatorChar + _currentTest!!.prefixedName)
-            File(_currentTest!!.artifactsDirectory).copyRecursively(File(currentArtifactsDirectory + File.separatorChar + _currentTest!!.prefixedName), true)
-        } catch (loggedThrowable: Throwable) {
-            memoir.error("Koarse Grind was unable to copy the current test results to their permanent location")
-            memoir.showThrowable(loggedThrowable)
-        } finally {
-            //hardDelete(currentTest!!.ArtifactsDirectory)
-            File(_currentTest!!.artifactsDirectory).deleteRecursively()
-        }
-    }
-
     // TODO: Alter this to provide for
     //         * You want certain/batch of files excluded. Maybe by category
     //         * You only want to run centain IDs or categories
     //
     // Properly doing this might require a custom data structure that a test-runner program would pass in.
     //
-    fun run(name: String, rootDirectory: String  = "$DEFAULT_PARENT_FOLDER${File.separatorChar}$quickTimeStamp ${name}", preclusiveFailures: ArrayList<Throwable>? = null) {
+    fun run(preclusiveFailures: ArrayList<Throwable>? = null) : Memoir {
+        if (rootDirectory === UNSET_STRING) {
+            rootDirectory = "$DEFAULT_PARENT_FOLDER${File.separatorChar}$quickTimeStamp ${name}"
+        }
+
         currentArtifactsDirectory = rootDirectory
         val expectedFileName = currentArtifactsDirectory + File.separatorChar + "All tests.html"
         //forceParentDirectoryExistence(expectedFileName)
@@ -122,30 +114,46 @@ public object TestCollection: ArrayList<Test>() {
                 // Decline to run
                 break
             } else {
-                _currentTest = this[currentCount]
-                /*
-                if (false)//(exclusions.matchesCaseInspecific(currentTest!!.IdentifiedName)) {
-                    // Decline to run
-                    break
-                } else {
-                }
-                */
-                try {
-                    executionThread = thread(start = true) { _currentTest!!.runTest(currentArtifactsDirectory) } // C# used the public Run() function
-                    executionThread!!.join()
-                } catch (thisFailure: Throwable) {
-                    // Uncertain why specifically calling GetResultForPreclusionInSetup()
-                    _currentTest!!.addResult(_currentTest!!.getResultForPreclusionInSetup(thisFailure))
-                } finally {
-                    executionThread = null
-                    overlog.showMemoir(_currentTest!!.testContext!!.memoir, _currentTest!!.overallStatus.memoirIcon, _currentTest!!.overallStatus.memoirStyle)
-                    this.copyResultsToCategories(overlog)
+                val nextItem = this[currentCount]
+                if (nextItem is Test) {
+                    _currentTest = nextItem as Test
+                    try {
+                        executionThread = thread(start = true) { _currentTest!!.runTest(currentArtifactsDirectory) } // C# used the public Run() function
+                        executionThread!!.join()
+                    } catch (thisFailure: Throwable) {
+                        // Uncertain why specifically calling GetResultForPreclusionInSetup()
+                        _currentTest!!.addResult(_currentTest!!.getResultForPreclusionInSetup(thisFailure))
+                    } finally {
+                        executionThread = null
+                        overlog.showMemoir(_currentTest!!.testContext!!.memoir, _currentTest!!.overallStatus.memoirIcon, _currentTest!!.overallStatus.memoirStyle)
+
+                        // Prefix the test's artifacts directory with its overall status
+                        try {
+                            File(_currentTest!!.artifactsDirectory).renameTo(File(currentArtifactsDirectory + File.separatorChar + _currentTest!!.prefixedName))
+                        } catch (loggedThrowable: Throwable) {
+                            overlog.error("Koarse Grind was unable to rename the current test's artifact directory to their permanent location")
+                            overlog.showThrowable(loggedThrowable)
+                        }
+                    }
+                } else if (nextItem is TestCollection) {
+                    val subCollection = nextItem as TestCollection
+                    subCollection.rootDirectory = "$currentArtifactsDirectory${File.separatorChar}(collection '${subCollection.name}' in progress)"
+                    overlog.showMemoir(subCollection.run(), subCollection.overallStatus.memoirIcon, subCollection.overallStatus.memoirStyle)
+
+                    // Prefix the test's artifacts directory with its overall status
+                    try {
+                        File(subCollection.rootDirectory).renameTo(File(currentArtifactsDirectory + File.separatorChar + subCollection.prefixedName))
+                    } catch (loggedThrowable: Throwable) {
+                        overlog.error("Koarse Grind was unable to rename the current test collection's root directory to their permanent location")
+                        overlog.showThrowable(loggedThrowable)
+                    }
                 }
             }
         }
 
-        createSummaryReport(rootDirectory, overlog)
-        overlog.conclude()
+        //createSummaryReport(rootDirectory, overlog)
+        //overlog.conclude()
+        return overlog
     }
 
     // Omitting public functions Run() & InterruptCurrentTest() from C#
@@ -170,54 +178,29 @@ public object TestCollection: ArrayList<Test>() {
         }
     }
 
-    val overallStatus: TestStatus
+    override val overallStatus: TestStatus
         get() {
-        var tally = 0
+            if (size < 1) { return TestStatus.INCONCLUSIVE }
             var result = TestStatus.PASS
             this.forEach {
-                if (it.wasRun) {
-                    tally++
-                    result = result + it.overallStatus
-                }
+                result = result + it.overallStatus
             }
 
-            if (tally < 1) { return TestStatus.INCONCLUSIVE }
             return result
     }
 
-    fun createSummaryReport(rootDirectory: String, memoir: Memoir = Memoir(forPlainText = stdout)) {
-        val fullyQulaifiedSummaryFileName = rootDirectory + File.separatorChar + SUMMARY_FILE_NAME
-        memoir.info("Creating Test Suite Summary Report ($fullyQulaifiedSummaryFileName)")
-        var summaryReport = MatrixFile<String>("Categorization", "Test ID", "Name", "Description", "Status", "Reasons")
+    val prefixedName: String
+        get() = "$overallStatus - $name"
 
-        try {
-            // Try to append to an existing one
-            summaryReport = MatrixFile.read(fullyQulaifiedSummaryFileName, StringParser)
-        } catch(dontCare: Throwable) {
-            // Deliberate NO-OP
-            // Leave the summaryReport as created above
-        }
-
+    internal fun gatherForReport(summaryReport: MatrixFile<String>) {
         this.forEach {
-            if (it.wasSetup) {
-                summaryReport.addDataRow(it.summaryDataRow)
+            if (it is Test){
+                if (it.wasSetup) {
+                    summaryReport.addDataRow(it.summaryDataRow)
+                }
+            } else if (it is TestCollection) {
+                it.gatherForReport(summaryReport)
             }
-        }
-
-        summaryReport.write(fullyQulaifiedSummaryFileName)
-
-
-        // Section below creates a single line file stating the overall status
-        val fullyQulaifiedSummaryTextFileName = rootDirectory + File.separatorChar + SUMMARY_TEXTFILE_NAME
-
-        try {
-            val textFile = QuantumTextFile(fullyQulaifiedSummaryTextFileName)
-            textFile.println(overallStatus.toString())
-            textFile.flush()
-            textFile.close() // Shouldn't need a getter because this is a val
-        } catch (thisFailure: Throwable) {
-            memoir.error("Did not successfully create the overall status text file $fullyQulaifiedSummaryTextFileName")
-            memoir.showThrowable(thisFailure)
         }
     }
 }

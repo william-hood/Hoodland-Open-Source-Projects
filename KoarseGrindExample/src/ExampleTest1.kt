@@ -45,7 +45,7 @@ class ExampleTest3B:Test(
         assert.shouldBeEqual(true, false, "Actually, this should make it fail.")
     }
 }
-/*
+
 class ManufacturedTestExample(
         name: String,
         detailedDescription: String,
@@ -59,7 +59,7 @@ class ManufacturedTestExample(
     }
 }
 
-class TestFactoryExample: TestFactory() {
+class TestFactoryExample: TestFactory("Test Factory and Manufactured Test Example") {
     override fun populateProducts() {
         val subname = SubnameFactory()
         val testDataGenerator = StringFieldDescription("The rain in Spain stays mainly on the plain.")
@@ -77,4 +77,3 @@ class TestFactoryExample: TestFactory() {
     }
 
 }
-*/
