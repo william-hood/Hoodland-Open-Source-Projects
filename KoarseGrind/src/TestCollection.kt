@@ -35,8 +35,6 @@ interface TestEchelon {
     val overallStatus: TestStatus
 }
 
-private const val FOLDER_FOR_ALL_TESTS = "All Tests"
-
 public class TestCollection(override val name: String): ArrayList<TestEchelon>(), TestEchelon {
     init {
     System.err.println("Ran Init: ${this::class.simpleName}")
@@ -87,17 +85,18 @@ public class TestCollection(override val name: String): ArrayList<TestEchelon>()
     // Properly doing this might require a custom data structure that a test-runner program would pass in.
     //
     fun run(preclusiveFailures: ArrayList<Throwable>? = null) : Memoir {
+        var logFileName = "$name.html"
         if (rootDirectory === UNSET_STRING) {
-            rootDirectory = "$DEFAULT_PARENT_FOLDER${File.separatorChar}$quickTimeStamp ${name}"
+            rootDirectory = "$DEFAULT_PARENT_FOLDER${File.separatorChar}$quickTimeStamp $name"
+            logFileName = "All tests.html"
         }
 
         currentArtifactsDirectory = rootDirectory
-        val expectedFileName = currentArtifactsDirectory + File.separatorChar + "All tests.html"
-        //forceParentDirectoryExistence(expectedFileName)
+        val logFileFullPath = "$currentArtifactsDirectory${File.separatorChar}$logFileName"
         // Force the parent directory to exist...
-        File(expectedFileName).parentFile.mkdirs()
+        File(logFileFullPath).parentFile.mkdirs()
 
-        val overlog = Memoir(name, null, PrintWriter(expectedFileName), ::logHeader)
+        val overlog = Memoir(name, null, PrintWriter(logFileFullPath), ::logHeader)
         if (preclusiveFailures != null) {
             if (preclusiveFailures.size > 0) {
                 overlog.error("Failures were indicated while starting Koarse Grind!")
