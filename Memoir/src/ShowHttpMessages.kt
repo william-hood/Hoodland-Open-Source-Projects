@@ -29,7 +29,9 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.util.*
 
-fun Memoir.showHttpRequest(request: HttpRequest) {
+const val HTTP_MESSAGE_BODY = "HTTP Req/Resp Body/Payload"
+
+fun Memoir.showHttpRequest(request: HttpRequest, callbackFunction: ((fieldName: String, fieldValue: String)->String)? = null) {
     val uri = request.uri()
     val queries = ArrayList<String>()
     val result = StringBuilder("<div class=\"outgoing implied_caution\">\r\n")
@@ -61,8 +63,7 @@ fun Memoir.showHttpRequest(request: HttpRequest) {
             result.append("</td><td>")
             if (part.size > 1)
             {
-                // Attempt Base64 Decode and JSON pretty-print here.
-                result.append(processString(part[1]))
+                result.append(processString(part[0], part[1], callbackFunction))
             } else
             {
                 result.append("(unset)")
@@ -78,7 +79,7 @@ fun Memoir.showHttpRequest(request: HttpRequest) {
     echoPlainText(textRendition, EMOJI_OUTGOING)
 }
 
-fun Memoir.showHttpResponse(response: HttpResponse<*>) {
+fun Memoir.showHttpResponse(response: HttpResponse<*>, callbackFunction: ((fieldName: String, fieldValue: String)->String)? = null) {
     val statusCode = response.statusCode()
     var style = "implied_bad"
     if (statusCode.isSuccessfulStatusCode) { style = "implied_good" }
@@ -95,7 +96,7 @@ fun Memoir.showHttpResponse(response: HttpResponse<*>) {
     echoPlainText(textRendition, EMOJI_INCOMING)
 }
 
-private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: String): String {
+private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: String, callbackFunction: ((fieldName: String, fieldValue: String)->String)? = null): String {
     val result = StringBuilder()
     val headerMap = Headers.map()
 
@@ -104,22 +105,22 @@ private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: Str
         result.append("<br><b>Headers</b><br>")
         val renderedHeaders = StringBuilder("<table class=\"gridlines\">\r\n")
 
-        headerMap.forEach() {
+        headerMap.forEach() {thisHeader->
             renderedHeaders.append("<tr><td>")
-            renderedHeaders.append(it.key)
+            renderedHeaders.append(thisHeader.key)
             renderedHeaders.append("</td><td>")
 
-            if (it.value.size < 1) {
+            if (thisHeader.value.size < 1) {
                 renderedHeaders.append("<small><i>(empty)</i></small>")
-            } else if (it.value.size == 1) {
+            } else if (thisHeader.value.size == 1) {
                 // Attempt Base64 Decode and JSON pretty-print here.
-                renderedHeaders.append(processString(it.value[0].toString()))
+                renderedHeaders.append(processString(thisHeader.key, thisHeader.value[0].toString(), callbackFunction))
             } else {
                 renderedHeaders.append("<table class=\"gridlines neutral\">\r\n")
-                it.value.forEach() {
+                thisHeader.value.forEach() {
                     renderedHeaders.append("<tr><td>")
                     // Attempt Base64 Decode and JSON pretty-print here.
-                    renderedHeaders.append(processString(it.toString()))
+                    renderedHeaders.append(processString(thisHeader.key, it.toString(), callbackFunction))
                     renderedHeaders.append("</td></tr>")
                 }
                 renderedHeaders.append("\r\n</table>")
@@ -150,9 +151,7 @@ private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: Str
 
         result.append("<br><b>Payload</b><br></center>\r\n")
 
-        val renderedBody = StringBuilder("<pre><code>\r\n")
-        renderedBody.append(processString(StringPayload, true))
-        renderedBody.append("\r\n</code></pre>\r\n")
+        val renderedBody = treatAsCode(processString(HTTP_MESSAGE_BODY, StringPayload, callbackFunction))
 
         if (size > MAX_BODY_LENGTH_TO_DISPLAY) {
             val identifier2 = UUID.randomUUID().toString()
@@ -167,10 +166,10 @@ private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: Str
     return result.toString()
 }
 
-fun Memoir.showHttpTransaction(request: HttpRequest): HttpResponse<*> {
+fun Memoir.showHttpTransaction(request: HttpRequest, callbackFunction: ((fieldName: String, fieldValue: String)->String)? = null): HttpResponse<*> {
     val client = HttpClient.newHttpClient()
-    showHttpRequest(request)
+    showHttpRequest(request, callbackFunction)
     val result = client.send(request, HttpResponse.BodyHandlers.ofString())
-    showHttpResponse(result)
+    showHttpResponse(result, callbackFunction)
     return result
 }

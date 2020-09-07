@@ -150,8 +150,6 @@ public class TestCollection(override val name: String): ArrayList<TestEchelon>()
             }
         }
 
-        //createSummaryReport(rootDirectory, overlog)
-        //overlog.conclude()
         return overlog
     }
 

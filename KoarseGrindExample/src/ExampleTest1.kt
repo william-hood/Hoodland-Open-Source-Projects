@@ -3,6 +3,7 @@ import hoodland.opensource.descriptions.StringFieldTargets
 import hoodland.opensource.koarsegrind.ManufacturedTest
 import hoodland.opensource.koarsegrind.Test
 import hoodland.opensource.koarsegrind.TestFactory
+import hoodland.opensource.memoir.treatAsCode
 import hoodland.opensource.toolbox.SubnameFactory
 
 class ExampleTest1:Test(
@@ -55,7 +56,7 @@ class ManufacturedTestExample(
         "Manufactured", "Descriptions", "All", "Example") {
     override fun performTest() {
         log.info("Let's pretend we're sending this string into a database, REST call, or whatever else.")
-        assert.shouldBeTrue(true, "This string worked: $testData")
+        assert.shouldBeTrue(true, "This string worked:${treatAsCode(testData.toString())}")
     }
 }
 
@@ -70,7 +71,7 @@ class TestFactoryExample: TestFactory("Test Factory and Manufactured Test Exampl
                 products.add(ManufacturedTestExample(
                         "Show messed up string: ${it.toString()}",
                         "This is just an example of using the Descriptions module to generate test data. This particular case modifies a basis string to meet the test data criterion. In this case: ${it.toString()}",
-                        subname.nextSubname,
+                        "ETF-01${subname.nextSubname}",
                         testDataGenerator.describedValue))
             }
         }
