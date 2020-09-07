@@ -20,6 +20,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import hoodland.opensource.koarsegrind.Test
+import hoodland.opensource.koarsegrind.TestProgram
 
 class ExampleTest2: Test(
         "Sample Test Number Two",

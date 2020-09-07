@@ -19,6 +19,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+package hoodland.opensource.koarsegrind
+
 import hoodland.opensource.koarsegrind.*
 import hoodland.opensource.koarsegrind.SUMMARY_FILE_NAME
 import hoodland.opensource.koarsegrind.SUMMARY_TEXTFILE_NAME
