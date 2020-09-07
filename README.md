@@ -11,10 +11,8 @@
 - A second example program exists for Koarse Grind, which uses Memoir for its logging.
 - There is also a partial start on a set of Koarse Grind tests for my "extreme legacy" projects which also serves as an example.
 - The HTML-based output logs will appear in a folder titled "Test Results" off of your Documents directory.
-- If you're really ambitious you could even look at the old C# version.
+- While this is a Kotlin-first project, it IS possible to use it from Java. This option is recommended for people who normally work with Kotlin but need to create a test suite in Java, and who are familiar with using Kotlin JARs from Java.
 
-***Known Issues***
-- Running Koarse Grind as a compiled JAR file duplicates each test it finds. Use it from source code for now.
 
 ## Long Version
 
