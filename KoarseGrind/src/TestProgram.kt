@@ -94,8 +94,7 @@ object TestProgram {
     }
 
 
-    // TODO: Properly handle Jar files in the classpath
-    // TODO: Make KG properly usable as a JAR package
+    // TODO: Properly handle Jar files in the classpath (or verify if it already does)
     private fun recursiveIdentify(rootCollection: TestCollection, candidate: File) {
         debuggingMemoir.info("PATH ${candidate.absolutePath}")
 
