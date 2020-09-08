@@ -22,15 +22,10 @@
 package hoodland.opensource.descriptions
 
 abstract class LimitsDescription<T> {
-    @get:Throws(InappropriateDescriptionException::class)
-    abstract val upperLimit: T
-
-    @get:Throws(InappropriateDescriptionException::class)
-    abstract val lowerLimit: T
-
-    @Throws(InappropriateDescriptionException::class)
-    abstract fun isWithinLimits(candidate: T): Boolean
-
-    @get:Throws(InappropriateDescriptionException::class)
-    abstract val isZeroInLimits: Boolean
+    abstract val upper: T
+    abstract val lower: T
+    abstract fun contain(candidate: T): Boolean
+    abstract val containZero: Boolean
+    val containOrigin: Boolean
+        get() = containZero
 }

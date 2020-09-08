@@ -26,9 +26,8 @@ class SimpleFieldDescription<T>() : FieldDescription<T>() {
 
     constructor(BasisValue: T) : this() { this.basisValue = BasisValue }
 
-    override fun hasSpecificHappyValue(): Boolean {
-        return target === SimpleFieldTargets.HAPPY_PATH && basisValue != null
-    }
+    override val hasSpecificHappyValue: Boolean
+        get() = target === SimpleFieldTargets.HAPPY_PATH && basisValue != null
 
     override val isExplicit: Boolean
         get() = (target === SimpleFieldTargets.EXPLICIT)
@@ -52,7 +51,7 @@ class SimpleFieldDescription<T>() : FieldDescription<T>() {
         return if (target === SimpleFieldTargets.EXPLICIT) "$target ($basisValue)" else target.toString()
     }
 
-    override fun setExplicitValue(value: T) {
+    override fun useExplicitValue(value: T?) {
         basisValue = value
         target = SimpleFieldTargets.EXPLICIT
     }

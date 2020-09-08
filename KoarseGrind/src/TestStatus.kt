@@ -28,11 +28,11 @@ import hoodland.opensource.memoir.*
 enum class TestStatus {
     INCONCLUSIVE {
         override val memoirIcon = EMOJI_INCONCLUSIVE_TEST
-        override val memoirStyle = "decaf_orange_light_roast"
+        override val memoirStyle = "inconclusive_test_result"
     },
     FAIL {
         override val memoirIcon = EMOJI_FAILING_TEST
-        override val memoirStyle = "decaf_orange"
+        override val memoirStyle = "failing_test_result"
     },
     SUBJECTIVE {
         override val memoirIcon = EMOJI_SUBJECTIVE_TEST
@@ -40,7 +40,7 @@ enum class TestStatus {
     },
     PASS {
         override val memoirIcon = EMOJI_PASSING_TEST
-        override val memoirStyle = "decaf_green"
+        override val memoirStyle = "passing_test_result"
     };
 
     abstract val memoirIcon: String

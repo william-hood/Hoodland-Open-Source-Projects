@@ -22,58 +22,45 @@ package hoodland.opensource.descriptions
 
 import hoodland.opensource.toolbox.nextLong
 import java.util.*
+import kotlin.math.roundToLong
 
-class LongFieldDescription : ValueFieldDescription<Long> {
-    constructor(limitsDescription: LimitsDescription<Long>) : super(limitsDescription) {}
-    constructor() : super() {}
-    constructor(BasisValue: Long) : super(BasisValue) {}
+class LongFieldDescription(basisValue: Long, limits: LongLimitsDescription) : ValueFieldDescription<Long>(basisValue, limits) {
 
-    @get:Throws(InappropriateDescriptionException::class)
     override val positiveMinisculeValue: Long
         get() = 1.toLong()
 
-    @get:Throws(InappropriateDescriptionException::class)
     override val positiveModerateValue: Long
         get() = 100.toLong()
 
-    @get:Throws(InappropriateDescriptionException::class)
     override val maximumPossibleValue: Long
         get() = Long.MAX_VALUE
 
-    @get:Throws(InappropriateDescriptionException::class)
     override val minimumPossibleValue: Long
         get() = Long.MIN_VALUE
 
-    @get:Throws(InappropriateDescriptionException::class)
-    override val zeroOrOrigin: Long
+    override val zero: Long
         get() = 0.toLong()
 
-    @Throws(InappropriateDescriptionException::class)
     override fun add(x: Long, y: Long): Long {
         return x + y
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun subtract(x: Long, y: Long): Long {
         return x - y
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun multiply(x: Long, y: Long): Long {
         return x * y
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun divide(x: Long, y: Long): Long {
-        return x / y // Does this round properly???
+        return (x.toDouble() / y.toDouble()).roundToLong()
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun half(x: Long): Long {
         return divide(x, 2.toLong())
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun random(min: Long, max: Long): Long {
         return add(min, nextLong(Random(), subtract(max, min)))
     }

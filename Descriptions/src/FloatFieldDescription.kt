@@ -22,57 +22,43 @@ package hoodland.opensource.descriptions
 
 import java.util.*
 
-class FloatFieldDescription : ValueFieldDescription<Float> {
-    constructor(limitsDescription: LimitsDescription<Float>) : super(limitsDescription) {}
-    constructor() : super() {}
-    constructor(BasisValue: Float) : super(BasisValue) {}
+class FloatFieldDescription(basisValue: Float, limits: FloatLimitsDescription) : ValueFieldDescription<Float>(basisValue, limits) {
 
-    @get:Throws(InappropriateDescriptionException::class)
     override val positiveMinisculeValue: Float
         get() = 1.toFloat()
 
-    @get:Throws(InappropriateDescriptionException::class)
     override val positiveModerateValue: Float
         get() = 100.toFloat()
 
-    @get:Throws(InappropriateDescriptionException::class)
     override val maximumPossibleValue: Float
         get() = Float.MAX_VALUE
 
-    @get:Throws(InappropriateDescriptionException::class)
     override val minimumPossibleValue: Float
         get() = Float.MIN_VALUE
 
-    @get:Throws(InappropriateDescriptionException::class)
-    override val zeroOrOrigin: Float
+    override val zero: Float
         get() = 0.toFloat()
 
-    @Throws(InappropriateDescriptionException::class)
     override fun add(x: Float, y: Float): Float {
         return x + y
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun subtract(x: Float, y: Float): Float {
         return x - y
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun multiply(x: Float, y: Float): Float {
         return x * y
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun divide(x: Float, y: Float): Float {
         return x / y
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun half(x: Float): Float {
         return divide(x, 2.toFloat())
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun random(min: Float, max: Float): Float {
         return min + Random().nextFloat() * (max - min)
     }

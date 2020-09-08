@@ -21,12 +21,10 @@
 
 package hoodland.opensource.descriptions
 
-abstract class FieldDescription<T> {
-    var basisValue: T? = null
-
-    abstract fun setExplicitValue(value: T)
+abstract class FieldDescription<T>(var basisValue: T? = null) {
+    abstract fun useExplicitValue(value: T?)
     abstract val describedValue: T?
-    abstract fun hasSpecificHappyValue(): Boolean
+    abstract val hasSpecificHappyValue: Boolean
     abstract val isExplicit: Boolean
     abstract val isDefault: Boolean
 }

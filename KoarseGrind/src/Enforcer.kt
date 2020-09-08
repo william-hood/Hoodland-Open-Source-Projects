@@ -273,4 +273,40 @@ class Enforcer(conditionalType: TestConditionalType, owner: Test) {
             enforceNotEmpty(actualCount, explanation)
         }
     }
+
+    fun contentsShouldBeEqual(candidateA: Array<*>, candidateB: Array<*>, explanation: String = "The contents of the two Arrays were expected to be the same. They weren't.") {
+        enforce(candidateA contentEquals candidateB, explanation)
+    }
+
+    fun contentsShouldBeEqual(candidateA: IntArray, candidateB: IntArray, explanation: String = "The contents of the two IntArrays were expected to be the same. They weren't.") {
+        enforce(candidateA contentEquals candidateB, explanation)
+    }
+
+    fun contentsShouldBeEqual(candidateA: FloatArray, candidateB: FloatArray, explanation: String = "The contents of the two FloatArrays were expected to be the same. They weren't.") {
+        enforce(candidateA contentEquals candidateB, explanation)
+    }
+
+    fun contentsShouldBeEqual(candidateA: ShortArray, candidateB: ShortArray, explanation: String = "The contents of the two ShortArrays were expected to be the same. They weren't.") {
+        enforce(candidateA contentEquals candidateB, explanation)
+    }
+
+    fun contentsShouldBeEqual(candidateA: LongArray, candidateB: LongArray, explanation: String = "The contents of the two LongArrays were expected to be the same. They weren't.") {
+        enforce(candidateA contentEquals candidateB, explanation)
+    }
+
+    fun contentsShouldBeEqual(candidateA: DoubleArray, candidateB: DoubleArray, explanation: String = "The contents of the two DoubleArrays were expected to be the same. They weren't.") {
+        enforce(candidateA contentEquals candidateB, explanation)
+    }
+
+    fun contentsShouldBeEqual(candidateA: CharArray, candidateB: CharArray, explanation: String = "The contents of the two CharArrays were expected to be the same. They weren't.") {
+        enforce(candidateA contentEquals candidateB, explanation)
+    }
+
+    fun contentsShouldBeEqual(candidateA: ByteArray, candidateB: ByteArray, explanation: String = "The contents of the two ByteArrays were expected to be the same. They weren't.") {
+        enforce(candidateA contentEquals candidateB, explanation)
+    }
+
+    fun contentsShouldBeEqual(candidateA: BooleanArray, candidateB: BooleanArray, explanation: String = "The contents of the two BooleanArrays were expected to be the same. They weren't.") {
+        enforce(candidateA contentEquals candidateB, explanation)
+    }
 }

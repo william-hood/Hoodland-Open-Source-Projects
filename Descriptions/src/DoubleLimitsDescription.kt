@@ -21,12 +21,10 @@
 package hoodland.opensource.descriptions
 
 abstract class DoubleLimitsDescription : LimitsDescription<Double>() {
-    @Throws(InappropriateDescriptionException::class)
-    override fun isWithinLimits(candidate: Double): Boolean {
-        return candidate <= upperLimit && candidate >= lowerLimit
+    override fun contain(candidate: Double): Boolean {
+        return candidate <= upper && candidate >= lower
     }
 
-    @get:Throws(InappropriateDescriptionException::class)
-    override val isZeroInLimits: Boolean
-        get() = isWithinLimits(0.toDouble())
+    override val containZero: Boolean
+        get() = contain(0.toDouble())
 }

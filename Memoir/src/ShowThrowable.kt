@@ -123,7 +123,7 @@ fun Memoir.showThrowable(target: Throwable, timeStamp: LocalDateTime? = LocalDat
     return result.toString()
 }
 
-// TODO: Rather than echoPlainText() each line, make make more sense to use a StringBuilder and echo once at the end???
+// TODO: Rather than echoPlainText() each line, might make more sense to use a StringBuilder and echo once at the end???
 fun depictFailure(thisFailure: Throwable): String {
     val stream = ByteArrayOutputStream()
     val printWriter = PrintWriter(stream)

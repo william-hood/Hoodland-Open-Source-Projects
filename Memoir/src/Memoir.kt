@@ -41,7 +41,7 @@ internal fun highlight(message: String, style: String = "highlighted"): String {
 
 class MemoirConcludedException: Exception(ALREADY_CONCLUDED_MESSAGE) { }
 
-class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null, val forHTML: PrintWriter? = null, val Header: (String)->String = ::defaultHeader) {
+class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null, val forHTML: PrintWriter? = null, headerFunction: (String)->String = ::defaultHeader) {
     private val printWriter_HTML: PrintWriter? = forHTML
     private val printWriter_PlainText: PrintWriter? = forPlainText
     private val content = StringBuilder(STARTING_CONTENT)
@@ -60,7 +60,7 @@ class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null
             printWriter_HTML.print("<html>\r\n<meta charset=\"UTF-8\">\r\n<head>\r\n<title>$title</title>\r\n")
             printWriter_HTML.print(MEMOIR_LOG_STYLING)
             printWriter_HTML.print("</head>\r\n<body>\r\n")
-            printWriter_HTML.print(Header(title))
+            printWriter_HTML.print(headerFunction(title))
         }
     }
 
@@ -102,8 +102,8 @@ class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null
         }
 
         var dateTime = "                        "
-        if (timeStamp != null) {
-            dateTime = timeStamp.format(PLAINTEXT_DATETIME_FORMATTER)
+        timeStamp?.let {
+            dateTime = it.format(PLAINTEXT_DATETIME_FORMATTER)
         }
 
         printWriter_PlainText.println("$dateTime\t$emoji\t$message")
@@ -119,9 +119,9 @@ class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null
         var date = "&nbsp;"
         var time = "&nbsp;"
 
-        if (timeStamp != null) {
-            date = timeStamp.format(HTML_DATE_FORMATTER)
-            time = timeStamp.format(HTML_TIME_FORMATTER)
+        timeStamp?.let {
+            date = it.format(HTML_DATE_FORMATTER)
+            time = it.format(HTML_TIME_FORMATTER)
         }
 
         content.append("<tr><td class=\"min\"><small>$date</small></td><td>&nbsp;</td><td class=\"min\"><small>$time</small></td><td>&nbsp;</td><td><h2>$emoji</h2></td><td>$message</td></tr>\r\n")

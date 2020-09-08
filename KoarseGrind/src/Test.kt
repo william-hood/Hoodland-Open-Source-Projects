@@ -43,18 +43,6 @@ internal class TestPhaseContext(val memoir: Memoir) {
         }
 }
 
-// TODO: Test priority has to matter or be taken out.
-enum class TestPriority {
-    HAPPY_PATH, CRITICAL, NORMAL, LOW
-}
-
-fun String.toTestPriority(): TestPriority {
-    if (this.toUpperCase().startsWith("N")) { return TestPriority.NORMAL }
-    if (this.toUpperCase().startsWith("L")) { return TestPriority.LOW }
-    if (this.toUpperCase().startsWith("C")) { return TestPriority.CRITICAL }
-    return TestPriority.HAPPY_PATH
-}
-
 internal const val INFO_ICON = "ℹ️"
 internal const val IN_PROGRESS_NAME = "(test in progress)"
 internal const val SETUP = "setup"
@@ -62,11 +50,11 @@ internal const val CLEANUP = "cleanup"
 internal const val UNSET_DESCRIPTION = "(no details)"
 
 abstract class Test (
-        internal val name: String,
+        override val name: String,
         private val detailedDescription: String = UNSET_DESCRIPTION,
         internal val identifier: String = "",
-        vararg categories: String) {
-        private var categories: Array<out String> = categories
+        vararg categories: String): TestEchelon {
+        internal var categories: Array<out String> = categories
         internal val setupContext = TestPhaseContext(Memoir("Setup - Test $identifiedName", stdout))
         internal val cleanupContext = TestPhaseContext(Memoir("Cleanup -  Test $identifiedName", stdout))
         internal var testContext: TestPhaseContext? = null
@@ -85,12 +73,6 @@ abstract class Test (
     open fun setup() { setupContext.results.add(TestResult(TestStatus.PASS, "(no user-supplied setup)")) }
     open fun cleanup() { setupContext.results.add(TestResult(TestStatus.PASS, "(no user-supplied cleanup)")) }
     abstract fun performTest()
-
-    /**
-     * This defaults to Normal. You may override it with a different priority if you wish.
-     * It is possible to specify running only tests of a certain priority when running the whole collection.
-     */
-    open val priority: TestPriority = TestPriority.NORMAL
 
     private val categorization: String
         get() {
@@ -111,21 +93,30 @@ abstract class Test (
 
     internal val currentContext: TestPhaseContext
         get() {
+            if (wasSetup) {
+                if (! setupContext.overallStatus.isPassing()) {
+                    return cleanupContext
+                }
+
+                testContext?.let {
+                    return it
+                }
+
+                return cleanupContext
+            }
+
             if (wasRun) { return cleanupContext }
-            if (wasSetup) { return testContext!! }
             return setupContext
         }
 
     // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
-    // TODO: This needs to be thread safe.
     internal val progress: Float
     get() {
-        // According to https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/synchronized.html
-        // "Deprecated: Synchronization on any object is not supported on every platform and will be removed from the common standard library soon."
         synchronized(this) {
             var result: Float = 0.toFloat()
-            if (wasSetup) result += 0.33.toFloat()
-            if (wasRun) result += 0.34.toFloat()
+            val check = currentContext
+            if (check === testContext) result += 0.33.toFloat()
+            if (check === cleanupContext) result += 0.34.toFloat()
             if (wasCleanedUp) result += 0.33.toFloat()
             return result
         }
@@ -134,12 +125,13 @@ abstract class Test (
     // For some reason in the C# version this was open/virtual
     fun addResult(thisResult: TestResult) {
         val context = currentContext
-        context.memoir.showTestResult((thisResult)) // Should be Log instead of topLevelMemoir???
+        context.memoir.showTestResult((thisResult))
         context.results.add(thisResult)
     }
 
-    val overallStatus: TestStatus
+    override val overallStatus: TestStatus
         get() {
+            // Previous version also used INCONCLUSIVE if !wasRun
             if (! setupContext.overallStatus.isPassing()) return TestStatus.INCONCLUSIVE
             return testContext!!.overallStatus
         }
@@ -172,19 +164,19 @@ abstract class Test (
         get() {
             val result = ArrayList<String>()
             result.add(filterForSummary(categorization))
-            result.add(filterForSummary(priority.toString()))
             result.add(filterForSummary(identifier))
             result.add(filterForSummary(name))
             result.add(filterForSummary(detailedDescription))
             result.add(filterForSummary(overallStatus.toString()))
 
             val reasoning = StringBuilder()
-            // TODO: Determine if setup/cleanup results should be included here.
-            testContext!!.results.forEach {
-                if (! it.status.isPassing()) {
-                    if (reasoning.length > 0) {
-                        reasoning.append("; ")
-                    }
+
+            arrayOf(this.setupContext, this.testContext, this.cleanupContext).forEach { thisPhase ->
+                thisPhase?.results?.forEach {
+                    if (! it.status.isPassing()) {
+                        if (reasoning.length > 0) {
+                            reasoning.append("; ")
+                        }
                         reasoning.append(it.description)
 
                         if (it.hasFailures) {
@@ -196,6 +188,7 @@ abstract class Test (
                                 reasoning.append(thisFailure.javaClass.simpleName)
                             }
                         }
+                    }
                 }
             }
 
@@ -226,18 +219,6 @@ abstract class Test (
 
     // Is virtual/open in C# and called "reportFailureInCleanup()"
     fun getResultForFailureInCleanup(thisPreclusion: Throwable) = getResultForIncident(TestStatus.SUBJECTIVE, CLEANUP, thisPreclusion)
-
-    /* TODO: Delete this block when no longer needed
-    private val indicateSetup: Memoir
-        get() = Memoir("Setup - $echelonName $identifiedName", stdout)
-
-    private val indicateCleanup: Memoir
-        get() = Memoir("Cleanup - $echelonName $identifiedName", stdout)
-
-    // indicateBody never used
-    private val indicateBody: Memoir
-        get() = Memoir("$echelonName $identifiedName", stdout)
-     */
 
     fun waitSeconds(howMany: Long) {
         log.info("Waiting $howMany seconds...", INFO_ICON)
@@ -282,7 +263,6 @@ abstract class Test (
             }
 
             testContext!!.memoir.skipLine()
-            val before = SetupEnforcement(this)
 
             // SETUP
             try {
@@ -291,19 +271,13 @@ abstract class Test (
                 } finally {
                     wasSetup = true
                     if (setupContext.memoir.wasUsed) {
-                        var style = "decaf_orange_light_roast"
-                        if (setupContext.overallStatus.isPassing()) { style = "decaf_green_light_roast" }
+                        var style = "implied_bad"
+                        if (setupContext.overallStatus.isPassing()) { style = "implied_good" }
                         testContext!!.memoir.showMemoir(setupContext.memoir, EMOJI_SETUP, style)
                     }
                 }
             } catch (thisFailure: Throwable) {
-                // setupResult = false
                 addResult(getResultForPreclusionInSetup(thisFailure))
-            } finally {
-                if (!SetupEnforcement(this).matches(before)) {
-                    // setupResult = false
-                    addResult(TestResult(TestStatus.INCONCLUSIVE, "PROGRAMMING ERROR: It is illegal to change the identifier, name, or priority in Setup.  This must happen in the constructor."))
-                }
             }
 
             // RUN THE ACTUAL TEST
@@ -318,7 +292,9 @@ abstract class Test (
                     executionThread = null
                 }
             } else {
-                addResult(TestResult(TestStatus.INCONCLUSIVE, "Declining to perform test case $identifiedName because setup method failed."))
+                val thisResult = TestResult(TestStatus.INCONCLUSIVE, "Declining to perform test case $identifiedName because setup method failed.")
+                testContext!!.memoir.showTestResult((thisResult))
+                testContext!!.results.add(thisResult)
             }
 
             // CLEANUP
@@ -329,8 +305,8 @@ abstract class Test (
                 addResult(getResultForFailureInCleanup(thisFailure))
             } finally {
                 if (cleanupContext.memoir.wasUsed) {
-                    var style = "decaf_orange_light_roast"
-                    if (cleanupContext.overallStatus.isPassing()) { style = "decaf_green_light_roast" }
+                    var style = "implied_bad"
+                    if (cleanupContext.overallStatus.isPassing()) { style = "implied_good" }
                     testContext!!.memoir.showMemoir(cleanupContext.memoir, EMOJI_CLEANUP, style)
                 }
             }

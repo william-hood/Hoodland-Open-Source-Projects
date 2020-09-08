@@ -93,9 +93,7 @@ fun Memoir.show(target: Any?, targetVariableName: String = NAMELESS, recurseLeve
     }
 
     if (target is String) {
-        // Attempt Base64 decode and JSON pretty-print
-        return processString(target)
-        //May have to <pre> the result
+        return processString("", target, null)
     }
 
     if (shouldRecurse(target)) { return this.showObject(target, targetVariableName, recurseLevel) }

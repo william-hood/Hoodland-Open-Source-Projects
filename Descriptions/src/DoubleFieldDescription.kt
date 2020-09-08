@@ -22,57 +22,43 @@ package hoodland.opensource.descriptions
 
 import java.util.*
 
-class DoubleFieldDescription : ValueFieldDescription<Double> {
-    constructor(limitsDescription: LimitsDescription<Double>) : super(limitsDescription) {}
-    constructor() : super() {}
-    constructor(BasisValue: Double) : super(BasisValue) {}
+class DoubleFieldDescription(basisValue: Double, limits: DoubleLimitsDescription) : ValueFieldDescription<Double>(basisValue, limits) {
 
-    @get:Throws(InappropriateDescriptionException::class)
     override val positiveMinisculeValue: Double
         get() = 1.toDouble()
 
-    @get:Throws(InappropriateDescriptionException::class)
     override val positiveModerateValue: Double
         get() = 100.toDouble()
 
-    @get:Throws(InappropriateDescriptionException::class)
     override val maximumPossibleValue: Double
         get() = Double.MAX_VALUE
 
-    @get:Throws(InappropriateDescriptionException::class)
     override val minimumPossibleValue: Double
         get() = Double.MIN_VALUE
 
-    @get:Throws(InappropriateDescriptionException::class)
-    override val zeroOrOrigin: Double
+    override val zero: Double
         get() = 0.toDouble()
 
-    @Throws(InappropriateDescriptionException::class)
     override fun add(x: Double, y: Double): Double {
         return x + y
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun subtract(x: Double, y: Double): Double {
         return x - y
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun multiply(x: Double, y: Double): Double {
         return x * y
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun divide(x: Double, y: Double): Double {
         return x / y
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun half(x: Double): Double {
         return divide(x, 2.toDouble())
     }
 
-    @Throws(InappropriateDescriptionException::class)
     override fun random(min: Double, max: Double): Double {
         return min + Random().nextDouble() * (max - min)
     }

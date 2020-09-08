@@ -21,113 +21,71 @@
 
 package hoodland.opensource.descriptions
 
-abstract class ValueFieldDescription<T>() : FieldDescription<T>() {
+abstract class ValueFieldDescription<T>(basisValue: T, val limits: LimitsDescription<T>)
+    : FieldDescription<T>(basisValue) {
     var target: ValueFieldTargets = ValueFieldTargets.HAPPY_PATH
-    private var bounds: LimitsDescription<T>? = null
-    val limits: LimitsDescription<T>?
-        get() = bounds
-
-    constructor(limitsDescription: LimitsDescription<T>?) : this() {
-        bounds = limitsDescription
-    }
-
-    constructor(BasisValue: T) : this() {
-        basisValue = BasisValue
-    }
-
-    constructor(BasisValue: T, limitsDescription: LimitsDescription<T>?) : this() {
-        basisValue = BasisValue
-        bounds = limitsDescription
-    }
-
-    val isLimited: Boolean
-        get() = bounds != null
 
     override fun toString(): String {
-        return if (target === ValueFieldTargets.EXPLICIT) target.toString().toString() + " (" + basisValue + ")" else target.toString()
+        return if (target === ValueFieldTargets.EXPLICIT) "${target.toString()} ($basisValue)" else target.toString()
     }
 
-    @get:Throws(InappropriateDescriptionException::class)
     abstract val positiveMinisculeValue: T
-
-    @get:Throws(InappropriateDescriptionException::class)
     abstract val positiveModerateValue: T
-
-    @get:Throws(InappropriateDescriptionException::class)
     abstract val maximumPossibleValue: T
-
-    @get:Throws(InappropriateDescriptionException::class)
     abstract val minimumPossibleValue: T
-
-    @get:Throws(InappropriateDescriptionException::class)
-    abstract val zeroOrOrigin: T
-
-    @Throws(InappropriateDescriptionException::class)
+    abstract val zero: T
+    val origin = zero
     abstract fun add(x: T, y: T): T
-
-    @Throws(InappropriateDescriptionException::class)
     abstract fun subtract(x: T, y: T): T
-
-    @Throws(InappropriateDescriptionException::class)
     abstract fun multiply(x: T, y: T): T
-
-    @Throws(InappropriateDescriptionException::class)
     abstract fun divide(x: T, y: T): T
-
-    @Throws(InappropriateDescriptionException::class)
     abstract fun half(x: T): T
-
-    @Throws(InappropriateDescriptionException::class)
     abstract fun random(min: T, max: T): T
 
-    @Throws(InappropriateDescriptionException::class)
-    fun size(): T {
-        return subtract(bounds!!.upperLimit, bounds!!.lowerLimit)
-    }
+    val span: T
+        get() = subtract(limits.upper, limits.lower)
 
-    @get:Throws(InappropriateDescriptionException::class)
     val negativeMinisculeValue: T
-        get() = subtract(zeroOrOrigin, positiveMinisculeValue)
+        get() = subtract(zero, positiveMinisculeValue)
 
-    @get:Throws(InappropriateDescriptionException::class)
     val negativeModerateValue: T
-        get() = subtract(zeroOrOrigin, positiveModerateValue)
+        get() = subtract(zero, positiveModerateValue)
 
-    @get:Throws(NoValueException::class, InappropriateDescriptionException::class)
     override val describedValue: T?
         get() {
             when (target) {
                 ValueFieldTargets.EXPLICIT -> {
+                    // Shouldn't be possible, but keeping for robustness...
                     if (basisValue == null) throw InappropriateDescriptionException()
                     return basisValue
                 }
                 ValueFieldTargets.HAPPY_PATH -> {
                     if (basisValue == null) {
-                        if (!isLimited) throw InappropriateDescriptionException()
-                        return add(bounds!!.lowerLimit, half(size()))
+                        // Shouldn't be possible, but keeping for robustness...
+                        return add(limits.lower, half(span))
                     }
                     return basisValue
                 }
                 ValueFieldTargets.MAXIMUM_POSSIBLE_VALUE -> return maximumPossibleValue
                 ValueFieldTargets.MINIMUM_POSSIBLE_VALUE -> return minimumPossibleValue
-                ValueFieldTargets.AT_LOWER_LIMIT -> return bounds!!.lowerLimit
-                ValueFieldTargets.AT_UPPER_LIMIT -> return bounds!!.upperLimit
-                ValueFieldTargets.AT_ZERO -> return zeroOrOrigin
+                ValueFieldTargets.AT_LOWER_LIMIT -> return limits.lower
+                ValueFieldTargets.AT_UPPER_LIMIT -> return limits.upper
+                ValueFieldTargets.AT_ZERO -> return zero
                 ValueFieldTargets.NULL -> return null
-                ValueFieldTargets.RANDOM_WITHIN_LIMITS -> return random(add(bounds!!.lowerLimit, half(half(size()))),
-                        subtract(bounds!!.upperLimit, half(half(size()))))
+                ValueFieldTargets.RANDOM_WITHIN_LIMITS -> return random(add(limits.lower, half(half(span))),
+                        subtract(limits.upper, half(half(span))))
                 ValueFieldTargets.SLIGHTLY_ABOVE_ZERO -> return positiveMinisculeValue
                 ValueFieldTargets.SLIGHTLY_BELOW_ZERO -> return negativeMinisculeValue
-                ValueFieldTargets.SLIGHTLY_BEYOND_LOWER_LIMIT -> return subtract(bounds!!.lowerLimit, positiveMinisculeValue)
-                ValueFieldTargets.SLIGHTLY_BEYOND_UPPER_LIMIT -> return add(bounds!!.upperLimit, positiveMinisculeValue)
-                ValueFieldTargets.SLIGHTLY_WITHIN_LOWER_LIMIT -> return add(bounds!!.lowerLimit, positiveMinisculeValue)
-                ValueFieldTargets.SLIGHTLY_WITHIN_UPPER_LIMIT -> return subtract(bounds!!.upperLimit, positiveMinisculeValue)
+                ValueFieldTargets.SLIGHTLY_BEYOND_LOWER_LIMIT -> return subtract(limits.lower, positiveMinisculeValue)
+                ValueFieldTargets.SLIGHTLY_BEYOND_UPPER_LIMIT -> return add(limits.upper, positiveMinisculeValue)
+                ValueFieldTargets.SLIGHTLY_WITHIN_LOWER_LIMIT -> return add(limits.lower, positiveMinisculeValue)
+                ValueFieldTargets.SLIGHTLY_WITHIN_UPPER_LIMIT -> return subtract(limits.upper, positiveMinisculeValue)
                 ValueFieldTargets.WELL_ABOVE_ZERO -> return positiveModerateValue
                 ValueFieldTargets.WELL_BELOW_ZERO -> return negativeModerateValue
-                ValueFieldTargets.WELL_BEYOND_LOWER_LIMIT -> return subtract(bounds!!.lowerLimit, positiveModerateValue)
-                ValueFieldTargets.WELL_BEYOND_UPPER_LIMIT -> return add(bounds!!.upperLimit, positiveModerateValue)
-                ValueFieldTargets.WELL_WITHIN_LOWER_LIMIT -> return add(bounds!!.lowerLimit, positiveModerateValue)
-                ValueFieldTargets.WELL_WITHIN_UPPER_LIMIT -> return subtract(bounds!!.upperLimit, positiveModerateValue)
+                ValueFieldTargets.WELL_BEYOND_LOWER_LIMIT -> return subtract(limits.lower, positiveModerateValue)
+                ValueFieldTargets.WELL_BEYOND_UPPER_LIMIT -> return add(limits.upper, positiveModerateValue)
+                ValueFieldTargets.WELL_WITHIN_LOWER_LIMIT -> return add(limits.lower, positiveModerateValue)
+                ValueFieldTargets.WELL_WITHIN_UPPER_LIMIT -> return subtract(limits.upper, positiveModerateValue)
                 ValueFieldTargets.SLIGHTLY_ABOVE_MINIMUM -> return add(minimumPossibleValue, positiveMinisculeValue)
                 ValueFieldTargets.SLIGHTLY_BELOW_MAXIMUM -> return subtract(maximumPossibleValue,
                         positiveMinisculeValue)
@@ -135,9 +93,8 @@ abstract class ValueFieldDescription<T>() : FieldDescription<T>() {
             throw NoValueException()
         }
 
-    override fun hasSpecificHappyValue(): Boolean {
-        return target === ValueFieldTargets.HAPPY_PATH && basisValue != null
-    }
+    override val hasSpecificHappyValue: Boolean
+            get() = (target === ValueFieldTargets.HAPPY_PATH) && (basisValue != null)
 
     override val isExplicit: Boolean
         get() = target === ValueFieldTargets.EXPLICIT
@@ -145,7 +102,9 @@ abstract class ValueFieldDescription<T>() : FieldDescription<T>() {
     override val isDefault: Boolean
         get() = target === ValueFieldTargets.DEFAULT
 
-    override fun setExplicitValue(value: T) {
+    override fun useExplicitValue(value: T?) {
+        // Nulls are not allowed to be the basis for Value Field Descriptions
+        if (basisValue == null) throw InappropriateDescriptionException()
         basisValue = value
         target = ValueFieldTargets.EXPLICIT
     }

@@ -29,16 +29,19 @@ public abstract class ManufacturedTest(name: String, detailedDescription: String
 }
 
 /**
- * A TestFactory generates an ArrayList of ManufacturedTest objects. As with stand-alone tests, TestFactories
+ * A TestFactory generates an TestCollection of ManufacturedTest objects. As with stand-alone tests, TestFactories
  * will be instantiated at runtime, automatically calling populateProducts(). Any manufactured tests sitting in
- * the products ArrayList will then be run as if they were stand-alone tests.
+ * the products ArrayList will then be run as if they were stand-alone tests. You may also create a subordinate
+ * TestCollection for some of your tests if they need to be grouped together. Note that the "products" TestCollection
+ * will be it's own subordinate section of the log and its own subdirctory within the results. Any further TestCollections you
+ * add into "products" will be another subordinate log/directory within that one.
  */
-abstract class TestFactory {
-    val products = ArrayList<ManufacturedTest>()
+abstract class TestFactory(val collectionName: String) {
+    val products = TestCollection(collectionName)
     init { populateProducts() }
 
     /**
-     * Use this to instantiate manufactured tests and put them into the Products ArrayList
+     * Use this to instantiate manufactured tests and put them into the Products Collection
      */
     abstract fun populateProducts()
 }

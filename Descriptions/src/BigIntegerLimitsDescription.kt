@@ -21,17 +21,15 @@
 
 package hoodland.opensource.descriptions
 
-import hoodland.opensource.descriptions.LimitsDescription
 import java.math.BigInteger
 
-abstract class BigIntegerLimitsDescription : LimitsDescription<BigInteger?>() {
-    @Throws(InappropriateDescriptionException::class)
-    fun isWithinLimits(candidate: BigInteger): Boolean {
-        return candidate.compareTo(upperLimit) <= 0 && candidate
-                .compareTo(lowerLimit) >= 0
+abstract class BigIntegerLimitsDescription : LimitsDescription<BigInteger>() {
+
+    override fun contain(candidate: BigInteger): Boolean {
+        return candidate.compareTo(upper) <= 0 && candidate
+                .compareTo(lower) >= 0
     }
 
-    @get:Throws(InappropriateDescriptionException::class)
-    override val isZeroInLimits: Boolean
-        get() = isWithinLimits(BigInteger.ZERO)
+    override val containZero: Boolean
+        get() = contain(BigInteger.ZERO)
 }

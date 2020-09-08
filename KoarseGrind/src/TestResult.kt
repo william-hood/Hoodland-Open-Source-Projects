@@ -49,9 +49,6 @@ enum class TestConditionalType {
         } else {
             when (this) {
                 ASSERTION -> result.status = TestStatus.FAIL
-
-                // TODO: Decide whether failing a consideration makes the test subject, or does not matter.
-                //       Might be more useful to have these show up in the log without affecting the status of the test???
                 CONSIDERATION -> result.status = TestStatus.SUBJECTIVE
                 // Otherwise leave the default status of inconclusive in-place.
             }
@@ -78,9 +75,15 @@ class TestResult (var status: TestStatus = TestStatus.INCONCLUSIVE, var descript
 }
 
 fun Memoir.showTestResult(thisResult: TestResult) {
-    // Should this be a subordinate memoir???
-    this.showTestStatus(thisResult.status, thisResult.description)
-    thisResult.failures.forEach {
-        this.showThrowable(it)
+    // If there are throwables associated with this, use a subordinate memoir
+    if (thisResult.failures.size > 0) {
+        val subordinate = Memoir(thisResult.description)
+        thisResult.failures.forEach {
+            subordinate.showThrowable(it)
+        }
+
+        this.showMemoir(subordinate, thisResult.status.memoirIcon, thisResult.status.memoirStyle)
+    } else {
+        this.showTestStatus(thisResult.status, thisResult.description)
     }
 }
