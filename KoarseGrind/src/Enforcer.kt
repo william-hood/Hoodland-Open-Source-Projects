@@ -24,6 +24,13 @@ package hoodland.opensource.koarsegrind
 import hoodland.opensource.toolbox.UNSET_STRING
 
 private const val DEFAULT_SHOULD_BE_FALSE_EXPLANATION = "Expected boolean false. (Actual value was "
+
+/**
+ * Enforcer
+ *
+ * This is part of the Test class and implements assertions. See assert, require, and consider.
+ *
+ */
 class Enforcer(conditionalType: TestConditionalType, owner: Test) {
     private var condType = conditionalType
     private var parent = owner

@@ -25,19 +25,52 @@ package hoodland.opensource.koarsegrind
 
 import hoodland.opensource.memoir.*
 
+/**
+ * TestStatus: Used to indicate whether a test result is passing, failing, inconclusive or subjective.
+ *
+ */
 enum class TestStatus {
+    /**
+     * INCONCLUSIVE indicates that a test can neither be passing nor failing. Tests should be made
+     * inconclusive if there is a failure during the setup() function, or if any condition is
+     * detected that invalidates the test results. Using "FAIL" for tests that are in actuality
+     * inconclusive is strongly discouraged. The "require" check (a "requirement") will make a
+     * test inconclusive if it fails. A test with no results at all (no "assert", "require", or "consider"
+     * checks) will also be considered INCONCLUSIVE.
+     */
     INCONCLUSIVE {
         override val memoirIcon = EMOJI_INCONCLUSIVE_TEST
         override val memoirStyle = "inconclusive_test_result"
     },
+
+    /**
+     * FAIL indicates, well, that the test failed. Fail should only be used if a condition is found
+     * that explicitly fails the test. (Example: The output of a function was supposed to be 42 and it wasn't.)
+     * Do not use FAIL for conditions that make it impossible to get a passing result in the first place,
+     * such as an invalid configuartion. Use INCONCLUSIVE instead for conditions that make a valid result impossible.
+     * Use the "assert" check (an "assertion") to produce FAIL status if the check does not succeed.
+     */
     FAIL {
         override val memoirIcon = EMOJI_FAILING_TEST
         override val memoirStyle = "failing_test_result"
     },
+
+    /**
+     * SUBJECTIVE means that it is beyond mechanical means to determine if the result is good. In other
+     * words, it means a human needs to evaluate the result. A test can be made subjective by calling
+     * the makeSubjective() function at any time. A failed "consider" check (a "consideration") also
+     * renders the test inconclusive.
+     */
     SUBJECTIVE {
         override val memoirIcon = EMOJI_SUBJECTIVE_TEST
         override val memoirStyle = "old_parchment"
     },
+
+    /**
+     * PASS means that everything is good. A test must have at least one result in order to pass,
+     * and must have no results that are FAIL, INCONCLUSIVE, or SUBJECTIVE. If a test has no
+     * results at all, it is INCONCLUSIVE rather than passing.
+     */
     PASS {
         override val memoirIcon = EMOJI_PASSING_TEST
         override val memoirStyle = "passing_test_result"
@@ -81,10 +114,19 @@ enum class TestStatus {
     }
 }
 
+/**
+ * showTestStatus: An extension method that allows any Memoir (the HTML logger) in Koarse Grind to properly display a TestStatus.
+ *
+ * @param message Any information relevant as to what caused this status. Typically this is the description property of a TestResult.
+ */
 fun Memoir.showTestStatus(thisStatus: TestStatus, message: String) {
     this.info(message, thisStatus.memoirIcon)
 }
 
+/**
+ * toTestStatus: converts a string such as "pass" or "fail" into a TestStatus.
+ * Defaults to inconclusive if it's not obvious.
+ */
 fun String.toTestStatus(): TestStatus {
     if (this.toUpperCase().startsWith("P")) { return TestStatus.PASS }
     if (this.toUpperCase().startsWith("F")) { return TestStatus.FAIL }

@@ -30,11 +30,25 @@ import java.io.PrintWriter
 import kotlin.concurrent.thread
 import kotlin.math.round
 
+/**
+ * TestEchelon applies to any Test or TestCollection in the KoarseGrind system. It may be used
+ * if a field or variable must contain anything that is a derivative of either of those classes.
+ */
 interface TestEchelon {
     val name: String
     val overallStatus: TestStatus
 }
 
+/**
+ * TestCollection:
+ * This is the root-level container for a suite of tests to run. It is also used for a subgroup of
+ * related tests, as typically produced by a TestFactory. The order in which it runs the tests or
+ * subordinate TestCollections it contains is not guaranteed.
+ *
+ * @property name A human-readable name for this collection of tests. At the root level this should be
+ * the overall name for the entire suite (the same "name" passed into the TestProgram.run() method).
+ * It may also apply to a subgroup of related tests (the same "collectionName" passed into a TestFectory).
+ */
 public class TestCollection(override val name: String): ArrayList<TestEchelon>(), TestEchelon {
     init {
     System.err.println("Ran Init: ${this::class.simpleName}")
@@ -46,6 +60,8 @@ public class TestCollection(override val name: String): ArrayList<TestEchelon>()
     internal var rootDirectory: String = UNSET_STRING
     private var filterSet: FilterSet? = null
 
+    /*
+     * These are for future use by a test runner program.
     fun reset() {
         currentCount = Int.MAX_VALUE
         _currentTest?.interrupt() // C# code did not check if the test was present and did not call Interrupt()
@@ -79,7 +95,31 @@ public class TestCollection(override val name: String): ArrayList<TestEchelon>()
             }
         }
 
-    fun run(filters: FilterSet? = null, preclusiveFailures: ArrayList<Throwable>? = null) : Memoir {
+    // Omitting public functions Run() & InterruptCurrentTest() from C#
+    // which appears to be unnecessary in Kotlin. These might be relics
+    // from when Coarse Grind had a web interface.
+
+    // This may have only been used by the web UI in the old Coarse Grind.
+    // Might be needed for an external runner, which also might need the
+    // function InterruptCurrentTest() put back. Possibly also Run().
+    fun haltAllTesting() {
+        KILL_SWITCH = true
+        currentCount = Int.MAX_VALUE
+        _currentTest!!.interrupt() // C# used the public InterruptCurrentTest() function
+
+        try {
+            executionThread?.interrupt()
+            // C# version was followed by executionThread.Abort() three times in a row.
+        } catch (dontCare: Exception) {
+            // Deliberate NO-OP
+        } finally {
+            executionThread = null
+        }
+    }
+     *
+     */
+
+    internal fun run(filters: FilterSet? = null, preclusiveFailures: ArrayList<Throwable>? = null) : Memoir {
         filterSet = filters
         var logFileName = "$name.html"
         if (rootDirectory === UNSET_STRING) {
@@ -163,28 +203,10 @@ public class TestCollection(override val name: String): ArrayList<TestEchelon>()
         return true
     }
 
-    // Omitting public functions Run() & InterruptCurrentTest() from C#
-    // which appears to be unnecessary in Kotlin. These might be relics
-    // from when Coarse Grind had a web interface.
-
-    // This may have only been used by the web UI in the old Coarse Grind.
-    // Might be needed for an external runner, which also might need the
-    // function InterruptCurrentTest() put back. Possibly also Run().
-    fun haltAllTesting() {
-        KILL_SWITCH = true
-        currentCount = Int.MAX_VALUE
-        _currentTest!!.interrupt() // C# used the public InterruptCurrentTest() function
-
-        try {
-            executionThread?.interrupt()
-            // C# version was followed by executionThread.Abort() three times in a row.
-        } catch (dontCare: Exception) {
-            // Deliberate NO-OP
-        } finally {
-            executionThread = null
-        }
-    }
-
+    /**
+     * overallStatus: This is a direct counterpart to the overallStatus property for each individual test. It is a conglomeration
+     * of all statuses of all tests and subordinate collections that this collection contains, excluding any tests that were filtered out.
+     */
     override val overallStatus: TestStatus
         get() {
             if (size < 1) { return TestStatus.INCONCLUSIVE }
@@ -202,7 +224,7 @@ public class TestCollection(override val name: String): ArrayList<TestEchelon>()
             return result
     }
 
-    val prefixedName: String
+    private val prefixedName: String
         get() = "$overallStatus - $name"
 
     internal fun gatherForReport(summaryReport: MatrixFile<String>) {
