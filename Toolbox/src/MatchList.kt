@@ -43,7 +43,7 @@ class MatchList : ArrayList<String> {
 
     fun matchesCaseInspecific(candidateString: String): Boolean {
         for (thisListedString in this) {
-            if (candidateString.toUpperCase().contains(thisListedString.toUpperCase())) return true
+            if (candidateString.contains(thisListedString, true)) return true
         }
         return false
     }

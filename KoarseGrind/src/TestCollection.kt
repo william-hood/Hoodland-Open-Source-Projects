@@ -44,6 +44,7 @@ public class TestCollection(override val name: String): ArrayList<TestEchelon>()
     private var executionThread: Thread? = null
     private var currentCount = Int.MAX_VALUE
     internal var rootDirectory: String = UNSET_STRING
+    private var filterSet: FilterSet? = null
 
     fun reset() {
         currentCount = Int.MAX_VALUE
@@ -78,13 +79,8 @@ public class TestCollection(override val name: String): ArrayList<TestEchelon>()
             }
         }
 
-    // TODO: Alter this to provide for
-    //         * You want certain/batch of files excluded. Maybe by category
-    //         * You only want to run centain IDs or categories
-    //
-    // Properly doing this might require a custom data structure that a test-runner program would pass in.
-    //
-    fun run(preclusiveFailures: ArrayList<Throwable>? = null) : Memoir {
+    fun run(filters: FilterSet? = null, preclusiveFailures: ArrayList<Throwable>? = null) : Memoir {
+        filterSet = filters
         var logFileName = "$name.html"
         if (rootDirectory === UNSET_STRING) {
             rootDirectory = "$DEFAULT_PARENT_FOLDER${File.separatorChar}$quickTimeStamp $name"
@@ -115,29 +111,35 @@ public class TestCollection(override val name: String): ArrayList<TestEchelon>()
             } else {
                 val nextItem = this[currentCount]
                 if (nextItem is Test) {
-                    _currentTest = nextItem as Test
-                    try {
-                        executionThread = thread(start = true) { _currentTest!!.runTest(currentArtifactsDirectory) } // C# used the public Run() function
-                        executionThread!!.join()
-                    } catch (thisFailure: Throwable) {
-                        // Uncertain why specifically calling GetResultForPreclusionInSetup()
-                        _currentTest!!.addResult(_currentTest!!.getResultForPreclusionInSetup(thisFailure))
-                    } finally {
-                        executionThread = null
-                        overlog.showMemoir(_currentTest!!.testContext!!.memoir, _currentTest!!.overallStatus.memoirIcon, _currentTest!!.overallStatus.memoirStyle)
-
-                        // Prefix the test's artifacts directory with its overall status
+                    if (shouldRun(nextItem)) {
+                        _currentTest = nextItem as Test
                         try {
-                            File(_currentTest!!.artifactsDirectory).renameTo(File(currentArtifactsDirectory + File.separatorChar + _currentTest!!.prefixedName))
-                        } catch (loggedThrowable: Throwable) {
-                            overlog.error("Koarse Grind was unable to rename the current test's artifact directory to their permanent location")
-                            overlog.showThrowable(loggedThrowable)
+                            executionThread = thread(start = true) { _currentTest!!.runTest(currentArtifactsDirectory) } // C# used the public Run() function
+                            executionThread!!.join()
+                        } catch (thisFailure: Throwable) {
+                            // Uncertain why specifically calling GetResultForPreclusionInSetup()
+                            _currentTest!!.addResult(_currentTest!!.getResultForPreclusionInSetup(thisFailure))
+                        } finally {
+                            executionThread = null
+                            overlog.showMemoir(_currentTest!!.testContext!!.memoir, _currentTest!!.overallStatus.memoirIcon, _currentTest!!.overallStatus.memoirStyle)
+
+                            // Prefix the test's artifacts directory with its overall status
+                            try {
+                                File(_currentTest!!.artifactsDirectory).renameTo(File(currentArtifactsDirectory + File.separatorChar + _currentTest!!.prefixedName))
+                            } catch (loggedThrowable: Throwable) {
+                                overlog.error("Koarse Grind was unable to rename the current test's artifact directory to their permanent location")
+                                overlog.showThrowable(loggedThrowable)
+                            }
                         }
                     }
                 } else if (nextItem is TestCollection) {
                     val subCollection = nextItem as TestCollection
                     subCollection.rootDirectory = "$currentArtifactsDirectory${File.separatorChar}(collection '${subCollection.name}' in progress)"
-                    overlog.showMemoir(subCollection.run(), subCollection.overallStatus.memoirIcon, subCollection.overallStatus.memoirStyle)
+
+                    val subLog = subCollection.run(filterSet)
+                    if (subLog.wasUsed) {
+                        overlog.showMemoir(subLog, subCollection.overallStatus.memoirIcon, subCollection.overallStatus.memoirStyle)
+                    }
 
                     // Prefix the test's artifacts directory with its overall status
                     try {
@@ -153,11 +155,19 @@ public class TestCollection(override val name: String): ArrayList<TestEchelon>()
         return overlog
     }
 
+    private fun shouldRun(candidate: Test): Boolean {
+        filterSet?.let {
+            return it.shouldRun(candidate)
+        }
+
+        return true
+    }
+
     // Omitting public functions Run() & InterruptCurrentTest() from C#
     // which appears to be unnecessary in Kotlin. These might be relics
     // from when Coarse Grind had a web interface.
 
-    // This may have only been used by the web UI in the old Coarse Gring.
+    // This may have only been used by the web UI in the old Coarse Grind.
     // Might be needed for an external runner, which also might need the
     // function InterruptCurrentTest() put back. Possibly also Run().
     fun haltAllTesting() {
@@ -180,7 +190,13 @@ public class TestCollection(override val name: String): ArrayList<TestEchelon>()
             if (size < 1) { return TestStatus.INCONCLUSIVE }
             var result = TestStatus.PASS
             this.forEach {
-                result = result + it.overallStatus
+                if (it is Test) {
+                    if (shouldRun(it)) {
+                        result = result + it.overallStatus
+                    }
+                } else {
+                    result = result + it.overallStatus
+                }
             }
 
             return result

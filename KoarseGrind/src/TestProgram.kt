@@ -40,12 +40,12 @@ import kotlin.reflect.full.isSubclassOf
 private val testLoader = Thread.currentThread().getContextClassLoader()
 private val preclusions = ArrayList<Throwable>()
 
-private val debugFile = File("${System.getProperty("user.home")}${File.separator}Documents${File.separator}Test Results${File.separator}KGDEBUG.html")
-private val debuggingMemoir = Memoir("\uD83D\uDC1E DEBUG", null, debugFile.printWriter() )
+//private val debugFile = File("${System.getProperty("user.home")}${File.separator}Documents${File.separator}Test Results${File.separator}KGDEBUG.html")
+//private val debuggingMemoir = Memoir("\uD83D\uDC1E DEBUG", null, debugFile.printWriter() )
 
 object TestProgram {
-    // This may have to be changed to take the same arguments as TestCollection
-    fun run(name: String = UNKNOWN) {
+    fun run(name: String = UNKNOWN, args: Array<String> = Array<String>(0) { "" }) {
+        val filterSet = parseArguments(args)
         val rootCollection = TestCollection(name)
         val packages = testLoader.definedPackages
         packages.forEach {
@@ -55,13 +55,13 @@ object TestProgram {
             }
         }
 
-        val rootLog = rootCollection.run(preclusions)
+        val rootLog = rootCollection.run(filterSet, preclusions)
         createSummaryReport(rootCollection, rootLog)
         rootLog.conclude()
-        debuggingMemoir.conclude()
+        //debuggingMemoir.conclude()
     }
 
-    fun createSummaryReport(rootCollection: TestCollection, memoir: Memoir = Memoir(forPlainText = stdout)) {
+    private fun createSummaryReport(rootCollection: TestCollection, memoir: Memoir = Memoir(forPlainText = stdout)) {
         val fullyQualifiedSummaryFileName = rootCollection.rootDirectory + File.separatorChar + SUMMARY_FILE_NAME
         memoir.info("Creating Test Suite Summary Report ($fullyQualifiedSummaryFileName)")
         var summaryReport = MatrixFile<String>("Categorization", "Test ID", "Name", "Description", "Status", "Reasons")
@@ -96,7 +96,7 @@ object TestProgram {
 
     // TODO: Properly handle Jar files in the classpath (or verify if it already does)
     private fun recursiveIdentify(rootCollection: TestCollection, candidate: File) {
-        debuggingMemoir.info("PATH ${candidate.absolutePath}")
+        //debuggingMemoir.info("PATH ${candidate.absolutePath}")
 
         if (candidate.exists()) {
             val check = candidate.listFiles()
@@ -110,10 +110,10 @@ object TestProgram {
                     do {
                         attemptName = attemptName.substringAfter('.')
                         try {
-                            debuggingMemoir.info("Attempting to load $attemptName")
+                            //debuggingMemoir.info("Attempting to load $attemptName")
                             val foundClass = testLoader.loadClass(attemptName.substring(0, attemptName.length - 6))
                             attemptName = "" // Prevent another loop iteration
-                            debuggingMemoir.info("foundClass.kotlin.isSubclassOf(Test::class) == ${foundClass.kotlin.isSubclassOf(Test::class)}")
+                            //debuggingMemoir.info("foundClass.kotlin.isSubclassOf(Test::class) == ${foundClass.kotlin.isSubclassOf(Test::class)}")
                             if (foundClass.kotlin.isSubclassOf(Test::class)) {
                                 if (!(foundClass.kotlin.isSubclassOf(ManufacturedTest::class))) {
                                     val foundTestInstance: Test = foundClass.getDeclaredConstructor().newInstance() as Test
@@ -124,11 +124,11 @@ object TestProgram {
                                 rootCollection.add(factory.products)
                             }
                         } catch (materialFailure: InvocationTargetException) {
-                            debuggingMemoir.showThrowable(materialFailure)
-                            debuggingMemoir.debug("MATERIAL FAILURE")
+                            //debuggingMemoir.showThrowable(materialFailure)
+                            //debuggingMemoir.debug("MATERIAL FAILURE")
                             preclusions.add(materialFailure)
                         } catch (dontCare: Throwable) {
-                            debuggingMemoir.showThrowable(dontCare)
+                            //debuggingMemoir.showThrowable(dontCare)
                             // DELIBERATE NO-OP
                             // Kotlin will hemorrhage exceptions during the process of identifying legitimate tests.
                             // Use the line below if there is need to identify failures that matter.
@@ -138,5 +138,47 @@ object TestProgram {
                 }
             }
         }
+    }
+
+    private fun parseArguments(args: Array<String>): FilterSet? {
+        val result = ArrayList<Filter>()
+
+        var index = 0
+        while (index < args.size) {
+            val filterType = when(args[index].toUpperCase()) {
+                "INCLUDE" -> FilterType.INCLUDE
+                "EXCLUDE" -> FilterType.EXCLUDE
+                else -> null
+            }
+
+            if (filterType != null) {
+                index++
+                val parts = args[index].split('=')
+
+                val filterTarget = when(parts[0].toUpperCase()) {
+                    "CATEGORIES", "CATEGORY" -> FilterTarget.CATEGORIES
+                    "IDENTIFIERS", "IDENTIFIER" -> FilterTarget.IDENTIFIERS
+                    "NAMES", "NAME" -> FilterTarget.NAMES
+                    else -> null
+                }
+
+                if (filterTarget != null) {
+                    if (parts.size > 1) {
+                        val matchers = ArrayList<String>()
+
+                        matchers.addAll(parts[1].toUpperCase().split(';', ',', '|'))
+
+                        if (matchers.size > 0) {
+                            result.add(Filter(filterType, filterTarget, matchers))
+                        }
+                    }
+                }
+            }
+
+            index++
+        }
+
+        if (result.size < 1) return null
+        return FilterSet(result)
     }
 }

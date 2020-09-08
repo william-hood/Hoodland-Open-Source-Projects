@@ -22,6 +22,12 @@
 import hoodland.opensource.koarsegrind.Test
 import hoodland.opensource.koarsegrind.TestProgram
 
+fun main(args: Array<String>) {
+    TestProgram.run("Koarse Grind Demo", args)
+}
+
+// TODO: More/Better examples for Descriptions
+
 class ExampleTest2: Test(
         "Sample Test Number Two",
         "This is the detailed description for ExampleTest2.  Use this field to describe what the test does and what its pass criteria are. Commas, \tTabs, \rCarriage Returns, and \nLine Feed chars will be filtered out.",
@@ -69,9 +75,3 @@ class ExampleTest2B: Test(
         }
     }
 }
-
-fun main(args: Array<String>) {
-    TestProgram.run("Koarse Grind Demo")
-}
-
-// TODO: More/Better examples for Descriptions

@@ -24,5 +24,5 @@ package hoodland.opensource.testsuite
 import hoodland.opensource.koarsegrind.TestProgram
 
 fun main(args: Array<String>) {
-    TestProgram.run("Test Suite - Hoodland Open Source Projects")
+    TestProgram.run("Test Suite - Hoodland Open Source Projects", args)
 }
