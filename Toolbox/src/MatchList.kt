@@ -30,9 +30,7 @@ class MatchList(vararg matchStrings: String) : ArrayList<String>() {
         this.addAll(matchStrings)
     }
 
-    constructor(arrayListOfStrings: ArrayList<String>) {
-        this.addAll(arrayListOfStrings)
-    }
+    constructor(arrayListOfStrings: ArrayList<String>): this(*(arrayListOfStrings.toTypedArray())) { }
 
     /**
      * matches: Determines if the supplied candidate string is a match for any string contained in the list.
