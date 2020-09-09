@@ -24,16 +24,22 @@ package hoodland.opensource.toolbox
 import java.util.*
 
 
-class MatchList : ArrayList<String> {
-    constructor() {}
+class MatchList(vararg matchStrings: String) : ArrayList<String>() {
+
+    init {
+        this.addAll(matchStrings)
+    }
+
     constructor(arrayListOfStrings: ArrayList<String>) {
         this.addAll(arrayListOfStrings)
     }
 
-    constructor(arrayOfStrings: Array<String?>) {
-        this.addAll(Arrays.asList<String>(*arrayOfStrings))
-    }
-
+    /**
+     * matches: Determines if the supplied candidate string is a match for any string contained in the list.
+     *
+     * @param candidateString The string to check if in the list.
+     * @return Returns true if the supplied candidateString is a partial, case-specific match, for at least one string in the list. If candidateString is a substring of one in the list, it matches. Returns false if no match is found.
+     */
     fun matches(candidateString: String): Boolean {
         for (thisListedString in this) {
             if (candidateString.contains(thisListedString)) return true
@@ -41,6 +47,12 @@ class MatchList : ArrayList<String> {
         return false
     }
 
+    /**
+     * matchesCaseInspecific: Determines if the supplied candidate string is a match for any string contained in the list, regardless of case.
+     *
+     * @param candidateString The string to check if in the list.
+     * @return Returns true if the supplied candidateString is a match, regardless of uppercase/lowercase, for at least one string in the list. If candidateString is a substring of one in the list, it matches. Returns false if no match is found.
+     */
     fun matchesCaseInspecific(candidateString: String): Boolean {
         for (thisListedString in this) {
             if (candidateString.contains(thisListedString, true)) return true
@@ -48,6 +60,12 @@ class MatchList : ArrayList<String> {
         return false
     }
 
+    /**
+     * containsCaseInspecific: Determines if the supplied candidate string is contained in the list, regardless of case.
+     *
+     * @param candidateString The string to check if in the list.
+     * @return Returns true if the supplied candidateString is a full match, regardless of uppercase/lowercase, for at least one string in the list. If candidateString is a substring of one in the list, it DOES NOT match. Returns false if no match is found.
+     */
     fun containsCaseInspecific(candidateString: String): Boolean {
         for (thisListedString in this) {
             if (thisListedString.equals(candidateString, ignoreCase = true)) return true

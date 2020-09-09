@@ -22,31 +22,58 @@
 package hoodland.opensource.toolbox
 
 // Based on http://en.wikipedia.org/wiki/Hexavigesimal
+
+/**
+ * SubnameFactory is used in cases where a lot of records (or fields, test cases, etc.) need to have the same name,
+ * with a unique suffix. MyTestA, MyTestB, etc. Use this to generate the suffix when programmatically generating
+ * several similar items. (In the Koarse Grind test framework, this is recommended when creating manufactured
+ * tests with a test factory.
+ *
+ * @constructor
+ *
+ * @param startingIndex Each subname is a Base26 number with a corresponding long integer. Zero is A. Unless you know why you'd want to change it, omit this parameter so it uses the default value of zero.
+ * @param totalPlaces When rendering the subname as a string, use this to force the subname to take a minimum of <totalPlaces> characters. The default placeholder is '.', but you can change it after construction.
+ */
 class SubnameFactory(startingIndex: Long = 0, totalPlaces: Int = 0) {
     var currentIndex: Long = startingIndex
         private set
     var places = totalPlaces
     var placeholder = DEFAULT_PLACE_HOLDER
 
+    /**
+     * nextIndexAsString: This advances the index and produces the next Long-Integer index value as a string. (This is the numeric value, not the Base26 subname.)
+     */
     val nextIndexAsString: String
         get() {
             advance()
             return currentIndexAsString
         }
 
+    /**
+     * currentIndexAsString: This produces the current Long-Integer index value as a string without advancing the index. (This is the numeric value, not the Base26 subname.)
+     */
     val currentIndexAsString: String
         get() = prepend(currentIndex.toString())
 
+    /**
+     * nextIndex: This advances the index and produces the next Long-Integer index value. (This is the numeric value, not the Base26 subname.)
+     */
     val nextIndex: Long
         get() {
             advance()
             return currentIndex
         }
 
+    /**
+     * advance: Advances the index but returns nothing. Use this to skip a subname if necessary.
+     */
     fun advance() {
         currentIndex++
     }
 
+    /**
+     * nextSubname: This advances the index and produces the next Base26 subname.
+     */
     val nextSubname: String
         get() {
             advance()
@@ -61,6 +88,9 @@ class SubnameFactory(startingIndex: Long = 0, totalPlaces: Int = 0) {
         return prefix + result
     }
 
+    /**
+     * currentSubname: This produces the current Base26 subname without advancing the index.
+     */
     val currentSubname: String
         get() {
             val result = StringBuffer()
