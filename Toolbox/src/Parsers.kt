@@ -21,8 +21,19 @@
 
 package hoodland.opensource.toolbox
 
-// Used by and with MatrixFile
+/**
+ * Parsers should be used with a MatrixFile of the same type. Given a String, it converts it
+ * to the appropriate data type.
+ *
+ * @param T The data type for the MatrixFile and Parser to use.
+ */
 interface Parser<T> {
+    /**
+     * parseMethod: Converts the supplied string to the specified data type.
+     *
+     * @param stringToParse The string to be converted. This is typically a single cell of data in a CSV (or other delimiter) file.
+     * @return The data represented by the string as the appropriate type.
+     */
     fun parseMethod(stringToParse: String): T
 }
 
