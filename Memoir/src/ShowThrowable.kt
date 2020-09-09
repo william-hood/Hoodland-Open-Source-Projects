@@ -28,11 +28,19 @@ import java.util.*
 
 private const val DEFAULT_STACKTRACE = "(no stacktrace)"
 
+/**
+ * showThrowable: This function properly renders an Exception (or any Throwable) in a readable format. The HTML
+ * version provides click-to-expand views of the stack trace and causal exceptions.
+ *
+ * @param target The Exception, or other Throwable, to be rendered.
+ * @param timeStamp Omit this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in.
+ * @param plainTextIndent This is used for Memoir's plain-text output. Unless you know what you're doing and why this should be omitted.
+ * @return Returns the HTML representation of the exception that it logged.
+ */
 fun Memoir.showThrowable(target: Throwable, timeStamp: LocalDateTime? = LocalDateTime.now(), plainTextIndent: String = ""): String {
     val result = StringBuilder("<div class=\"object exception\">\r\n")
     val name = target.javaClass.simpleName
     val htmlStackTrace = StringBuilder(DEFAULT_STACKTRACE)
-    //val plainTextStackTrace = StringBuilder(DEFAULT_STACKTRACE)
     var hasStackTrace = false
 
     var loggedTextEmoji = EMOJI_ERROR
@@ -123,6 +131,7 @@ fun Memoir.showThrowable(target: Throwable, timeStamp: LocalDateTime? = LocalDat
     return result.toString()
 }
 
+/* LEAVING THIS OUT UNTIL TIME AVAILABLE TO DO IT RIGHT. This is for a plain-text, not-necessarily-Memoir-associated representation of a Java/Kotlin Exception.
 // TODO: Rather than echoPlainText() each line, might make more sense to use a StringBuilder and echo once at the end???
 fun depictFailure(thisFailure: Throwable): String {
     val stream = ByteArrayOutputStream()
@@ -132,3 +141,4 @@ fun depictFailure(thisFailure: Throwable): String {
     memoir.conclude()
     return String(stream.toByteArray())
 }
+*/
