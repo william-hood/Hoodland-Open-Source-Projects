@@ -21,20 +21,34 @@
 
 package hoodland.opensource.toolbox
 
+/**
+ * WebInterfaceControl: This is one of the remaining vestiges of deprecated code that programmatically represented HTML.
+ * All WebInterfaceControl derivatives should assume that toString() will render their HTML.
+ */
+public interface WebInterfaceControl { }
 
-public interface WebInterfaceControl {
-
-    // All WebInterfaceControls should assume
-    // that ToString() will render their HTML.
-
-}
-
+/**
+ * WebImage: This is one of the remaining vestiges of deprecated code that programmatically represented HTML.
+ * This particular type represents an HTML image tag.
+ */
 public interface WebImage {
-    // A recommended site for this: http://jpillora.com/base64-encoder/
+    /**
+     * A recommended site for this: http://jpillora.com/base64-encoder/
+     */
     val base64ImageData: String
+
+    /**
+     * imageType: This should be the type of the image file that is represented by the Base64. Typically png, jpeg or gif.
+     */
     val imageType: String
 }
 
+/**
+ * InlineImage: This is one of the remaining vestiges of deprecated code that programmatically represented HTML.
+ * It represents an image that has been inserted directly into an HTML file as Base64 encoded data. A deprecated
+ * alternative used to exist that put the image in the CSS style section, but was deprecated because some
+ * browsers did not work with it.
+ */
 public abstract class InlineImage : WebInterfaceControl, WebImage
 {
     public abstract override val base64ImageData: String

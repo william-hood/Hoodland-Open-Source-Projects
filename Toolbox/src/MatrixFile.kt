@@ -69,7 +69,7 @@ class MatrixFile<T> {
     val size: Int
     get() {
         if (headers.size < 1) {
-            throw ImproperObjectConstructionException("A ${this.javaClass.simpleName} must have at least one header column.")
+            throw ImproperConstructionException("A ${this.javaClass.simpleName} must have at least one header column.")
         }
         return headers.size
     }

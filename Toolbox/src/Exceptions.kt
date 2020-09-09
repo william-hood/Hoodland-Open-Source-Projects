@@ -21,6 +21,18 @@
 
 package hoodland.opensource.toolbox
 
+/**
+ * ImpossibleCodePathException: I have sometimes had cause to believe that control flow had reached a point in
+ * the code that should not be possible. Throw this at such a point to remove any doubt.
+ */
 class ImpossibleCodePathException : Exception("A point in the code was reached that should not be possible to get to.")
-class ImproperObjectConstructionException(message: String) : Exception("An object was created in a way that precludes actual use: $message")
+
+/**
+ * ImproperConstructionException: Throw this in situations where an object or class has been constructed in such a way as to make it unusable. Example: An array needs to be passed in but the array given was size zero, or is populated with known bad data.
+ *
+ * @constructor
+ *
+ * @param message Explain why the object or class is unusable.
+ */
+class ImproperConstructionException(message: String) : Exception("An object or class was created in a way that precludes actual use: $message")
 
