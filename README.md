@@ -16,8 +16,6 @@
 ## Long Version
 
 
-I'm looking for volunteers.
-
 Years ago, after creating several variations of the same test framework for several different companies, I decided to create a “reference version” of what I typically do. If a new employer (again) asked that I create a brand new test framework for them, I’d have something to start with. Initially written in Java and later ported to C#, I called the result “Coarse Grind,” and while it’s evolved over the years I’ve been able to put it into action at two jobs. A few of my colleagues also used it, at least one of whom deployed it at their next job as well. While I didn’t use it in my most recent role, the fact that I’d written my own test framework carried weight when I interviewed.
 
 I’ve decided to get Coarse Grind into good enough shape that more than just me and my friends might want to use it. After starting to improve the C# version, I got frustrated that both C# and Java would force me to put up with their own set of problems. In June, 2020, I decided to drop C# and port all my personal projects to Kotlin.
