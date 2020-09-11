@@ -1,10 +1,9 @@
 # Koarse Grind Test Framework & Memoir Rich Logging System
 
-***Pre-Beta and Seeking Feedback***
-
 ## Short Version
 
-- You need to be competent programming in Kotlin. (The transition from Java or C# is fairly easy.)
+- I've been an SDET long enough to have my own tools. This is the latest version, rewritten in Kotlin and MIT licensed.
+- I'm actively seeking feedback about the use of my "Koarse Grind" test framework, and its integrated log system "Memoir."
 - Preferably you've created automated tests or developed a test automation framework for some previous employers.
 - Clone the repository and open the root directory in IntelliJ IDEA CE.
 - There is an example project for the Memoir logging system when used as a stand-alone module.
