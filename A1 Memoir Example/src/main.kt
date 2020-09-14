@@ -1,6 +1,6 @@
 /*
 
-MEMOIR EXAMPLE
+READ ME: MEMOIR EXAMPLE (some editors will hide all but the first line of this comment)
 
 Memoir is an HTML-based rich logging system capable of visual renditions of
 arrays, maps, iterables, HTTP requests & responses, Exceptions (or any
@@ -82,7 +82,7 @@ fun main(args: Array<String>) {
         val peopleToAge = mapOf("Alice" to 20, "Bob" to 21, "George" to 68)
         log.show(peopleToAge, "peopleToAge")
 
-        log.showMemoir(subLog(check, inner), style = "inconclusive_test_result")
+        log.show(subLog(check, inner))
 
         log.debug("One caveat: If you .conclude() a Memoir, it's done. That function closes any output streams and makes it read-only.")
         log.info("A Memoir also gets concluded if you embed it in another memoir with either the .show() or .showMemoir() functions.")
@@ -163,6 +163,6 @@ internal fun subLog(check: TestStruct, inner: TestStruct): Memoir {
     val peopleToAge = mapOf("Alice" to 20, "Bob" to 21, "George" to 68)
     subLog.show(peopleToAge, "peopleToAge")
 
-    log.show(subLog)
+    log.showMemoir(subLog, style = "inconclusive_test_result")
     return log
 }
