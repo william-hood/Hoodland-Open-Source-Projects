@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/A1 Memoir Example/A1 Memoir Example.iml" filepath="$PROJECT_DIR$/A1 Memoir Example/A1 Memoir Example.iml" />
-      <module fileurl="file://$PROJECT_DIR$/A2 Koarse Grind Example/A2 Koarse Grind Example.iml" filepath="$PROJECT_DIR$/A2 Koarse Grind Example/A2 Koarse Grind Example.iml" />
-      <module fileurl="file://$PROJECT_DIR$/A3 Hoodland Projects Test Suite/A3 Hoodland Projects Test Suite.iml" filepath="$PROJECT_DIR$/A3 Hoodland Projects Test Suite/A3 Hoodland Projects Test Suite.iml" />
+      <module fileurl="file://$PROJECT_DIR$/A1_Memoir_Example/A1_Memoir_Example.iml" filepath="$PROJECT_DIR$/A1_Memoir_Example/A1_Memoir_Example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/A2_Koarse_Grind_Example/A2_Koarse_Grind_Example.iml" filepath="$PROJECT_DIR$/A2_Koarse_Grind_Example/A2_Koarse_Grind_Example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/A3_Hoodland_Projects_Test_Suite/A3_Hoodland_Projects_Test_Suite.iml" filepath="$PROJECT_DIR$/A3_Hoodland_Projects_Test_Suite/A3_Hoodland_Projects_Test_Suite.iml" />
       <module fileurl="file://$PROJECT_DIR$/Descriptions/Descriptions.iml" filepath="$PROJECT_DIR$/Descriptions/Descriptions.iml" />
       <module fileurl="file://$PROJECT_DIR$/KoarseGrind/KoarseGrind.iml" filepath="$PROJECT_DIR$/KoarseGrind/KoarseGrind.iml" />
       <module fileurl="file://$PROJECT_DIR$/Memoir/Memoir.iml" filepath="$PROJECT_DIR$/Memoir/Memoir.iml" />

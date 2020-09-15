@@ -40,8 +40,8 @@ import kotlin.reflect.full.isSubclassOf
 private val testLoader = Thread.currentThread().getContextClassLoader()
 private val preclusions = ArrayList<Throwable>()
 
-//private val debugFile = File("${System.getProperty("user.home")}${File.separator}Documents${File.separator}Test Results${File.separator}KGDEBUG.html")
-//private val debuggingMemoir = Memoir("\uD83D\uDC1E DEBUG", null, debugFile.printWriter() )
+// private val debugFile = File("${System.getProperty("user.home")}${File.separator}Documents${File.separator}Test Results${File.separator}KGDEBUG.html")
+// private val debuggingMemoir = Memoir("\uD83D\uDC1E DEBUG", null, debugFile.printWriter() )
 
 /**
  * TestProgram
@@ -135,7 +135,9 @@ object TestProgram {
                             attemptName = "" // Prevent another loop iteration
                             //debuggingMemoir.info("foundClass.kotlin.isSubclassOf(Test::class) == ${foundClass.kotlin.isSubclassOf(Test::class)}")
                             if (foundClass.kotlin.isSubclassOf(Test::class)) {
+                                //debuggingMemoir.debug("Identified ${foundClass.kotlin} as extending a KG Test")
                                 if (!(foundClass.kotlin.isSubclassOf(ManufacturedTest::class))) {
+                                    //debuggingMemoir.debug("Identified ${foundClass.kotlin} as NOT extending MaufacturedTest")
                                     val foundTestInstance: Test = foundClass.getDeclaredConstructor().newInstance() as Test
                                     rootCollection.add(foundTestInstance)
                                 }

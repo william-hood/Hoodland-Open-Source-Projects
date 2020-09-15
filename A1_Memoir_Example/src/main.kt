@@ -35,8 +35,8 @@ fun main(args: Array<String>) {
 
     try {
         log.skipLine()
-        log.info("Memoir is an HTML-based rich logging system capable of visual renditions of arrays, maps, iterables, HTTP requests & responses, Exceptions (or any other Throwable), and any other class or object. One Memoir instance can even embed another as a log subsection.")
-        log.info("When used for program debugging, HTTP request/response debugging, activity logging, or any other purpose, output from Memoir will easier to read and work with than ordinary console output (though it does provide counterpart output to the console in addition to its HTML log file).")
+        log.info("Memoir is an HTML-based rich logging system capable of visual renditions of arrays, maps, iterables, HTTP requests & responses, exceptions (or any other Throwable), and any other class or object. One Memoir instance can even embed another as a log subsection.")
+        log.info("When used for debugging control flow, HTTP requests & responses, activity logging, or any other purpose, output from Memoir will easier to read and work with than ordinary console output (though it does provide counterpart output to the console in addition to its HTML log file).")
         log.info("All of the above messages represent \"normal\" log output with the .info() function.")
         log.info("When debugging a program, you might need a single line of information to stand out.")
         log.info("If you use the .debug() function instead of .info() the message will be highlighted in yellow like this...")
@@ -45,7 +45,7 @@ fun main(args: Array<String>) {
         log.error("Uh-oh... That wasn't supposed to happen!")
         log.skipLine()
         log.info("Why would you want to log directly to HTML?")
-        log.info("Because it's very hard to visualize the workings of a cloud service, test suite, or other back-end process.")
+        log.info("Because it's very hard, using ordinary plain-text logging, to visualize the workings of a cloud service, test suite, or other back-end process.")
         log.info("Let's suppose you need to check on the state of a data structure at a certain point in the program.")
         log.info("Look at the class \"TestStruct\" at the bottom of this source code file. Let's render one!")
 
@@ -124,7 +124,7 @@ fun printSomeItem(doa: IntArray) {
 
 internal fun subLog(check: TestStruct, inner: TestStruct): Memoir {
     val log = Memoir("Click this to see one of Memoir's biggest tricks!", stdout)
-    log.info("The truth is that all that stuff above could've been put into it's own little click-to-expand subsection.")
+    log.info("The truth is that all of the stuff above could've been put into it's own little click-to-expand subsection.")
     log.info("A Memoir can embed another Memoir. Time stamps, icons, and all!")
     log.info("Let's take up lots of space by rendering an array of those TestStruct things...")
 

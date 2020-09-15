@@ -74,7 +74,11 @@ https://www.linkedin.com/in/william-a-hood-sdet-pdx/
 
  */
 
-import hoodland.opensource.koarsegrind.Test
+// ‼️ IMPORTANT ‼️ If a module, or its directory, contains a space tests in it will not be run.
+// So don't do that!
+
+package com.mycompany.testing
+
 import hoodland.opensource.koarsegrind.TestProgram
 
 // First thing's first. Below is all you need for a main() function
@@ -85,64 +89,6 @@ fun main(args: Array<String>) {
 
 // TODO: More/Better examples for Descriptions
 
-// You can put a test in the same file as main() if you want. I normally wouldn't.
-// Extend the Test class, and pass the following into the constructor...
-//
-// name:                A brief, human-readable name for the test.
-//
-// detailedDescription: This will appear as the first line of each test's log output.
-//                      Make it detailed enough that someone unfamiliar with the test
-//                      can figure out what it does.
-// identifier:          If you use a test tracking system it typically provides each
-//                      test with a test case ID. That's what this is for.
-// categories:          Put some strings that each describe a category this test might
-//                      fall into. "HappyPath", "SmokeTests", "HighPriority" are some
-//                      suggested examples. It is possible to tell the test program
-//                      to only run tests that match a certain category.
-class ExampleTest2: Test(
-        "Sample Test Number Two",
-        "This is the detailed description for ExampleTest2.  Use this field to describe what the test does and what its pass criteria are. Commas, \tTabs, \rCarriage Returns, and \nLine Feed chars will be filtered out.",
-        "ET-002",
-        "Simple", "All", "Example"
-) {
-    override fun performTest() {
-        log.info("Reality check2")
-        log.debug("Did it actually work2???")
-
-        assert.shouldBeTrue(true, "Whelp, 'Guess I'll just brute-force the dang thing as passing!")
-        require.shouldBeEqual(true, false, "Actually, this should make it inconclusive.")
-        try {
-            throw NullPointerException("Whaaaaat? Isn't Kotlin supposed to avoid these???")
-        } catch (thisException: Throwable) {
-            addResult(getResultForFailure(thisException))
-        }
-    }
-}
-
-class ExampleTest2B: Test(
-        "Sample Test Number Two (B)",
-        "This is the detailed description for ExampleTest2.  Use this field to describe what the test does and what its pass criteria are. Commas, \tTabs, \rCarriage Returns, and \nLine Feed chars will be filtered out.",
-        "ET-002",
-        "Simple", "All", "Example"
-) {
-    override fun setup() {
-        assert.shouldBeTrue(false, "Let's fail setup() and see what happens...")
-    }
-
-    override fun cleanup() {
-        assert.shouldBeTrue(false, "Let's fail cleanup() and see what happens...")
-    }
-
-    override fun performTest() {
-        log.info("Reality check2")
-        log.debug("Did it actually work2???")
-
-        assert.shouldBeTrue(true, "Whelp, 'Guess I'll just brute-force the dang thing as passing!")
-        require.shouldBeEqual(true, false, "Actually, this should make it inconclusive.")
-        try {
-            throw NullPointerException("Whaaaaat? Isn't Kotlin supposed to avoid these???")
-        } catch (thisException: Throwable) {
-            addResult(getResultForFailure(thisException))
-        }
-    }
-}
+// You can put a test in the same file as main() if you want.
+// Start with the file "ExampleTestTemplate.kt" for an example of a "normal" test.
+// Take a look at "A3 Hoodland Projects Test Suite" for an example of an actual test project.

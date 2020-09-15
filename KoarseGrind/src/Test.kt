@@ -167,7 +167,7 @@ abstract class Test (
                 }
 
                 testContext?.let {
-                    return it
+                    if (! wasRun) { return it }
                 }
 
                 return cleanupContext
@@ -403,6 +403,7 @@ abstract class Test (
             // SETUP
             try {
                 try {
+                    setupContext.results.add(TestResult(TestStatus.PASS, "Setup was run"))
                     setup()
                 } finally {
                     wasSetup = true
