@@ -12,6 +12,9 @@
 - The HTML-based output logs will appear in a folder titled "Test Results" off of your Documents directory.
 - While this is a Kotlin-first project, it IS possible to use it from Java. This option is recommended for people who normally work with Kotlin but need to create a test suite in Java, and who are familiar with using Kotlin JARs from Java.
 
+### Known Issues
+- If a module, or its directory, has a space in its name any tests it contains will not be found and will not run. Don't put spaces in module names. Use an underscore instead.
+
 
 ## Long Version
 
