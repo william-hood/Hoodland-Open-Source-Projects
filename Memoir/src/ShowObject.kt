@@ -76,7 +76,7 @@ fun Memoir.showObject(target: Any?, targetVariableName: String = NAMELESS, recur
     var visibilityDescription = UNKNOWN
     if (visibleProperties < 1) {
         content.clear()
-        visibilityDescription = "None of the $fieldCount members are"
+        visibilityDescription = "${treatAsCode("toString() returns " + target.toString())}None of the $fieldCount members are"
     } else {
         if (fieldCount == 1) {
             visibilityDescription = "The only member is"

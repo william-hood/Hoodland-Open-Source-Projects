@@ -87,9 +87,6 @@ fun main(args: Array<String>) {
     TestProgram.run("Koarse Grind Demo", args)
 }
 
-// TODO: More/Better examples for Descriptions
-// TODO: FailureDescription Example
-
 // You can put a test in the same file as main() if you want.
 // Start with the file "ExampleTestTemplate.kt" for an example of a "normal" test.
 // Take a look at "A3 Hoodland Projects Test Suite" for an example of an actual test project.

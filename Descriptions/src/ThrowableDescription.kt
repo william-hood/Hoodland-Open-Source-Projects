@@ -49,15 +49,17 @@ class ThrowableDescription(
             return false
         }
 
-        return true
+        return candidateFailure.cause == null
     }
 
     override fun toString(): String {
         val result = StringBuilder()
-        result.append("failure with type name containing \"$throwableTypePartialName\"")
+        result.append("type name containing \"$throwableTypePartialName\"")
         if (messageSubString.length > 0) result.append(" with message containing \"$messageSubString\"")
-        cause?.let {
-            result.append("; Caused by $it.toString()")
+        if (cause == null) {
+            result.append("and no causal failure")
+        } else {
+            result.append("; Caused by $cause.toString()")
         }
 
         return result.toString()
