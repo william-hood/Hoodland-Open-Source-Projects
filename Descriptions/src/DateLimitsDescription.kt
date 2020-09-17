@@ -20,9 +20,20 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 package hoodland.opensource.descriptions
 
+import hoodland.opensource.toolbox.ImproperConstructionException
 import java.time.LocalDate
 
-abstract class DateLimitsDescription : LimitsDescription<LocalDate>() {
+val UnlimitedDate = DateLimitsDescription(LocalDate.MIN, LocalDate.MAX)
+val TodayOrLater = DateLimitsDescription(LocalDate.now(), LocalDate.MAX)
+val TodayOrPrior = DateLimitsDescription(LocalDate.MIN, LocalDate.now())
+
+class DateLimitsDescription(upper: LocalDate, lower: LocalDate) : LimitsDescription<LocalDate>(upper, lower) {
+
+    init {
+        if (this.lower >= this.upper) {
+            throw ImproperConstructionException("Lower limit must not be in the future, or the same, as the upper limit.")
+        }
+    }
 
     override fun contain(candidate: LocalDate): Boolean {
         if (candidate.toEpochDay() <= lower.toEpochDay()) return false

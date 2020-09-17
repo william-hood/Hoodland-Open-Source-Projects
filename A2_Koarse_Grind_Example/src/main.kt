@@ -88,6 +88,7 @@ fun main(args: Array<String>) {
 }
 
 // TODO: More/Better examples for Descriptions
+// TODO: FailureDescription Example
 
 // You can put a test in the same file as main() if you want.
 // Start with the file "ExampleTestTemplate.kt" for an example of a "normal" test.

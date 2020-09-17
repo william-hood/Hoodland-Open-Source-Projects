@@ -20,7 +20,18 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 package hoodland.opensource.descriptions
 
-abstract class DoubleLimitsDescription : LimitsDescription<Double>() {
+import hoodland.opensource.toolbox.ImproperConstructionException
+
+val UnlimitedDouble = DoubleLimitsDescription(Double.MIN_VALUE, Double.MAX_VALUE)
+
+class DoubleLimitsDescription(lower: Double, upper: Double) : LimitsDescription<Double>(lower, upper) {
+
+    init {
+        if (this.lower >= this.upper) {
+            throw ImproperConstructionException("Lower limit must not greater than, or equal to, the upper limit.")
+        }
+    }
+
     override fun contain(candidate: Double): Boolean {
         return candidate <= upper && candidate >= lower
     }

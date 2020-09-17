@@ -19,65 +19,47 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-// TODO: This is mechanically translated directly from the old Java version. Leaving as-is for now, but might be re-written as from-scratch Kotlin at a later time.
-
 package hoodland.opensource.descriptions
 
-import hoodland.opensource.toolbox.UNSET_STRING
-
-class ThrowableDescription {
-    private var _failureType: Class<out Throwable>? = null
-    private var _messageSubstring = ""
-    private var _cause: ThrowableDescription? = null
-    private var _failureTypePartialName: String = UNSET_STRING
-
-    constructor(failureType: Class<out Throwable>?,
-                messageSubstring: String) {
-        this._failureType = failureType
-        this._messageSubstring = messageSubstring
-    }
-
-    constructor(failureType: Class<out Throwable>?,
-                messageSubstring: String, cause: ThrowableDescription?) : this(failureType, messageSubstring) {
-        this._cause = cause
-    }
-
-    constructor(failureTypePartialName: String, messageSubstring: String) {
-        _failureTypePartialName = failureTypePartialName
-        this._messageSubstring = messageSubstring
-    }
-
-    private fun messageMatches(candidate: String?): Boolean {
-        if (_messageSubstring.length > 0) {
-            if (!candidate!!.contains(_messageSubstring)) return false
+class ThrowableDescription(
+        val throwableTypePartialName: String,
+        val messageSubString: String = "",
+        val cause: ThrowableDescription? = null
+) {
+    private fun messageMatches(candidate: String): Boolean {
+        if (messageSubString.length > 0) {
+            return candidate.contains(messageSubString)
         }
+
         return true
     }
 
     fun isMatch(candidateFailure: Throwable): Boolean {
-        if (_failureTypePartialName !== UNSET_STRING) return isMatch(candidateFailure.javaClass.canonicalName,
-                candidateFailure.message)
-        if (candidateFailure.javaClass != _failureType) return false
-        if (!messageMatches(candidateFailure.message)) return false
-        return if (_cause != null) _cause!!.isMatch(candidateFailure) else true
-    }
+        if (! candidateFailure.javaClass.canonicalName.contains(throwableTypePartialName)) return false
 
-    fun isMatch(candidateFailureName: String, candidateFailureMessage: String?): Boolean {
-        if (!candidateFailureName.contains(_failureTypePartialName)) return false
-        return if (!messageMatches(candidateFailureMessage)) false else true
+        candidateFailure.message?.let {
+            if (! messageMatches(it)) return false
+        }
+
+        cause?.let {
+            candidateFailure.cause?.let { causalThrowable ->
+                return it.isMatch(causalThrowable)
+            }
+
+            return false
+        }
+
+        return true
     }
 
     override fun toString(): String {
         val result = StringBuilder()
-        if (_failureTypePartialName === UNSET_STRING) {
-            result.append("failure of type " + _failureType.toString())
-        } else {
-            result.append("failure with type name containing \""
-                    + _failureTypePartialName + "\"")
+        result.append("failure with type name containing \"$throwableTypePartialName\"")
+        if (messageSubString.length > 0) result.append(" with message containing \"$messageSubString\"")
+        cause?.let {
+            result.append("; Caused by $it.toString()")
         }
-        if (_messageSubstring.length > 0) result.append(" with message containing \"" + _messageSubstring
-                + "\"")
-        if (_cause != null) result.append("; Caused by " + _cause.toString())
+
         return result.toString()
     }
 }

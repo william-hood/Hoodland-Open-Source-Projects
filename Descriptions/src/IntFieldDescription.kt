@@ -71,4 +71,12 @@ class IntFieldDescription(basisValue: Int, limits: IntLimitsDescription) : Value
     override fun random(min: Int, max: Int): Int {
         return add(min, randomInteger(min, max))
     }
+
+    override fun isGreaterThan(x: Int, y: Int): Boolean {
+        return x > y
+    }
+
+    override fun isLessThan(x: Int, y: Int): Boolean {
+        return x < y
+    }
 }

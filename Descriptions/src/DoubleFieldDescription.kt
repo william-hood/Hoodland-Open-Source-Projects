@@ -20,6 +20,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 package hoodland.opensource.descriptions
 
+import java.math.BigInteger
 import java.util.*
 
 class DoubleFieldDescription(basisValue: Double, limits: DoubleLimitsDescription) : ValueFieldDescription<Double>(basisValue, limits) {
@@ -61,5 +62,13 @@ class DoubleFieldDescription(basisValue: Double, limits: DoubleLimitsDescription
 
     override fun random(min: Double, max: Double): Double {
         return min + Random().nextDouble() * (max - min)
+    }
+
+    override fun isGreaterThan(x: Double, y: Double): Boolean {
+        return x > y
+    }
+
+    override fun isLessThan(x: Double, y: Double): Boolean {
+        return x < y
     }
 }

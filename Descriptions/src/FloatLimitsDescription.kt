@@ -20,7 +20,18 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 package hoodland.opensource.descriptions
 
-abstract class FloatLimitsDescription : LimitsDescription<Float>() {
+import hoodland.opensource.toolbox.ImproperConstructionException
+
+val UnlimitedFloat = FloatLimitsDescription(Float.MIN_VALUE, Float.MAX_VALUE)
+
+class FloatLimitsDescription(lower: Float, upper: Float) : LimitsDescription<Float>(lower, upper) {
+
+    init {
+        if (this.lower >= this.upper) {
+            throw ImproperConstructionException("Lower limit must not greater than, or equal to, the upper limit.")
+        }
+    }
+
     override fun contain(candidate: Float): Boolean {
         return candidate <= upper && candidate >= lower
     }

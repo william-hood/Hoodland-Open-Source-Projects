@@ -64,4 +64,12 @@ class LongFieldDescription(basisValue: Long, limits: LongLimitsDescription) : Va
     override fun random(min: Long, max: Long): Long {
         return add(min, nextLong(Random(), subtract(max, min)))
     }
+
+    override fun isGreaterThan(x: Long, y: Long): Boolean {
+        return x > y
+    }
+
+    override fun isLessThan(x: Long, y: Long): Boolean {
+        return x < y
+    }
 }
