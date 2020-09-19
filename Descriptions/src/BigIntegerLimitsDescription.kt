@@ -21,9 +21,16 @@
 
 package hoodland.opensource.descriptions
 
+import hoodland.opensource.toolbox.ImproperConstructionException
 import java.math.BigInteger
 
-abstract class BigIntegerLimitsDescription : LimitsDescription<BigInteger>() {
+class BigIntegerLimitsDescription(lower: BigInteger, upper: BigInteger) : LimitsDescription<BigInteger>(lower, upper) {
+
+    init {
+        if (this.lower >= this.upper) {
+            throw ImproperConstructionException("Lower limit must not greater than, or equal to, the upper limit.")
+        }
+    }
 
     override fun contain(candidate: BigInteger): Boolean {
         return candidate.compareTo(upper) <= 0 && candidate

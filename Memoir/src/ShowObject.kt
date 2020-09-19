@@ -26,6 +26,15 @@ import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 
+/**
+ * showObject: Use this to render the visible portion of ANY object. Useful for debugging. Fields that are private
+ * or internal scope can not be shown, but the total number of fields will be known.
+ *
+ * @param target The class or object to be rendered.
+ * @param targetVariableName The name of the target object, if known.
+ * @param recurseLevel This function is necessarily recursive. It will decline to recurse down beyond the constant value MAX_SHOW_OBJECT_RECURSION in Constants.kt.
+ * @return Returns the HTML rendition of the class/object as it was logged.
+ */
 fun Memoir.showObject(target: Any?, targetVariableName: String = NAMELESS, recurseLevel: Int = 0): String {
     if (recurseLevel > MAX_SHOW_OBJECT_RECURSION) {
         return "<div class=\"outlined\">$EMOJI_INCONCLUSIVE_TEST Too Many Levels In $EMOJI_INCONCLUSIVE_TEST</div>"
@@ -67,7 +76,7 @@ fun Memoir.showObject(target: Any?, targetVariableName: String = NAMELESS, recur
     var visibilityDescription = UNKNOWN
     if (visibleProperties < 1) {
         content.clear()
-        visibilityDescription = "None of the $fieldCount members are"
+        visibilityDescription = "${treatAsCode("toString() returns " + target.toString())}None of the $fieldCount members are"
     } else {
         if (fieldCount == 1) {
             visibilityDescription = "The only member is"

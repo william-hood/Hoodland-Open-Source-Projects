@@ -20,7 +20,18 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 package hoodland.opensource.descriptions
 
-abstract class IntLimitsDescription : LimitsDescription<Int>() {
+import hoodland.opensource.toolbox.ImproperConstructionException
+
+val UnlimitedInt = IntLimitsDescription(Int.MIN_VALUE, Int.MAX_VALUE)
+
+class IntLimitsDescription(lower: Int, upper: Int) : LimitsDescription<Int>(lower, upper) {
+
+    init {
+        if (this.lower >= this.upper) {
+            throw ImproperConstructionException("Lower limit must not greater than, or equal to, the upper limit.")
+        }
+    }
+
     override fun contain(candidate: Int): Boolean {
         return candidate <= upper && candidate >= lower
     }

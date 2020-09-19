@@ -21,9 +21,10 @@
 
 package hoodland.opensource.descriptions
 
-abstract class LimitsDescription<T> {
-    abstract val upper: T
-    abstract val lower: T
+abstract class LimitsDescription<T>(
+        val lower: T,
+        val upper: T) {
+
     abstract fun contain(candidate: T): Boolean
     abstract val containZero: Boolean
     val containOrigin: Boolean

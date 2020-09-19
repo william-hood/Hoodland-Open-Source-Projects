@@ -62,4 +62,12 @@ class FloatFieldDescription(basisValue: Float, limits: FloatLimitsDescription) :
     override fun random(min: Float, max: Float): Float {
         return min + Random().nextFloat() * (max - min)
     }
+
+    override fun isGreaterThan(x: Float, y: Float): Boolean {
+        return x > y
+    }
+
+    override fun isLessThan(x: Float, y: Float): Boolean {
+        return x < y
+    }
 }

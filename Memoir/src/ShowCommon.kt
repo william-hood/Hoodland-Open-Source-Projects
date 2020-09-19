@@ -64,6 +64,14 @@ internal fun Memoir.beginShow(timeStamp: LocalDateTime, className: String, varia
     return result
 }
 
+/**
+ * show: This will render a class or object of any kind to the HTML log using the most appropriate function. Kotlin beginners: An "object" in Kotlin is essentially a static class in Java/C#.
+ *
+ * @param target The class or object to be rendered.
+ * @param targetVariableName Variable name of said class/object, if known.
+ * @param recurseLevel Rendering data structures to HTML is is necessarily recursive. It will decline to recurse down beyond the constant value MAX_SHOW_OBJECT_RECURSION in Constants.kt.
+ * @return Returns the HTML rendition of the class/object as it was logged.
+ */
 fun Memoir.show(target: Any?, targetVariableName: String = NAMELESS, recurseLevel: Int = 0): String {
     if (recurseLevel > MAX_SHOW_OBJECT_RECURSION) {
         // Write to HTML and plain text???

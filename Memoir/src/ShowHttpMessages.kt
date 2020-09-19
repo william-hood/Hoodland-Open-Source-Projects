@@ -29,8 +29,23 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.util.*
 
+/**
+ * HTTP_MESSAGE_BODY Indicates to your supplied callback function that the field being processed is the payload of an HTTP Request or Response.
+ */
 const val HTTP_MESSAGE_BODY = "HTTP Req/Resp Body/Payload"
 
+/**
+ * showHttpRequest: This renders a java.net.http.HttpRequest to the HTML log. In certain cases, particularly headers and body
+ * of HTTP messages, it may be desirable to Base64 decode and/or JSON pretty-print the string. Because it can be difficult
+ * to tell which fields really are Base64 or JSON, this task is left to the client code by way of the callbackFunction
+ * parameter. When rendering HTTP messages, the fieldName parameter of the callback will be the header name, or
+ * the constant HTTP_MESSAGE_BODY for the message body/payload. Make any necessary changes to the supplied field and return
+ * the changed value with your callbackFunction. Return the field as it was sent if no changes are needed. Do not
+ * supply a callbackFunction if none is needed.
+ *
+ * @param request The java.net.http.HttpRequest to be rendered.
+ * @param callbackFunction Optional: Supply a callback function to make on-the-fly changes to certain fields, such as decoding Base64 or pretty-printing JSON.
+ */
 fun Memoir.showHttpRequest(request: HttpRequest, callbackFunction: ((fieldName: String, fieldValue: String)->String)? = null) {
     val uri = request.uri()
     val queries = ArrayList<String>()
@@ -79,6 +94,17 @@ fun Memoir.showHttpRequest(request: HttpRequest, callbackFunction: ((fieldName: 
     echoPlainText(textRendition, EMOJI_OUTGOING)
 }
 
+/**
+ * showHttpResponse: Properly renders a java.net.http.HttpResponse to the HTML log. In certain cases, particularly headers and body
+ * of HTTP messages, it may be desirable to Base64 decode and/or JSON pretty-print the string. Because it can be difficult
+ * to tell which fields really are Base64 or JSON, this task is left to the client code by way of the callbackFunction
+ * parameter. When rendering HTTP messages, the fieldName parameter of the callback will be the header name, or
+ * the constant HTTP_MESSAGE_BODY for the message body/payload. Make any necessary changes to the supplied field and return
+ * the changed value with your callbackFunction. Return the field as it was sent if no changes are needed. Do not
+ * supply a callbackFunction if none is needed.
+ * @param response The java.net.http.HttpResponse to be rendered.
+ * @param callbackFunction Optional: Supply a callback function to make on-the-fly changes to certain fields, such as decoding Base64 or pretty-printing JSON.
+ */
 fun Memoir.showHttpResponse(response: HttpResponse<*>, callbackFunction: ((fieldName: String, fieldValue: String)->String)? = null) {
     val statusCode = response.statusCode()
     var style = "implied_bad"
@@ -166,6 +192,19 @@ private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: Str
     return result.toString()
 }
 
+/**
+ * showHttpTransaction: Given a java.net.http.HttpRequest this renders it in the HTML log, uses java.net.http.HttpClient to send it and
+ * receive a java.net.http.HttpResponse. The response will also be rendered tothe HTML log. In certain cases, particularly headers and body
+ * of HTTP messages, it may be desirable to Base64 decode and/or JSON pretty-print the string. Because it can be difficult
+ * to tell which fields really are Base64 or JSON, this task is left to the client code by way of the callbackFunction
+ * parameter. When rendering HTTP messages, the fieldName parameter of the callback will be the header name, or
+ * the constant HTTP_MESSAGE_BODY for the message body/payload. Make any necessary changes to the supplied field and return
+ * the changed value with your callbackFunction. Return the field as it was sent if no changes are needed. Do not
+ * supply a callbackFunction if none is needed.
+ * @param request The java.net.http.HttpRequest to be logged and sent.
+ * @param callbackFunction Optional: Supply a callback function to make on-the-fly changes to certain fields, such as decoding Base64 or pretty-printing JSON. This will be applied to BOTH the request and response.
+ * @return The java.net.http.HttpResponse that was logged and returned.
+ */
 fun Memoir.showHttpTransaction(request: HttpRequest, callbackFunction: ((fieldName: String, fieldValue: String)->String)? = null): HttpResponse<*> {
     val client = HttpClient.newHttpClient()
     showHttpRequest(request, callbackFunction)

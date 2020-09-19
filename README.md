@@ -1,10 +1,9 @@
 # Koarse Grind Test Framework & Memoir Rich Logging System
 
-***Pre-Beta and Seeking Feedback***
-
 ## Short Version
 
-- You need to be competent programming in Kotlin. (The transition from Java or C# is fairly easy.)
+- I've been an SDET long enough to have my own tools. This is the latest version, rewritten in Kotlin and MIT licensed.
+- I'm actively seeking feedback about the use of my "Koarse Grind" test framework, and its integrated log system "Memoir."
 - Preferably you've created automated tests or developed a test automation framework for some previous employers.
 - Clone the repository and open the root directory in IntelliJ IDEA CE.
 - There is an example project for the Memoir logging system when used as a stand-alone module.
@@ -13,11 +12,12 @@
 - The HTML-based output logs will appear in a folder titled "Test Results" off of your Documents directory.
 - While this is a Kotlin-first project, it IS possible to use it from Java. This option is recommended for people who normally work with Kotlin but need to create a test suite in Java, and who are familiar with using Kotlin JARs from Java.
 
+### Known Issues
+- If a module, or its directory, has a space in its name any tests it contains will not be found and will not run. Don't put spaces in module names. Use an underscore instead.
+
 
 ## Long Version
 
-
-I'm looking for volunteers.
 
 Years ago, after creating several variations of the same test framework for several different companies, I decided to create a “reference version” of what I typically do. If a new employer (again) asked that I create a brand new test framework for them, I’d have something to start with. Initially written in Java and later ported to C#, I called the result “Coarse Grind,” and while it’s evolved over the years I’ve been able to put it into action at two jobs. A few of my colleagues also used it, at least one of whom deployed it at their next job as well. While I didn’t use it in my most recent role, the fact that I’d written my own test framework carried weight when I interviewed.
 
@@ -34,8 +34,6 @@ Koarse Grind (now with a ‘K’) is at least in pre-beta condition and ready fo
 - Artifacts Folder – Every test has a folder for its own artifacts. This will contain at least the section of the log unique to that test. It can also hold screen shots, serialized data files, or other artifact files the test produces.
 - Rich Test-Object Description – A special “descriptions” module lets you describe how a candidate object might look and provides for ways to test the typical border conditions and edge cases.
 - New to this version the top-level test program will identify your tests, instantiate one of each, and run them. Unless you’re generating a set of tests programmatically (a special TestFactory class provides for this) normal tests do not need to be instantiated or put into a container structure.
-
-I’d greatly appreciate for some of my fellow Test Automation Professionals to have a look at Koarse Grind (and it’s “Memoir” logging system), play around with the examples, and offer me some honest feedback. You’re welcome to try actually testing something with it, though that’s at your own risk.
 
 The source code is MIT Licensed and developed with InteliJ IDEA CE.
 

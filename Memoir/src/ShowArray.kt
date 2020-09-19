@@ -25,6 +25,14 @@ import java.time.LocalDateTime
 import java.util.*
 import kotlin.reflect.KClass
 
+/**
+ * showArray: This will render any kind of non-primitive Array to the HTML log. Kotlin beginners should become familiar with the difference between primitive and non-primitive arrays and how they are created.
+ *
+ * @param target The non-primitive array to be rendered.
+ * @param targetVariableName The variable name of the array, if known.
+ * @param recurseLevel Rendering data structures to HTML is is necessarily recursive. It will decline to recurse down beyond the constant value MAX_SHOW_OBJECT_RECURSION in Constants.kt.
+ * @return Returns the HTML rendition of the array as it was logged.
+ */
 fun Memoir.showArray(target: Array<*>, targetVariableName: String = NAMELESS, recurseLevel: Int = 0): String {
     if (recurseLevel > MAX_SHOW_OBJECT_RECURSION) {
         return "<div class=\"outlined\">$EMOJI_INCONCLUSIVE_TEST Too Many Levels In $EMOJI_INCONCLUSIVE_TEST</div>"
@@ -76,6 +84,14 @@ fun Memoir.showArray(target: Array<*>, targetVariableName: String = NAMELESS, re
     return rendition
 }
 
+/**
+ * showPrimitiveArray: This will render any kind of primitive array to the HTML log. Note that this works by translating it to a Map and calling showMap(). Kotlin beginners should become familiar with the difference between primitive and non-primitive arrays and how they are created.
+ *
+ * @param candidate The primitive array to be rendered.
+ * @param targetVariableName The variable name of the primitive array, if known.
+ * @param recurseLevel Rendering data structures to HTML is is necessarily recursive. It will decline to recurse down beyond the constant value MAX_SHOW_OBJECT_RECURSION in Constants.kt.
+ * @return Returns the HTML rendition of the primitive array as it was logged.
+ */
 fun Memoir.showPrimitiveArray(candidate: Any, targetVariableName: String = NAMELESS, recurseLevel: Int = 0): String {
     val target = HashMap<String, String>()
 

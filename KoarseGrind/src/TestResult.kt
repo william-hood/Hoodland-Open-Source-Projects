@@ -29,6 +29,10 @@ import hoodland.opensource.memoir.showThrowable
 
 val SUMMARY_HEADERS = arrayOf("Criterion", "Status", "Artifacts", "Failures")
 
+/**
+ * TestConditionalType is primarily for use internally by Koarse Grind to determine
+ * what kind of check is being made.
+ */
 enum class TestConditionalType {
     // In older versions of Coarse Grind, these were
     // Unspecified, Prerequisite, PassCriterion
@@ -59,6 +63,17 @@ enum class TestConditionalType {
     }
 }
 
+/**
+ * TestResult: This is the result of any conditional check, such as assertions, requirements, or unexpected exceptions.
+ * A test may generate as many test results as it needs. A failing result overrides passing results and makes the test
+ * fail. An inconclusive result overrides both passes and failures and makes the test inconclusive. A subjective
+ * result overrides everything. If a test is subjective, it requires evaluation by a human.
+ *
+ * @property status Sets the status of this result to passing, failing, inconclusive or subjective.
+ * @property description Provides general information explaining the result.
+ *
+ * @param associatedFailures If exceptions are relevant to this result, put them in here so they will be properly logged.
+ */
 class TestResult (var status: TestStatus = TestStatus.INCONCLUSIVE, var description: String = "(no description provided)", vararg associatedFailures: Throwable) {
     val failures = ArrayList<Throwable>()
     val artifacts = ArrayList<Any>()
@@ -74,6 +89,12 @@ class TestResult (var status: TestStatus = TestStatus.INCONCLUSIVE, var descript
         get() = this.failures.count() > 0
 }
 
+/**
+ * showTestResult:
+ * An extension method that allows any Memoir (the HTML logger) in Koarse Grind to properly display a TestResult.
+ * If there are exceptions, or other throwables, associated with the result it will show as a subsection rather than at
+ * the root level.
+ */
 fun Memoir.showTestResult(thisResult: TestResult) {
     // If there are throwables associated with this, use a subordinate memoir
     if (thisResult.failures.size > 0) {

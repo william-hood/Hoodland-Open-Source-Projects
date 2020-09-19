@@ -30,17 +30,20 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
 // Based on http://examples.javacodegeeks.com/core-java/util/zip/create-zip-file-from-multiple-files-with-zipoutputstream/
-class ZipFileCreator {
-    private var filesToAdd: ArrayList<String>? = null
+/**
+ * ZipFileCreator: ...is exactly that. It creates a compressed Zip file containing all files in the directory you name, recursing down any subdirectories it finds.
+ *
+ */
+object ZipFileCreator {
+    val filesToAdd = ArrayList<String>()
 
-    @Throws(IOException::class)
     fun make(fullPathToRoot: String, fullPathToOutputFile: String) {
+        var usedOutputFile = fullPathToOutputFile
         // Enforce .zip extension
-        var fullPathToOutputFile = fullPathToOutputFile
-        if (!fullPathToOutputFile.toUpperCase().endsWith(".ZIP")) fullPathToOutputFile = "$fullPathToOutputFile.zip"
+        if (!fullPathToOutputFile.toUpperCase().endsWith(".ZIP")) usedOutputFile = "$fullPathToOutputFile.zip"
 
         // Get a complete list of all the files.
-        filesToAdd = ArrayList()
+        filesToAdd.clear()
         recurse(fullPathToRoot)
 
         // Create the actual ZIP file
@@ -48,12 +51,12 @@ class ZipFileCreator {
 
         //forceParentDirectoryExistence(fullPathToOutputFile)
         // Force the parent directory to exist...
-        File(fullPathToOutputFile).parentFile.mkdirs()
+        File(usedOutputFile).parentFile.mkdirs()
 
-        var zipOutput: ZipOutputStream = ZipOutputStream(FileOutputStream(fullPathToOutputFile))
-        for (thisFilePath in filesToAdd!!) {
-            var reader = FileInputStream(File(thisFilePath))
-            var zipPath = thisFilePath.substring(fullPathToRoot.length + 1)
+        val zipOutput: ZipOutputStream = ZipOutputStream(FileOutputStream(usedOutputFile))
+        for (thisFilePath in filesToAdd) {
+            val reader = FileInputStream(File(thisFilePath))
+            val zipPath = thisFilePath.substring(fullPathToRoot.length + 1)
 
             // Debug - Leave Commented Out
             //System.out.println(zipPath);
@@ -72,11 +75,11 @@ class ZipFileCreator {
         val check = File(fullPathToRoot)
         if (check.isDirectory) {
             val contents = check.list()
-            for (thisFile in contents) {
-                recurse(fullPathToRoot + File.separator + thisFile)
+            contents?.forEach {
+                recurse("$fullPathToRoot${File.separator}$it")
             }
         } else {
-            filesToAdd!!.add(fullPathToRoot)
+            filesToAdd.add(fullPathToRoot)
         }
     }
 }

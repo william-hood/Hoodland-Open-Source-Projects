@@ -20,7 +20,17 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 package hoodland.opensource.descriptions
 
-abstract class LongLimitsDescription : LimitsDescription<Long>() {
+import hoodland.opensource.toolbox.ImproperConstructionException
+
+val UnlimitedLong = LongLimitsDescription(Long.MIN_VALUE, Long.MAX_VALUE)
+
+class LongLimitsDescription(lower: Long, upper: Long) : LimitsDescription<Long>(lower, upper) {
+
+    init {
+        if (this.lower >= this.upper) {
+            throw ImproperConstructionException("Lower limit must not greater than, or equal to, the upper limit.")
+        }
+    }
 
     override fun contain(candidate: Long): Boolean {
         return candidate <= upper && candidate >= lower

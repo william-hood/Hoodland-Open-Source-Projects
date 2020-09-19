@@ -25,6 +25,15 @@ import java.time.LocalDateTime
 import java.util.*
 import kotlin.reflect.KClass
 
+/**
+ * showMap: This will render a Map of any kind to the HTML log.
+ *
+ * @param target The Map to be rendered.
+ * @param targetVariableName The name of the Map, if known.
+ * @param recurseLevel This function is necessarily recursive. It will decline to recurse down beyond the constant value MAX_SHOW_OBJECT_RECURSION in Constants.kt.
+ * @param targetClassName Can be used to be more specific of the type of this Map.
+ * @return Returns the HTML rendition of the Map as it was logged.
+ */
 fun Memoir.showMap(target: Map<*, *>, targetVariableName: String = NAMELESS, recurseLevel: Int = 0, targetClassName: String = "Map"): String {
     if (recurseLevel > MAX_SHOW_OBJECT_RECURSION) {
         return "<div class=\"outlined\">$EMOJI_INCONCLUSIVE_TEST Too Many Levels In $EMOJI_INCONCLUSIVE_TEST</div>"

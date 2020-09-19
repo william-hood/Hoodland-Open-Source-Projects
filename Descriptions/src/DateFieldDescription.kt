@@ -25,18 +25,8 @@ import hoodland.opensource.toolbox.nextLong
 import java.time.LocalDate
 import java.util.*
 
-class DateFieldDescription() : FieldDescription<LocalDate>() {
+class DateFieldDescription(basisValue: LocalDate?, val limits: DateLimitsDescription) : FieldDescription<LocalDate>(basisValue) {
     var target = DateFieldTargets.HAPPY_PATH
-    private var bounds: DateLimitsDescription? = null
-
-    constructor(limitsDescription: DateLimitsDescription?) : this() { bounds = limitsDescription }
-    constructor(BasisValue: LocalDate, limitsDescription: DateLimitsDescription? = null): this(limitsDescription) { basisValue = BasisValue }
-
-    val limits: DateLimitsDescription?
-        get() = bounds
-
-    val isLimited: Boolean
-        get() = (bounds != null)
 
     override fun toString(): String {
         return if (target === DateFieldTargets.EXPLICIT) "$target ($basisValue)" else target.toString()
@@ -74,7 +64,7 @@ class DateFieldDescription() : FieldDescription<LocalDate>() {
     }
 
     val sizeInDays: Long
-        get() = bounds!!.upper.toEpochDay() - bounds!!.lower.toEpochDay()
+        get() = limits.upper.toEpochDay() - limits.lower.toEpochDay()
 
     override val describedValue: LocalDate?
         get() {
@@ -85,30 +75,29 @@ class DateFieldDescription() : FieldDescription<LocalDate>() {
                 }
                 DateFieldTargets.HAPPY_PATH -> {
                     if (basisValue == null) {
-                        if (!isLimited) throw InappropriateDescriptionException()
-                        return middle(bounds!!.lower, bounds!!.upper)
+                        return middle(limits.lower, limits.upper)
                     }
                     return basisValue
                 }
                 DateFieldTargets.MAXIMUM_POSSIBLE_VALUE -> return maximumPossibleValue
                 DateFieldTargets.MINIMUM_POSSIBLE_VALUE -> return minimumPossibleValue
-                DateFieldTargets.AT_LOWER_LIMIT -> return bounds!!.lower
-                DateFieldTargets.AT_UPPER_LIMIT -> return bounds!!.upper
+                DateFieldTargets.AT_LOWER_LIMIT -> return limits.lower
+                DateFieldTargets.AT_UPPER_LIMIT -> return limits.upper
                 DateFieldTargets.AT_PRESENT -> return present
                 DateFieldTargets.NULL -> return null
-                DateFieldTargets.RANDOM_WITHIN_LIMITS -> return random(bounds!!.lower.plusDays(1), bounds!!.upper.minusDays(1))
+                DateFieldTargets.RANDOM_WITHIN_LIMITS -> return random(limits.lower.plusDays(1), limits.upper.minusDays(1))
                 DateFieldTargets.SLIGHTLY_IN_FUTURE -> return positiveMinisculeValue
                 DateFieldTargets.SLIGHTLY_IN_PAST -> return negativeMinisculeValue
-                DateFieldTargets.SLIGHTLY_BEYOND_LOWER_LIMIT -> return bounds!!.lower.minusDays(1)
-                DateFieldTargets.SLIGHTLY_BEYOND_UPPER_LIMIT -> return bounds!!.upper.plusDays(1)
-                DateFieldTargets.SLIGHTLY_WITHIN_LOWER_LIMIT -> return bounds!!.lower.plusDays(1)
-                DateFieldTargets.SLIGHTLY_WITHIN_UPPER_LIMIT -> return bounds!!.upper.minusDays(1)
+                DateFieldTargets.SLIGHTLY_BEYOND_LOWER_LIMIT -> return limits.lower.minusDays(1)
+                DateFieldTargets.SLIGHTLY_BEYOND_UPPER_LIMIT -> return limits.upper.plusDays(1)
+                DateFieldTargets.SLIGHTLY_WITHIN_LOWER_LIMIT -> return limits.lower.plusDays(1)
+                DateFieldTargets.SLIGHTLY_WITHIN_UPPER_LIMIT -> return limits.upper.minusDays(1)
                 DateFieldTargets.WELL_IN_FUTURE -> return positiveModerateValue
                 DateFieldTargets.WELL_IN_PAST -> return negativeModerateValue
-                DateFieldTargets.WELL_BEYOND_LOWER_LIMIT -> return bounds!!.lower.minusDays(400)
-                DateFieldTargets.WELL_BEYOND_UPPER_LIMIT -> return bounds!!.upper.plusDays(400)
-                DateFieldTargets.WELL_WITHIN_LOWER_LIMIT -> return bounds!!.lower.plusDays(400)
-                DateFieldTargets.WELL_WITHIN_UPPER_LIMIT -> return bounds!!.upper.minusDays(400)
+                DateFieldTargets.WELL_BEYOND_LOWER_LIMIT -> return limits.lower.minusDays(400)
+                DateFieldTargets.WELL_BEYOND_UPPER_LIMIT -> return limits.upper.plusDays(400)
+                DateFieldTargets.WELL_WITHIN_LOWER_LIMIT -> return limits.lower.plusDays(400)
+                DateFieldTargets.WELL_WITHIN_UPPER_LIMIT -> return limits.upper.minusDays(400)
                 DateFieldTargets.SLIGHTLY_ABOVE_MINIMUM -> return minimumPossibleValue.plusDays(1)
                 DateFieldTargets.SLIGHTLY_BELOW_MAXIMUM -> return maximumPossibleValue.minusDays(1)
                 DateFieldTargets.FIVE_DIGIT_YEAR -> return LocalDate.of(10000 + present.year, present.month, present.dayOfMonth)

@@ -21,5 +21,5 @@
 
 package hoodland.opensource.descriptions
 
-class InappropriateDescriptionException : Exception("The requested description is not appropriate for this type.")
+class InappropriateDescriptionException(message: String = "The requested description is not appropriate for this type.") : Exception(message)
 class NoValueException : Exception("Fields described as DEFAULT have no value to get, so getDescribedValue() should never be called.")

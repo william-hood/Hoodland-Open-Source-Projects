@@ -21,14 +21,34 @@
 
 package hoodland.opensource.koarsegrind
 
+/**
+ * FilterType:
+ * Used by a test runner program in constructing a test filter. Determines whether the filter describes
+ * what tests to include or exclude. If both an include and exclude filter exist, include is applied first
+ * then exclude is applied to the results of that. If only an exclude filter is used, it applies to all tests.
+ */
 enum class FilterType {
     INCLUDE, EXCLUDE
 }
 
+/**
+ * FilterTarget:
+ * Used by a test runner program in constructing a test filter. Determines if a filter applies to any of
+ * a test's categories, its identifier, or its name.
+ */
 enum class FilterTarget {
     CATEGORIES, IDENTIFIERS, NAMES
 }
 
+/**
+ * Filter:
+ *
+ * Used by a test runner program in constructing a test filter. Typically, many filters are combined into a FilterSet.
+ *
+ * @property filterType: Determines whether the filter describes what tests to include or exclude.
+ * @property target: Determines if a filter applies to any of a test's categories, its identifier, or its name.
+ * @property matchIfContains: The filter matches if the filter target contains any of these as a substring. In the case of categories, every category is checked against every one of these.
+ */
 class Filter(
         val filterType: FilterType,
         val target: FilterTarget,
@@ -53,7 +73,26 @@ class Filter(
     }
 }
 
+/**
+ * FilterSet:
+ *
+ * Used by a test runner program to determine tests that do or do not run. All filters contained in this
+ * set are applied against all tests in the classpath, and all manufactured
+ * tests after they are created, to determine which tests will actually run (and thus which tests will be
+ * considered in determining the overall status).
+ *
+ * @property filters: Add as many individual filters as desired. Be careful not to filter out every single available test.
+ */
 class FilterSet(val filters: ArrayList<Filter> = ArrayList<Filter>()) {
+
+    /**
+     * shouldRun:
+     *
+     * Used to evaluate if a test should be run and its results counted.
+     *
+     * @param candidate: The test under evaluation. If it included, then not excluded, it will run and its results will count against the overall status.
+     * @return True if the given test should be run, and counted for results, based on the entire list of filters.
+     */
     fun shouldRun(candidate: Test): Boolean {
         if (includes(candidate)) {
             if (doesNotExclude(candidate)) {

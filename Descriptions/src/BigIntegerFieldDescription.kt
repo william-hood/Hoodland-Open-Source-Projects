@@ -89,4 +89,12 @@ class BigIntegerFieldDescription(basisValue: BigInteger, limits: BigIntegerLimit
 
         return result
     }
+
+    override fun isGreaterThan(x: BigInteger, y: BigInteger): Boolean {
+        return x > y
+    }
+
+    override fun isLessThan(x: BigInteger, y: BigInteger): Boolean {
+        return x < y
+    }
 }

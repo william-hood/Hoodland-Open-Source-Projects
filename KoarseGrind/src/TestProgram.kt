@@ -40,10 +40,30 @@ import kotlin.reflect.full.isSubclassOf
 private val testLoader = Thread.currentThread().getContextClassLoader()
 private val preclusions = ArrayList<Throwable>()
 
-//private val debugFile = File("${System.getProperty("user.home")}${File.separator}Documents${File.separator}Test Results${File.separator}KGDEBUG.html")
-//private val debuggingMemoir = Memoir("\uD83D\uDC1E DEBUG", null, debugFile.printWriter() )
+// private val debugFile = File("${System.getProperty("user.home")}${File.separator}Documents${File.separator}Test Results${File.separator}KGDEBUG.html")
+// private val debuggingMemoir = Memoir("\uD83D\uDC1E DEBUG", null, debugFile.printWriter() )
 
+/**
+ * TestProgram
+ *
+ * This is the root class to run a Koarse Grind test suite.
+ *
+ */
 object TestProgram {
+
+    /**
+     * run
+     *
+     * Calling this will cause Koarse Grind to search for any Test or TestFactory derivatives in the
+     * classpath. Upon finding a Test it instantiates it and queues it to run. (Derivatives of the
+     * ManufacturedTest class are not automatically instantiated or queued. That must be handled by
+     * a TestFactory.) If a TestFactory derivative is found, it is instantiated and the populateProducts()
+     * method is called. The contents of the "products" TestCollection are then queued to run as their
+     * own subsection of the reports and output directories.
+     *
+     * @param name A full descriptive name for the root collection of tests. This will be at the top of the log. Example: "Test Suite - Hoodland Open Source Projects"
+     * @param args Pass in the args from main(). These will be analyzed to filter which tests will be run.
+     */
     fun run(name: String = UNKNOWN, args: Array<String> = Array<String>(0) { "" }) {
         val filterSet = parseArguments(args)
         val rootCollection = TestCollection(name)
@@ -115,7 +135,9 @@ object TestProgram {
                             attemptName = "" // Prevent another loop iteration
                             //debuggingMemoir.info("foundClass.kotlin.isSubclassOf(Test::class) == ${foundClass.kotlin.isSubclassOf(Test::class)}")
                             if (foundClass.kotlin.isSubclassOf(Test::class)) {
+                                //debuggingMemoir.debug("Identified ${foundClass.kotlin} as extending a KG Test")
                                 if (!(foundClass.kotlin.isSubclassOf(ManufacturedTest::class))) {
+                                    //debuggingMemoir.debug("Identified ${foundClass.kotlin} as NOT extending MaufacturedTest")
                                     val foundTestInstance: Test = foundClass.getDeclaredConstructor().newInstance() as Test
                                     rootCollection.add(foundTestInstance)
                                 }

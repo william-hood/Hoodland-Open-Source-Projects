@@ -49,6 +49,19 @@ internal const val SETUP = "setup"
 internal const val CLEANUP = "cleanup"
 internal const val UNSET_DESCRIPTION = "(no details)"
 
+/**
+ * Test:
+ * The base class for any kind of Koarse Grind Test. Any class that extends this, but is not also a derivative of
+ * the ManufacturedTest class, will be instantiated and run. If an optional setup() method exists it will be run first.
+ * Failed assertions in setup() render the test inconclusive. If an optional cleanup() method exists it will always
+ * be run, even if setup failed. The performTest() method will be run, unless setup failed.
+ *
+ * @property name A human-readable name for the test. This should not be too long. You may use a full sentence if you wish, but that might be better as the detailedDescription parameter.
+ * @property detailedDescription This should be used to explain, in plain english, anything the test does that is not obvious to someone reviewing the results or editing the code. This is important if someone who did not write the test is assigned to write code that makes it pass.
+ * @property identifier You may omit this if you wish. If you are using a test tracking system that assigns a test case ID, this is the place it goes.
+ *
+ * @param categories This is an optional list of categories the test falls into. Examples might be "Short", "Long", "REST", "GUI", "HighPriority", "HappyPath", etc.
+ */
 abstract class Test (
         override val name: String,
         private val detailedDescription: String = UNSET_DESCRIPTION,
@@ -64,14 +77,58 @@ abstract class Test (
         internal var wasRun = false
         internal var wasCleanedUp = false
 
-        // Assertions
-        protected val assert = Enforcer(TestConditionalType.ASSERTION, this)
-        protected val require = Enforcer(TestConditionalType.REQUIREMENT, this)
-        protected val consider = Enforcer(TestConditionalType.CONSIDERATION, this)
+    /**
+     * assert:
+     * Use an assertion to check criteria which should fail the entire test if they do not succeed. If a
+     * failed assertion occurs in setup, the test is rendered inconclusive rather than failing. Failed
+     * assertions in cleanup are for information only and do not affect the test's pass/fail status.
+     */
+    protected val assert = Enforcer(TestConditionalType.ASSERTION, this)
 
-    // Client code must implement or override
+    /**
+     * require:
+     * Requirements are used to verify prerequisites or other conditions that would invalidate the test if not true.
+     * Failing a requirement makes the test inconclusive, and overrides any other checks that would normally
+     * cause a test to become passing or failing.
+     */
+    protected val require = Enforcer(TestConditionalType.REQUIREMENT, this)
+
+    /**
+     * consider:
+     * Considerations are used to check conditions that realy ought to be true, but do not necessarily fail
+     * the test unless further analysis decides that should be the case. Failing a consideration makes
+     * the test status become subjective. ("Subjective" means that a human must make the final call.)
+     */
+    protected val consider = Enforcer(TestConditionalType.CONSIDERATION, this)
+
+    /**
+     * setup:
+     *
+     * Override this method to perform anything necessary prior to starting the actual test. This might be
+     * creating test data on-the-fly or verifying that the test target is in the right state.
+     * If an assertion fails in setup(), the test becomes inconclusive.
+     *
+     */
     open fun setup() { setupContext.results.add(TestResult(TestStatus.PASS, "(no user-supplied setup)")) }
+
+    /**
+     * cleanup:
+     *
+     * Override this method and carry out any steps necessary to properly clean up anything the test did.
+     * Examples might be erasing test data inserted into a database or freeing up resources that can't be done automatically.
+     * If an assertion, requirement, or consideration fails in cleanup(), it does not affect the status of the test,
+     * or any collection it's in.
+     *
+     */
     open fun cleanup() { setupContext.results.add(TestResult(TestStatus.PASS, "(no user-supplied cleanup)")) }
+
+    /**
+     * performTest:
+     *
+     * Override this method and put the test's business logic in it. If an assertion in this method fails, the test
+     * is considered failing. If a requirement in this method fails, the test is considered inconclusive. If a
+     * consideration in this method fails, the test is considered subjective. ("Subjective" means that a human must make the final call.)
+     */
     abstract fun performTest()
 
     private val categorization: String
@@ -85,9 +142,20 @@ abstract class Test (
             return result.toString()
         }
 
+    /**
+     * log:
+     * Used to write information to Koarse Grind's HTML-based log file, as well as to the console. It is automatically
+     * determined whether to use the setup, cleanup, or normal portion of the test's log. Log files will appear in a
+     * time-stamped folder in a directory named "Test Results" which is automatically created off of your Documents folder.
+     */
     val log: Memoir
      get() = currentContext.memoir
 
+    /**
+     * results: This contains the results of every assertion, requirement, or consideration. Results should also
+     * be added if exceptions are thrown. It is not recommended you directly manipulate this unless you
+     * know what you're doing. Use the addResult() function as the normal way to populate this.
+     */
     val results: ArrayList<TestResult>
             get() = currentContext.results
 
@@ -99,7 +167,7 @@ abstract class Test (
                 }
 
                 testContext?.let {
-                    return it
+                    if (! wasRun) { return it }
                 }
 
                 return cleanupContext
@@ -109,6 +177,7 @@ abstract class Test (
             return setupContext
         }
 
+    /* For future use by a test runner program
     // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
     internal val progress: Float
     get() {
@@ -122,13 +191,33 @@ abstract class Test (
         }
     }
 
-    // For some reason in the C# version this was open/virtual
+    fun interrupt() {
+        try {
+            executionThread?.interrupt()
+            // C# version was followed by executionThread.Abort() three times in a row.
+        } catch (dontCare: Exception) {
+            // Deliberate NO-OP
+        }
+    }
+    */
+
+    /**
+     * addResult:
+     * Puts a single test result into the results list, while properly logging it.
+     *
+     */
     fun addResult(thisResult: TestResult) {
+        // For some reason in the C# version this was open/virtual
         val context = currentContext
         context.memoir.showTestResult((thisResult))
         context.results.add(thisResult)
     }
 
+    /**
+     * overallStatus: This produces the overall status of all results this test has produced. It
+     * should normally be called after the test is run. It is not for general use, and should be
+     * called by other parts of Koarse Grind or an external test runner program.
+     */
     override val overallStatus: TestStatus
         get() {
             // Previous version also used INCONCLUSIVE if !wasRun
@@ -137,10 +226,19 @@ abstract class Test (
         }
 
     // Is virtual/open in C#
+    /**
+     * artifactsDirectory: This gives the full path where this particular test should put any
+     * screenshots, data files, or other artifacts produced by the test. The artifacts directory
+     * will also contain a single log file exclusively for the one test that owns it. (The same
+     * log will appear in a subsection of the "All Tests" log file.
+     */
     val artifactsDirectory: String
         get() = parentArtifactsDirectory + File.separatorChar + IN_PROGRESS_NAME
 
     // Is virtual/open in C#
+    /**
+     * identifiedName: This is the human-readable name of the test prefixed by the test case identifier.
+     */
     val identifiedName: String
         get() {
             if (identifier.length < 1) return name
@@ -148,10 +246,16 @@ abstract class Test (
         }
 
     // Is virtual/open in C#
+    /**
+     * prefixedName: Is the same as the identifiedName property, with an additional prefix of the overall pass/fail status.
+     */
     val prefixedName: String
         get() = "$overallStatus - $identifiedName"
 
     // Is virtual/open in C#
+    /**
+     * logFileName: Produces the relative file name of the HTML-based log file. It does NOT include the directory path.
+     */
     val logFileName: String
         get() = "$identifiedName Log.html"
 
@@ -209,42 +313,74 @@ abstract class Test (
 
 
     // Is virtual/open in C#
-    fun getResultForFailure(thisFailure: Throwable, section: String = "") = getResultForIncident(TestStatus.FAIL, section, thisFailure)
+    /**
+     * getResultForFailure: Pass the output of this into the addResult() function to preoperly log an exception
+     * (or other throwable). Do not use this for an exception that your test EXPECTED to get. Use this only
+     * for unexpected exceptions that should fail the test.
+     *
+     * @param thisFailure: The Exception (or throwable) relevant to this result.
+     */
+    //fun getResultForFailure(thisFailure: Throwable, section: String = "") = getResultForIncident(TestStatus.FAIL, section, thisFailure)
+    fun getResultForFailure(thisFailure: Throwable) = getResultForIncident(TestStatus.FAIL, "", thisFailure)
 
     // Is virtual/open in C#
+    /**
+     * getResultForPreclusionInSetup: Pass the output of this into the addResult() function for unintended exceptions,
+     * or other throwables, that occur in setup(). Do not use this for an exception that your test EXPECTED to get. Use this only
+     * for unexpected exceptions that should make the test inconclusive.
+     *
+     * @param thisPreclusion: The Exception (or throwable) relevant to this result.
+     */
     fun getResultForPreclusionInSetup(thisPreclusion: Throwable) = getResultForIncident(TestStatus.INCONCLUSIVE, SETUP, thisPreclusion)
 
     // Is virtual/open in C#
+    /**
+     * getResultForPreclusion: Pass the output of this into the addResult() function for unintended exceptions,
+     * or other throwables, that occur in the main portion of the test. Do not use this for an exception that your test EXPECTED to get. Use this only
+     * for unexpected exceptions that should make the test inconclusive.
+     *
+     * @param thisPreclusion: The Exception (or throwable) relevant to this result.
+     */
     fun getResultForPreclusion(thisPreclusion: Throwable) = getResultForIncident(TestStatus.INCONCLUSIVE, "", thisPreclusion)
 
     // Is virtual/open in C# and called "reportFailureInCleanup()"
+    /**
+     * getResultForPreclusion: Pass the output of this into the addResult() function for unintended exceptions,
+     * or other throwables, that occur in the main portion of the test. Do not use this for an exception that your test EXPECTED to get. Use this only
+     * for unexpected exceptions that should make the test inconclusive.
+     *
+     * @param thisPreclusion: The Exception (or throwable) relevant to this result.
+     */
     fun getResultForFailureInCleanup(thisPreclusion: Throwable) = getResultForIncident(TestStatus.SUBJECTIVE, CLEANUP, thisPreclusion)
 
+    /**
+     * waitSeconds: This will wait the desired number of seconds, and properly log that the delay took place.
+     *
+     */
     fun waitSeconds(howMany: Long) {
         log.info("Waiting $howMany seconds...", INFO_ICON)
         Thread.sleep(1000 * howMany)
     }
 
+    /**
+     * waitMilliseconds: This will wait the desired number of milliseconds, and properly log that the delay took place.
+     *
+     */
     fun waitMilliseconds(howMany: Long) {
         log.info("Waiting $howMany milliseconds...", INFO_ICON)
         Thread.sleep(howMany)
     }
 
-    fun interrupt() {
-        try {
-            executionThread?.interrupt()
-            // C# version was followed by executionThread.Abort() three times in a row.
-        } catch (dontCare: Exception) {
-            // Deliberate NO-OP
-        }
-    }
-
+    /**
+     * makeSubjective: Calling this forces the test to become subjective. (A subjective TestResult is added to the results list.)
+     *
+     */
     fun makeSubjective() {
         testContext!!.results.add(TestResult(TestStatus.SUBJECTIVE, "This test case requires analysis by appropriate personnel to determine pass/fail status"))
     }
 
     // This was virtual/open in the C# version
-    fun runTest(rootDirectory: String) {
+    internal fun runTest(rootDirectory: String) {
         if (KILL_SWITCH) {
             // Decline to run
             // Deliberate NO-OP
@@ -267,6 +403,7 @@ abstract class Test (
             // SETUP
             try {
                 try {
+                    setupContext.results.add(TestResult(TestStatus.PASS, "Setup was run"))
                     setup()
                 } finally {
                     wasSetup = true
