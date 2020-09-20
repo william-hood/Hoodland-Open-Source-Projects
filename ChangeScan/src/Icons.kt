@@ -1,4 +1,4 @@
-package hoodland.changescan.core
+package hoodland.opensource.changescan
 
 import hoodland.opensource.toolbox.InlineImage
 

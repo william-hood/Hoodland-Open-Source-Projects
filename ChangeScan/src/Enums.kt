@@ -21,25 +21,22 @@
 
 package hoodland.opensource.changescan
 
-import hoodland.opensource.memoir.Memoir
-import hoodland.opensource.memoir.showThrowable
-import hoodland.opensource.toolbox.COPYRIGHT
-import hoodland.opensource.toolbox.stdout
+enum class Categories {
+    UNSET,
+    Directory,
+    File,
+    Pattern
+}
 
-fun main(args: Array<String>) {
-    if (args.size < 1) showUsage()
-    if (args[0].toUpperCase() == "LICENSE") showLicense()
-
-    val workOrder = interpretArgs(args)
-    val log = Memoir("ChangeScan $COPYRIGHT 2020 William Hood", stdout)
-
-    try {
-        workOrder.describeTo(log)
-        ScanEngine.run(log, workOrder)
-        log.info("Program completed.")
-    } catch (thisException: Throwable) {
-        log.showThrowable(thisException)
-    }
-
-    ReportGenerator.conclude(log, workOrder.reportPath)
+enum class DifferenceTypes {
+    CHECKSUM_DIFFERS,
+    CANDIDATE_LARGER,
+    CANDIDATE_SMALLER,
+    ATTRIBUTES_DIFFER,
+    CREATIONTIME_CANDIDATE_MORE_RECENT,
+    CREATIONTIME_ORIGINAL_MORE_RECENT,
+    LASTACCESS_CANDIDATE_MORE_RECENT,
+    LASTACCESS_ORIGINAL_MORE_RECENT,
+    LASTWRITE_CANDIDATE_MORE_RECENT,
+    LASTWRITE_ORIGINAL_MORE_RECENT
 }

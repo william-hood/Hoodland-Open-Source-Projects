@@ -1,10 +1,12 @@
-package hoodland.changescan.core
+package hoodland.opensource.changescan
 
 import apple.laf.JRSUIConstants
+import hoodland.changescan.core.ReportGenerator
 import java.util.*
 
 // TODO: Complete overhaul. Use some of the new tricks I've learned since 2015.
-class HtmlReportGenerator : ReportGenerator {
+// TODO: Overhauled version is in ReportGenerator.kt. Delete this file when that's ready.
+class HtmlReportGenerator {
     //private static final int LINE_ITEM_SIZE = 75;
     internal class HtmlReport private constructor() : WebInterface() {
         init {

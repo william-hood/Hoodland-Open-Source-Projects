@@ -21,25 +21,36 @@
 
 package hoodland.opensource.changescan
 
-import hoodland.opensource.memoir.Memoir
-import hoodland.opensource.memoir.showThrowable
-import hoodland.opensource.toolbox.COPYRIGHT
-import hoodland.opensource.toolbox.stdout
+import hoodland.opensource.toolbox.UNSET_STRING
+import java.io.File
 
-fun main(args: Array<String>) {
-    if (args.size < 1) showUsage()
-    if (args[0].toUpperCase() == "LICENSE") showLicense()
 
-    val workOrder = interpretArgs(args)
-    val log = Memoir("ChangeScan $COPYRIGHT 2020 William Hood", stdout)
-
-    try {
-        workOrder.describeTo(log)
-        ScanEngine.run(log, workOrder)
-        log.info("Program completed.")
-    } catch (thisException: Throwable) {
-        log.showThrowable(thisException)
+class FilesystemExclusion(ChosenCategory: Categories, Description: String) {
+    private var category = Categories.UNSET
+    private var specifics: String = UNSET_STRING
+    fun Excludes(Candidate: String): Boolean {
+        when (category) {
+            Categories.Directory -> if (File(Candidate).isDirectory) {
+                if (Candidate === specifics) {
+                    return true
+                }
+            }
+            Categories.File -> if (File(Candidate).isFile) {
+                if (Candidate === specifics) {
+                    return true
+                }
+            }
+            else -> return Candidate.contains(specifics)
+        }
+        return false
     }
 
-    ReportGenerator.conclude(log, workOrder.reportPath)
+    override fun toString(): String {
+        return specifics
+    }
+
+    init {
+        category = ChosenCategory
+        specifics = Description
+    }
 }

@@ -22,24 +22,21 @@
 package hoodland.opensource.changescan
 
 import hoodland.opensource.memoir.Memoir
-import hoodland.opensource.memoir.showThrowable
-import hoodland.opensource.toolbox.COPYRIGHT
-import hoodland.opensource.toolbox.stdout
 
-fun main(args: Array<String>) {
-    if (args.size < 1) showUsage()
-    if (args[0].toUpperCase() == "LICENSE") showLicense()
+internal object ReportGenerator {
+    var wasPrepared = false
 
-    val workOrder = interpretArgs(args)
-    val log = Memoir("ChangeScan $COPYRIGHT 2020 William Hood", stdout)
+    fun prepare(targetData: FileSystemComparison) {
+        throw NotImplementedError()
 
-    try {
-        workOrder.describeTo(log)
-        ScanEngine.run(log, workOrder)
-        log.info("Program completed.")
-    } catch (thisException: Throwable) {
-        log.showThrowable(thisException)
+
+        wasPrepared = true
     }
 
-    ReportGenerator.conclude(log, workOrder.reportPath)
+    fun conclude(log: Memoir, savePath: String) {
+        // If wasPrepared is still false, don't bother with the tabs, just add the log.
+        // Log title is in the Memoir.  May need it here instead.
+        throw NotImplementedError()
+    }
+
 }
