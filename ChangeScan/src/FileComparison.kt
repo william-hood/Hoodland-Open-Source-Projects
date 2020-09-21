@@ -29,53 +29,33 @@ class FileComparison(
         val candidateFile: FileDescription) {
 
     val fullyQualifiedPath: String
-        get() = originalFile.fullyQualifiedPath//if (OriginalFile.getAttributes().CompareTo(CandidateFile.getAttributes()) != 0) differences.add(DifferenceTypes.ATTRIBUTES_DIFFER);
+        get() = originalFile.fullyQualifiedPath
 
-    // Returns a list of the differences between the two files, determined on-the-fly.  Returns null if there is no difference at all.
-    val differences: ArrayList<DifferenceTypes>?
+    // Returns a list of the differences between the two files, determined on-the-fly.  The list is empty if there's no difference at all.
+    val differences: ArrayList<DifferenceTypes>
         get() {
             val differences = ArrayList<DifferenceTypes>()
-            if (candidateFile.checksum !== originalFile.checksum) differences.add(DifferenceTypes.CHECKSUM_DIFFERS)
-            //if (OriginalFile.getAttributes().CompareTo(CandidateFile.getAttributes()) != 0) differences.add(DifferenceTypes.ATTRIBUTES_DIFFER);
-
-
-            // TODO: Is it really possible for the attributes below to be null?
-            if (candidateFile.size!! > originalFile.size!!) differences.add(DifferenceTypes.CANDIDATE_LARGER)
-            if (candidateFile.size!! < originalFile.size!!) differences.add(DifferenceTypes.CANDIDATE_SMALLER)
+            if (candidateFile.checksum != originalFile.checksum) differences.add(DifferenceTypes.CHECKSUM_DIFFERS)
+            if (candidateFile.size > originalFile.size) differences.add(DifferenceTypes.CANDIDATE_LARGER)
+            if (candidateFile.size < originalFile.size) differences.add(DifferenceTypes.CANDIDATE_SMALLER)
             if (candidateFile.creationTime.isAfter(originalFile.creationTime)) differences.add(DifferenceTypes.CREATIONTIME_CANDIDATE_MORE_RECENT)
             if (candidateFile.creationTime.isBefore(originalFile.creationTime)) differences.add(DifferenceTypes.CREATIONTIME_ORIGINAL_MORE_RECENT)
             if (candidateFile.lastAccessTime.isAfter(originalFile.lastAccessTime)) differences.add(DifferenceTypes.LASTACCESS_CANDIDATE_MORE_RECENT)
             if (candidateFile.lastAccessTime.isBefore(originalFile.lastAccessTime)) differences.add(DifferenceTypes.LASTACCESS_ORIGINAL_MORE_RECENT)
             if (candidateFile.lastWriteTime.isAfter(originalFile.lastWriteTime)) differences.add(DifferenceTypes.LASTWRITE_CANDIDATE_MORE_RECENT)
             if (candidateFile.lastWriteTime.isBefore(originalFile.lastWriteTime)) differences.add(DifferenceTypes.LASTWRITE_ORIGINAL_MORE_RECENT)
-            return if (differences.size == 0) null else differences
+            return differences
         }
 
     val allDifferencesAsString: String
         get() {
             val reportedDifferences = StringBuilder()
-            for (thisDifference in differences!!) {
+            for (thisDifference in differences) {
                 if (reportedDifferences.length > 0) reportedDifferences.append(", ")
-                reportedDifferences.append(getDifferenceAsString(thisDifference))
+                reportedDifferences.append(thisDifference.toString())
             }
+
+            if (reportedDifferences.length < 1) return "(no difference)"
             return reportedDifferences.toString()
         }
-
-    companion object {
-        fun getDifferenceAsString(thisDifference: DifferenceTypes?): String {
-            return when (thisDifference) {
-                DifferenceTypes.ATTRIBUTES_DIFFER -> "Attributes Differ"
-                DifferenceTypes.CANDIDATE_LARGER -> "Increased in size"
-                DifferenceTypes.CANDIDATE_SMALLER -> "Decreased in size"
-                DifferenceTypes.CHECKSUM_DIFFERS -> "Checksum Differs"
-                DifferenceTypes.CREATIONTIME_CANDIDATE_MORE_RECENT -> "Latest file created more recently"
-                DifferenceTypes.CREATIONTIME_ORIGINAL_MORE_RECENT -> "Original file created more recently"
-                DifferenceTypes.LASTACCESS_CANDIDATE_MORE_RECENT -> "Latest file accessed more recently"
-                DifferenceTypes.LASTACCESS_ORIGINAL_MORE_RECENT -> "Original file accessed more recently"
-                DifferenceTypes.LASTWRITE_CANDIDATE_MORE_RECENT -> "Latest file written to more recently"
-                DifferenceTypes.LASTWRITE_ORIGINAL_MORE_RECENT -> "Original file written to more recently"
-                else -> ""
-            }
-        }
     }
-}

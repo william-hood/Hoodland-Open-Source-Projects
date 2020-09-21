@@ -28,15 +28,19 @@ enum class Categories {
     Pattern
 }
 
-enum class DifferenceTypes {
-    CHECKSUM_DIFFERS,
-    CANDIDATE_LARGER,
-    CANDIDATE_SMALLER,
-    ATTRIBUTES_DIFFER,
-    CREATIONTIME_CANDIDATE_MORE_RECENT,
-    CREATIONTIME_ORIGINAL_MORE_RECENT,
-    LASTACCESS_CANDIDATE_MORE_RECENT,
-    LASTACCESS_ORIGINAL_MORE_RECENT,
-    LASTWRITE_CANDIDATE_MORE_RECENT,
-    LASTWRITE_ORIGINAL_MORE_RECENT
+enum class DifferenceTypes(val description: String) {
+    CHECKSUM_DIFFERS("Checksum Differs"),
+    CANDIDATE_LARGER("Increased in size"),
+    CANDIDATE_SMALLER("Decreased in size"),
+    ATTRIBUTES_DIFFER("Attributes Differ"), // This is a relic from the C# version
+    CREATIONTIME_CANDIDATE_MORE_RECENT("Latest file created more recently"),
+    CREATIONTIME_ORIGINAL_MORE_RECENT("Original file created more recently"),
+    LASTACCESS_CANDIDATE_MORE_RECENT("Latest file accessed more recently"),
+    LASTACCESS_ORIGINAL_MORE_RECENT("Original file accessed more recently"),
+    LASTWRITE_CANDIDATE_MORE_RECENT("Latest file written to more recently"),
+    LASTWRITE_ORIGINAL_MORE_RECENT("Original file written to more recently");
+
+    override fun toString(): String {
+        return description
+    }
 }

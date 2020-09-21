@@ -21,7 +21,6 @@
 
 package hoodland.opensource.changescan
 
-import hoodland.changescan.core.FileDescriptionNullException
 import java.util.*
 
 
