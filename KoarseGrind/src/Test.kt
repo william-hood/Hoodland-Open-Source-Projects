@@ -392,7 +392,7 @@ abstract class Test (
             // Force the parent directory to exist...
             File(expectedFileName).parentFile.mkdirs()
 
-            testContext = TestPhaseContext(Memoir(name, stdout, PrintWriter(expectedFileName), ::logHeader))
+            testContext = TestPhaseContext(Memoir(name, stdout, PrintWriter(expectedFileName), true, true, ::logHeader))
 
             if (detailedDescription != UNSET_DESCRIPTION) {
                 testContext!!.memoir.writeToHTML("<small><i>$detailedDescription</i></small>", EMOJI_TEXT_BLANK_LINE)

@@ -132,7 +132,7 @@ public class TestCollection(override val name: String): ArrayList<TestEchelon>()
         // Force the parent directory to exist...
         File(logFileFullPath).parentFile.mkdirs()
 
-        val overlog = Memoir(name, null, PrintWriter(logFileFullPath), ::logHeader)
+        val overlog = Memoir(name, null, PrintWriter(logFileFullPath), true, true, ::logHeader)
         if (preclusiveFailures != null) {
             if (preclusiveFailures.size > 0) {
                 overlog.error("Failures were indicated while starting Koarse Grind!")

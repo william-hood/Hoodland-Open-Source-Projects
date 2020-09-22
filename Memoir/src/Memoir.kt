@@ -55,11 +55,19 @@ class MemoirConcludedException: Exception(ALREADY_CONCLUDED_MESSAGE) { }
  * @property title This will be indicated at the top of the file in the header if this is a root-level Memoir. For a subsection it appears in bold above the click-to-expand portion.
  * @property forPlainText Typically this is pointed at stdout for console output. This can also be pointed at a plain text file.
  * @property forHTML This is the main log file. It may be left out when used as a subsection of another Memoir.
+ * @property showTimeStamps If you don't want time stamps with every line of the log, set this to false.
+ * @property showEmojis Set this to false and no lines will display an Emoji even if one is supplied.
  * @constructor
  *
  * @param headerFunction Use this to override the default header and make your own.
  */
-class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null, val forHTML: PrintWriter? = null, headerFunction: (String)->String = ::defaultHeader) {
+class Memoir (
+        val title: String = UNKNOWN,
+        val forPlainText: PrintWriter? = null,
+        val forHTML: PrintWriter? = null,
+        val showTimeStamps: Boolean = true,
+        val showEmojis: Boolean = true,
+        headerFunction: (String)->String = ::defaultHeader) {
     private val printWriter_HTML: PrintWriter? = forHTML
     private val printWriter_PlainText: PrintWriter? = forPlainText
     private val content = StringBuilder(STARTING_CONTENT)
@@ -133,7 +141,7 @@ class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null
      *
      * @param message Text that is being logged. Note that if HTML is sent here, the tags will not be hidden.
      * @param emoji Used as an icon to indicate the nature of the message. There are emoji constants available in Constants.kt.
-     * @param timeStamp Omit this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in.
+     * @param timeStamp Omit this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in. Note that the time stamp will be discarded if this Memoir was created with showTimeStamps=false.
      */
     fun echoPlainText(message: String, emoji: String = EMOJI_TEXT_BLANK_LINE, timeStamp: LocalDateTime? = LocalDateTime.now()) {
         if (printWriter_PlainText == null) {
@@ -145,12 +153,20 @@ class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null
             throw MemoirConcludedException()
         }
 
-        var dateTime = "                        "
-        timeStamp?.let {
-            dateTime = it.format(PLAINTEXT_DATETIME_FORMATTER)
+        if (showTimeStamps) {
+            var dateTime = "                        "
+            timeStamp?.let {
+                dateTime = it.format(PLAINTEXT_DATETIME_FORMATTER)
+            }
+
+            printWriter_PlainText.print("$dateTime\t")
         }
 
-        printWriter_PlainText.println("$dateTime\t$emoji\t$message")
+        if (showEmojis) {
+            printWriter_PlainText.print("$emoji\t")
+        }
+
+        printWriter_PlainText.println(message)
         printWriter_PlainText.flush()
     }
 
@@ -169,15 +185,22 @@ class Memoir (val title: String = UNKNOWN, val forPlainText: PrintWriter? = null
             throw MemoirConcludedException()
         }
 
-        var date = "&nbsp;"
-        var time = "&nbsp;"
+        content.append("<tr>")
 
-        timeStamp?.let {
-            date = it.format(HTML_DATE_FORMATTER)
-            time = it.format(HTML_TIME_FORMATTER)
+        if (showTimeStamps) {
+            timeStamp?.let {
+                var date = it.format(HTML_DATE_FORMATTER)
+                var time = it.format(HTML_TIME_FORMATTER)
+
+                content.append("<td class=\"min\"><small>$date</small></td><td>&nbsp;</td><td class=\"min\"><small>$time</small></td><td>&nbsp;</td>")
+            }
         }
 
-        content.append("<tr><td class=\"min\"><small>$date</small></td><td>&nbsp;</td><td class=\"min\"><small>$time</small></td><td>&nbsp;</td><td><h2>$emoji</h2></td><td>$message</td></tr>\r\n")
+        if (showEmojis) {
+            content.append("<td><h2>$emoji</h2></td>")
+        }
+
+        content.append("<td>$message</td></tr>\r\n")
     }
 
     /**
