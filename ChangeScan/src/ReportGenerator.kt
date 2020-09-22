@@ -22,21 +22,55 @@
 package hoodland.opensource.changescan
 
 import hoodland.opensource.memoir.Memoir
+import java.io.PrintWriter
 
-internal object ReportGenerator {
+internal class ReportGenerator(val savePath: String) {
     var wasPrepared = false
+    val report = Memoir("Change Report",
+            null,
+            PrintWriter(savePath),
+            false,
+            true,
+            ::logHeader)
 
     fun prepare(targetData: FileSystemComparison) {
-        throw NotImplementedError()
+        // New to candidate
+        targetData.newToCandidate.sort()
+        val newToCandidateReport = Memoir("New Files", null, null, false)
+        for (thisFile in targetData.newToCandidate) {
+            newToCandidateReport.info(thisFile.fullyQualifiedPath, NEW_BULLET.toString())
+        }
+        report.showMemoir(newToCandidateReport, NEW_BULLET.toString(), "implied_good")
 
+        // Removed from original
+        targetData.removedInCandidate.sort()
+        val missingFromOriginalReport = Memoir("Missing Files", null, null, false)
+        for (thisFile in targetData.removedInCandidate) {
+            missingFromOriginalReport.info(thisFile.fullyQualifiedPath, MISSING_BULLET.toString())
+        }
+        report.showMemoir(missingFromOriginalReport, MISSING_BULLET.toString(), "implied_bad")
+
+        // Changes
+        val sortedChangeData = targetData.fileSystemDifferences.keys.toTypedArray()
+        sortedChangeData.sort()
+        val changesReport = Memoir("Changes", null, null, false)
+        sortedChangeData.forEach {
+            val change = targetData.fileSystemDifferences[it]
+            change?.let { thisChange ->
+                changesReport.info("${thisChange.fullyQualifiedPath}<br><small>${thisChange.allDifferencesAsString}</small>")
+            }
+        }
+        report.showMemoir(changesReport, MISSING_BULLET.toString(), "implied_caution")
 
         wasPrepared = true
     }
 
-    fun conclude(log: Memoir, savePath: String) {
-        // If wasPrepared is still false, don't bother with the tabs, just add the log.
-        // Log title is in the Memoir.  May need it here instead.
-        throw NotImplementedError()
+    fun conclude(log: Memoir) {
+        report.showMemoir(log)
+        report.conclude()
     }
 
+    private fun logHeader(title: String): String {
+        return "<table style=\"margin-left: 0; margin-right: 0\"><tr><td>\r\n\r\n$CHANGESCAN_LOGO\r\n\r\n</td><td><h1>$title</h1>\r\nPowered by ChangeScan</i></small></td></tr></table>\r\n<hr>\r\n\r\n"
+    }
 }

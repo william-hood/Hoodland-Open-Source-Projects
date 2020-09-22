@@ -21,44 +21,44 @@
 
 package hoodland.opensource.changescan
 
+import hoodland.opensource.memoir.Memoir
+import hoodland.opensource.toolbox.stdout
 import java.util.*
 
 
-class FileSystemComparison {
+class FileSystemComparison(original: FileSystemDescription, candidate: FileSystemDescription, logTitle: String) {
     // New To Candidate
-    var NewToCandidate = ArrayList<FileDescription>()
+    val newToCandidate = ArrayList<FileDescription>()
 
     // Removed From Original
-    var RemovedInCandidate = ArrayList<FileDescription>()
+    val removedInCandidate = ArrayList<FileDescription>()
 
     // Different
-    var FileSystemDifferences = HashMap<String, FileComparison>()
+    val fileSystemDifferences = HashMap<String, FileComparison>()
 
-    // Default constructor prohibited.  Must provide something to compare against.
-    private constructor() {}
-    constructor(Original: FileSystemDescription, Candidate: FileSystemDescription, usedLogSystem: LogSystem) {
+    val log = Memoir(logTitle, forPlainText = stdout)
+
+    init {
         // Given a description of an original and candidate file system, populate the categories of differences between the two.
-        for (originalFileDescription in Original.fileDescriptions) {
-            try {
-                usedLogSystem.debugMessage("Comparing " + originalFileDescription.fullyQualifiedPath)
-                val fileComparison = FileComparison(originalFileDescription, Candidate.pop(originalFileDescription.fullyQualifiedPath))
-                if (fileComparison.differences != null) FileSystemDifferences[fileComparison.fullyQualifiedPath] = fileComparison
-            } catch (nullException: FileDescriptionNullException) {
-                if (nullException.message!!.contains("original")) {
-                    usedLogSystem.showFailure(nullException)
-                } else {
-                    usedLogSystem.debugMessage("Counting as 'Removed in Candidate:'  " + originalFileDescription.fullyQualifiedPath)
-                    RemovedInCandidate.add(originalFileDescription)
+        for (originalFileDescription in original.fileDescriptions) {
+            log.info("Comparing ${originalFileDescription.fullyQualifiedPath}")
+            val counterpart = candidate.pop(originalFileDescription.fullyQualifiedPath)
+            if (counterpart == null) {
+                log.info(" • Counting as Removed in Candidate: ${originalFileDescription.fullyQualifiedPath}")
+                removedInCandidate.add(originalFileDescription)
+            } else {
+                val fileComparison = FileComparison(originalFileDescription, counterpart)
+                if (fileComparison.differences.size > 0) {
+                    log.info(" • ")
+                    fileSystemDifferences[fileComparison.fullyQualifiedPath] = fileComparison
                 }
-            } catch (needToDetermineTypeAndCareAboutIt: Exception) {
-                usedLogSystem.showFailure(needToDetermineTypeAndCareAboutIt)
             }
         }
 
         // At this point, only new files should remain in the Candidate
-        for (newFileDescription in Candidate.fileDescriptions) {
-            usedLogSystem.debugMessage("Counting as 'New to Candidate:'  " + newFileDescription.fullyQualifiedPath)
-            NewToCandidate.add(newFileDescription)
+        for (newFileDescription in candidate.fileDescriptions) {
+            log.info(" • Counting as New to Candidate: ${newFileDescription.fullyQualifiedPath}")
+            newToCandidate.add(newFileDescription)
         }
     }
 }

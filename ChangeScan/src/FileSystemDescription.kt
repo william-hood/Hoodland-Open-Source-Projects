@@ -25,8 +25,9 @@ import java.io.*
 
 
 class FileSystemDescription : Serializable {
-    private val thisFileSystem: HashMap<String, FileDescription> = HashMap<String, FileDescription>()
-    val fileDescriptions: Collection<Any>
+    private val thisFileSystem = HashMap<String, FileDescription>()
+
+    val fileDescriptions: Collection<FileDescription>
         get() = thisFileSystem.values
 
     fun add(thisFileDescription: FileDescription) {
@@ -39,15 +40,14 @@ class FileSystemDescription : Serializable {
         var thisFileStream: ObjectOutputStream? = ObjectOutputStream(FileOutputStream(rightedFilePath(filePath)))
         thisFileStream!!.writeObject(this)
         thisFileStream.close()
-        thisFileStream = null
         //using (FileStream thisFileStream = File.Create(rightedFilePath(filePath))) new BinaryFormatter().Serialize(thisFileStream, this);
     }
 
-    operator fun get(FullyQualifiedPath: String?): FileDescription? {
+    operator fun get(FullyQualifiedPath: String): FileDescription? {
         return thisFileSystem.get(FullyQualifiedPath)
     }
 
-    fun pop(FullyQualifiedPath: String?): FileDescription? {
+    fun pop(FullyQualifiedPath: String): FileDescription? {
         val pop = thisFileSystem.get(FullyQualifiedPath)
         thisFileSystem.remove(FullyQualifiedPath)
         return pop

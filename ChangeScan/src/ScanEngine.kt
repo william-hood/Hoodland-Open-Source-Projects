@@ -23,12 +23,13 @@ package hoodland.opensource.changescan
 
 import hoodland.opensource.memoir.Memoir
 import hoodland.opensource.memoir.showThrowable
+import hoodland.opensource.toolbox.stdout
 import java.io.File
 
 internal object ScanEngine {
     private var encounteredAdminFault = false
 
-    fun run(log: Memoir, workOrder: WorkOrder) {
+    fun run(log: Memoir, workOrder: WorkOrder, report: ReportGenerator) {
         try {
             var scannedFileSystem = FileSystemDescription()
             if (workOrder.isScanlessComparison) {
@@ -46,14 +47,15 @@ internal object ScanEngine {
             }
 
             if (workOrder.comparisonRequested) {
-                log.info("Comparing scan data to baseline file ${workOrder.snapshotComparisonPath}")
+                log.info("Loading baseline file ${workOrder.snapshotComparisonPath}")
                 val originalFileSystem = FileSystemDescription.loadInstance(workOrder.snapshotComparisonPath)
 
-                val comparison = FileSystemComparison(originalFileSystem, scannedFileSystem, logSystem)
+                val comparison = FileSystemComparison(originalFileSystem, scannedFileSystem, "Comparing scan data to baseline file ${workOrder.snapshotComparisonPath}")
+                log.showMemoir(comparison.log)
 
                 if (workOrder.reportRequested) {
                     log.info("Generating report.", "\uD83D\uDCBE")
-                    thisReport.Save(comparison, config!!.reportPath)
+                    report.prepare(comparison)
                 }
             }
         } catch (thisException: Exception) {
@@ -61,6 +63,7 @@ internal object ScanEngine {
         }
 
         if (encounteredAdminFault) log.error("YOU MAY NEED TO RE-RUN WITH ADMINISTRATIVE PRIVILEDGES!")
+        report.conclude(log)
     }
 
     private fun scan(log: Memoir, workOrder: WorkOrder, rootDirectory: String, thisFileSystem: FileSystemDescription) {
@@ -72,7 +75,7 @@ internal object ScanEngine {
             }
 
             if (File(rootDirectory).isDirectory) {
-                log.info("Scanning $rootDirectory", "\uD83D\uDCC2")
+                //log.info("Scanning $rootDirectory", "\uD83D\uDCC2")
 
                 // Scan files first.
                 val files = File(rootDirectory).list() //Will need to filter out directories//Directory.GetFiles(RootDirectory);
@@ -80,6 +83,8 @@ internal object ScanEngine {
                     encounteredAdminFault = true
                     log.error("Denied access to folder $rootDirectory. You may need to re-run the scan with admin priviledges.")
                 } else {
+                    val subLog = Memoir("Scanning $rootDirectory", forPlainText = stdout)
+
                     // First Pass: Scan the files, save directories for the next pass...
                     files.forEach {
                         val thisItem = "$rootDirectory${File.separator}$it"
@@ -87,16 +92,16 @@ internal object ScanEngine {
                         if (File(thisItem).isFile) {
                             if (workOrder.excludes(thisItem)) {
                                 // This file was excluded
-                                log.info("Excluding file $thisItem", "\uD83D\uDEAB")
+                                subLog.info("Excluding file $thisItem", "\uD83D\uDEAB")
                             } else {
-                                log.info(thisItem, "\uD83D\uDD0E")
+                                subLog.info(thisItem, "\uD83D\uDD0E")
 
                                 try {
                                     val thisFilesDescription = FileDescription(thisItem)
                                     thisFileSystem.add(thisFilesDescription)
                                 } catch (thisException: Throwable) {
-                                    log.error("Unable to Scan :  $thisItem")
-                                    log.showThrowable(thisException)
+                                    subLog.error("Unable to Scan :  $thisItem")
+                                    subLog.showThrowable(thisException)
                                 }
                             }
                         }
@@ -107,10 +112,12 @@ internal object ScanEngine {
                     directories?.forEach {
                         if (it.isDirectory) {
                             if (! workOrder.excludes(it.toString())) {
-                                scan(log, workOrder, it.toString(), thisFileSystem)
+                                scan(subLog, workOrder, it.toString(), thisFileSystem)
                             }
                         }
                     }
+
+                    log.showMemoir(subLog, "\uD83D\uDCC2")
                 }
             } else {
                 // This folder did not exist.

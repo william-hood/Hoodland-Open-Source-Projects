@@ -32,14 +32,15 @@ fun main(args: Array<String>) {
 
     val workOrder = interpretArgs(args)
     val log = Memoir("ChangeScan $COPYRIGHT 2020 William Hood", stdout)
+    val report = ReportGenerator(workOrder.reportPath)
 
     try {
         workOrder.describeTo(log)
-        ScanEngine.run(log, workOrder)
+        ScanEngine.run(log, workOrder, report)
         log.info("Program completed.")
     } catch (thisException: Throwable) {
         log.showThrowable(thisException)
     }
 
-    ReportGenerator.conclude(log, workOrder.reportPath)
+    report.conclude(log)
 }
