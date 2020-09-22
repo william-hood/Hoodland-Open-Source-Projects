@@ -131,14 +131,17 @@ fun Memoir.showThrowable(target: Throwable, timeStamp: LocalDateTime? = LocalDat
     return result.toString()
 }
 
-/* LEAVING THIS OUT UNTIL TIME AVAILABLE TO DO IT RIGHT. This is for a plain-text, not-necessarily-Memoir-associated representation of a Java/Kotlin Exception.
-// TODO: Rather than echoPlainText() each line, might make more sense to use a StringBuilder and echo once at the end???
+// TODO: Test and debug. (Needs a test in the Hoodland Suite.)
 fun depictFailure(thisFailure: Throwable): String {
     val stream = ByteArrayOutputStream()
     val printWriter = PrintWriter(stream)
-    val memoir = Memoir(thisFailure.javaClass.simpleName, printWriter)
+    val memoir = Memoir(
+            thisFailure.javaClass.simpleName,
+            printWriter,
+            null,
+            false,
+            false)
     memoir.showThrowable(thisFailure, null)
     memoir.conclude()
     return String(stream.toByteArray())
 }
-*/
