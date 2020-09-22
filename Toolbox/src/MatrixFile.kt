@@ -169,7 +169,7 @@ class MatrixFile<T>(var delimiter: Char = DEFAULT_DELIMITER, var spacing: Int = 
 		 * thisRow.add((T) parser.parseMethod(textRow.get(cursor))); }
 		 */
         for (thisTextRow in textRow) {
-            thisRow.add(parser.parseMethod(thisTextRow) as T)
+            thisRow.add(parser.parseMethod(thisTextRow))
             /*
             if (parser != null) {
                 thisRow.add(parser.parseMethod(thisTextRow) as T)
