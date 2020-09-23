@@ -1,8 +1,9 @@
 <component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="MemoirExample:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/MemoirExample_jar</output-path>
-    <root id="archive" name="MemoirExample.jar">
-      <element id="module-output" name="A1_Memoir_Example" />
+  <artifact type="jar" build-on-make="true" name="ChangeScan:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ChangeScan_jar</output-path>
+    <root id="archive" name="ChangeScan.jar">
+      <element id="module-output" name="ChangeScan" />
+      <element id="module-output" name="Toolbox" />
       <element id="module-output" name="Memoir" />
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-stdlib.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-reflect.jar" path-in-jar="/" />
