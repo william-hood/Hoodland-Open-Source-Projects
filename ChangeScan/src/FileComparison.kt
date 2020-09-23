@@ -24,7 +24,7 @@ package hoodland.opensource.changescan
 import java.util.*
 
 
-class FileComparison(
+internal class FileComparison(
         val originalFile: FileDescription,
         val candidateFile: FileDescription) {
 
@@ -58,4 +58,7 @@ class FileComparison(
             if (reportedDifferences.length < 1) return "(no difference)"
             return reportedDifferences.toString()
         }
+
+    val contentWasChanged: Boolean
+        get() = differences.contains(DifferenceTypes.CHECKSUM_DIFFERS)
     }

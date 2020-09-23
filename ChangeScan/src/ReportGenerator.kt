@@ -25,49 +25,112 @@ import hoodland.opensource.memoir.Memoir
 import java.io.PrintWriter
 
 internal class ReportGenerator(val savePath: String) {
-    var wasPrepared = false
-    val report = Memoir("Change Report",
-            null,
-            PrintWriter(savePath),
-            false,
-            true,
-            ::logHeader)
+    // TODO: Moved Files must show the original location and the new one.
+    // TODO: New icons for the side of each report.
+    // TODO: Create icons to represent moved and timestamp changes
+    // TODO: Change all timeStamp to timestamp. --'Tis one word.
+    var reportFile: Memoir? = null
 
     fun prepare(targetData: FileSystemComparison) {
-        // New to candidate
-        targetData.newToCandidate.sort()
-        val newToCandidateReport = Memoir("New Files", null, null, false)
-        for (thisFile in targetData.newToCandidate) {
-            newToCandidateReport.info(thisFile.fullyQualifiedPath, NEW_BULLET.toString())
-        }
-        report.showMemoir(newToCandidateReport, NEW_BULLET.toString(), "implied_good")
+        reportFile = Memoir("Change Report",
+                null,
+                PrintWriter(savePath),
+                false,
+                true,
+                ::logHeader)
 
-        // Removed from original
-        targetData.removedInCandidate.sort()
-        val missingFromOriginalReport = Memoir("Missing Files", null, null, false)
-        for (thisFile in targetData.removedInCandidate) {
-            missingFromOriginalReport.info(thisFile.fullyQualifiedPath, MISSING_BULLET.toString())
-        }
-        report.showMemoir(missingFromOriginalReport, MISSING_BULLET.toString(), "implied_bad")
+        reportFile?.let { report ->
+            // New
+            if (targetData.newToCandidate.size > 0) {
+                targetData.newToCandidate.sort()
+                val newToCandidateReport = Memoir("${targetData.newToCandidate.size} New Files", null, null, false)
 
-        // Changes
-        val sortedChangeData = targetData.fileSystemDifferences.keys.toTypedArray()
-        sortedChangeData.sort()
-        val changesReport = Memoir("Changes", null, null, false)
-        sortedChangeData.forEach {
-            val change = targetData.fileSystemDifferences[it]
-            change?.let { thisChange ->
-                changesReport.info("${thisChange.fullyQualifiedPath}<br><small>${thisChange.allDifferencesAsString}</small>")
+                for (thisFile in targetData.newToCandidate) {
+                    newToCandidateReport.info(thisFile.fullyQualifiedPath, NEW_BULLET.toString())
+                }
+
+                if (newToCandidateReport.wasUsed) {
+                    report.showMemoir(newToCandidateReport, NEW_HEADER.toString(), "implied_good")
+                }
+            }
+
+
+            // Removed
+            if (targetData.removedInCandidate.size > 0) {
+                targetData.removedInCandidate.sort()
+                val missingFromOriginalReport = Memoir("${targetData.removedInCandidate.size} Deleted Files", null, null, false)
+                for (thisFile in targetData.removedInCandidate) {
+                    missingFromOriginalReport.info(thisFile.fullyQualifiedPath, MISSING_BULLET.toString())
+                }
+
+                if (missingFromOriginalReport.wasUsed) {
+                    report.showMemoir(missingFromOriginalReport, MISSING_HEADER.toString(), "implied_bad")
+                }
+            }
+
+
+            // Moved
+            if (targetData.movedInCandidate.size > 0) {
+                targetData.movedInCandidate.sort()
+                val movedInCandidateReport = Memoir("${targetData.movedInCandidate.size} Moved Files", null, null, false)
+
+                for (thisFile in targetData.movedInCandidate) {
+                    movedInCandidateReport.info(thisFile.fullyQualifiedPath, MISSING_BULLET.toString())
+                }
+
+                if (movedInCandidateReport.wasUsed) {
+                    report.showMemoir(movedInCandidateReport, MISSING_HEADER.toString(), "implied_caution")
+                }
+            }
+
+
+
+            // Content Changes
+            if (targetData.contentDifferences.size > 0) {
+                val sortedContentChangeData = targetData.contentDifferences.keys.toTypedArray()
+                sortedContentChangeData.sort()
+                val contentChangesReport = Memoir("${sortedContentChangeData.size} Files With Content Changes", null, null, false)
+                sortedContentChangeData.forEach {
+                    val change = targetData.contentDifferences[it]
+                    change?.let { thisChange ->
+                        contentChangesReport.info("${thisChange.fullyQualifiedPath}<br><small>${thisChange.allDifferencesAsString}</small>", CHANGED_BULLET.toString())
+                    }
+                }
+
+                if (contentChangesReport.wasUsed) {
+                    report.showMemoir(contentChangesReport, CHANGED_HEADER.toString(), "implied_caution")
+                }
+            }
+
+
+
+            // Timestamp Changes
+            if (targetData.timeStampDifferences.size > 0) {
+                val sortedTimestampChangeData = targetData.timeStampDifferences.keys.toTypedArray()
+                sortedTimestampChangeData.sort()
+                val timestampChangesReport = Memoir("${sortedTimestampChangeData.size} Files With Timestamp Changes", null, null, false)
+                sortedTimestampChangeData.forEach {
+                    val change = targetData.timeStampDifferences[it]
+                    change?.let { thisChange ->
+                        timestampChangesReport.info("${thisChange.fullyQualifiedPath}<br><small>${thisChange.allDifferencesAsString}</small>", CHANGED_BULLET.toString())
+                    }
+                }
+
+                if (timestampChangesReport.wasUsed)  {
+                    report.showMemoir(timestampChangesReport, CHANGED_HEADER.toString(), "implied_caution")
+                }
             }
         }
-        report.showMemoir(changesReport, MISSING_BULLET.toString(), "implied_caution")
-
-        wasPrepared = true
     }
 
-    fun conclude(log: Memoir) {
-        report.showMemoir(log)
-        report.conclude()
+    fun conclude(errorLog: Memoir) {
+        reportFile?.let { report ->
+            if (errorLog.wasUsed) {
+                report.showMemoir(errorLog)
+            }
+
+            report.conclude()
+        }
     }
 
     private fun logHeader(title: String): String {

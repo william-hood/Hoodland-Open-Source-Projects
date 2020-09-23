@@ -22,10 +22,7 @@
 package hoodland.opensource.changescan
 
 import hoodland.opensource.memoir.Memoir
-import hoodland.opensource.toolbox.UNSET_STRING
-import hoodland.opensource.toolbox.getCurrentWorkingDirectory
-import hoodland.opensource.toolbox.getOperatingSystemName
-import hoodland.opensource.toolbox.getUserHomeFolder
+import hoodland.opensource.toolbox.*
 import java.io.File
 import java.util.*
 
@@ -101,6 +98,7 @@ internal fun interpretArgs(args: Array<String>): WorkOrder {
                 result.snapshotSavePath = args[index]
             }
             "SAVE" -> if (result.isScanlessComparison) {
+                System.out.println("Can't save a scanned baseline when comparing one baseline to another.")
                 showUsage()
             } else {
                 index++
@@ -116,6 +114,7 @@ internal fun interpretArgs(args: Array<String>): WorkOrder {
                 if (!result.reportPath.toUpperCase().endsWith(".HTML")) result.reportPath += ".html"
             }
             "ROOT" -> if (result.isScanlessComparison) {
+                System.out.println("Can't accept a root directory for scanning when comparing one baseline to another.")
                 showUsage()
             } else {
                 index++
@@ -133,18 +132,25 @@ internal fun interpretArgs(args: Array<String>): WorkOrder {
                 val markedExclude = args[index]
                 result.exclusions.add(FilesystemExclusion(whichCategory, markedExclude))
             }
-            else -> showUsage()
+            else -> {
+                System.out.println("Unrecognized command line argument.")
+                showUsage()
+            }
         }
+
         index++
     }
 
     // TODO: Do not allow the end user to request a comparison without generating a report.
 
     // TODO: Do not allow the end user to perform a baseline scan without saving it.
+    /*
     if (! result.saveRequested) {
-        if (result.comparisonRequested) {
+        if (! result.isScanlessComparison) {
+            System.out.println("Can't perform a baseline scan without saving it.")
             showUsage()
         }
     }
+     */
     return result
 }

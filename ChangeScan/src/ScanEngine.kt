@@ -23,67 +23,70 @@ package hoodland.opensource.changescan
 
 import hoodland.opensource.memoir.Memoir
 import hoodland.opensource.memoir.showThrowable
-import hoodland.opensource.toolbox.stdout
 import java.io.File
 
 internal object ScanEngine {
     private var encounteredAdminFault = false
 
-    fun run(log: Memoir, workOrder: WorkOrder, report: ReportGenerator) {
+    fun run(activityLog: Memoir, errorLog: Memoir, workOrder: WorkOrder, report: ReportGenerator) {
         try {
             var scannedFileSystem = FileSystemDescription()
             if (workOrder.isScanlessComparison) {
-                log.info("Loading baseline file ${workOrder.snapshotSavePath} into memory and treating as the scan for comparison.")
+                activityLog.info("Loading baseline file ${workOrder.snapshotSavePath} into memory and treating as the scan for comparison.")
                 scannedFileSystem = FileSystemDescription.loadInstance(workOrder.snapshotSavePath)
             } else {
                 scannedFileSystem = FileSystemDescription()
-                scan(log, workOrder, workOrder.startingDirectory, scannedFileSystem)
+                scan(activityLog, errorLog, workOrder, workOrder.startingDirectory, scannedFileSystem)
 
                 // At this point we have completed the actual scan.  We now have to consider what to do with it.
                 if (workOrder.saveRequested) {
-                    log.info("Saving scan data to baseline file ${workOrder.snapshotSavePath}")
+                    activityLog.info("Saving scan data to baseline file ${workOrder.snapshotSavePath}")
                     scannedFileSystem.save(workOrder.snapshotSavePath)
                 }
             }
 
             if (workOrder.comparisonRequested) {
-                log.info("Loading baseline file ${workOrder.snapshotComparisonPath}")
+                activityLog.info("Loading baseline file ${workOrder.snapshotComparisonPath}")
                 val originalFileSystem = FileSystemDescription.loadInstance(workOrder.snapshotComparisonPath)
 
                 val comparison = FileSystemComparison(originalFileSystem, scannedFileSystem, "Comparing scan data to baseline file ${workOrder.snapshotComparisonPath}")
-                log.showMemoir(comparison.log)
+                activityLog.showMemoir(comparison.log)
 
                 if (workOrder.reportRequested) {
-                    log.info("Generating report.", "\uD83D\uDCBE")
+                    activityLog.info("Generating report.", "\uD83D\uDCBE")
                     report.prepare(comparison)
                 }
             }
         } catch (thisException: Exception) {
-            log.showThrowable(thisException)
+            errorLog.showThrowable(thisException)
+            activityLog.showThrowable(thisException)
         }
 
-        if (encounteredAdminFault) log.error("YOU MAY NEED TO RE-RUN WITH ADMINISTRATIVE PRIVILEDGES!")
-        report.conclude(log)
+        if (encounteredAdminFault) {
+            val msg = "YOU MAY NEED TO RE-RUN WITH ADMINISTRATIVE PRIVILEDGES!"
+            errorLog.error(msg)
+            activityLog.error(msg)
+        }
     }
 
-    private fun scan(log: Memoir, workOrder: WorkOrder, rootDirectory: String, thisFileSystem: FileSystemDescription) {
+    private fun scan(activityLog: Memoir, errorLog: Memoir, workOrder: WorkOrder, rootDirectory: String, thisFileSystem: FileSystemDescription) {
         try {
             if (workOrder.excludes(rootDirectory)) {
                 // This folder is excluded.
-                log.info("Excluding folder $rootDirectory", "⛔️")
+                activityLog.info("Excluding folder $rootDirectory", "⛔️")
                 return
             }
 
             if (File(rootDirectory).isDirectory) {
-                //log.info("Scanning $rootDirectory", "\uD83D\uDCC2")
-
                 // Scan files first.
                 val files = File(rootDirectory).list() //Will need to filter out directories//Directory.GetFiles(RootDirectory);
                 if (files == null) {
                     encounteredAdminFault = true
-                    log.error("Denied access to folder $rootDirectory. You may need to re-run the scan with admin priviledges.")
+                    val msg = "Denied access to folder $rootDirectory. You may need to re-run the scan with admin priviledges."
+                    errorLog.error(msg)
+                    activityLog.error(msg)
                 } else {
-                    val subLog = Memoir("Scanning $rootDirectory", forPlainText = stdout)
+                    activityLog.info("Scanning $rootDirectory", "\uD83D\uDCC2")
 
                     // First Pass: Scan the files, save directories for the next pass...
                     files.forEach {
@@ -92,16 +95,19 @@ internal object ScanEngine {
                         if (File(thisItem).isFile) {
                             if (workOrder.excludes(thisItem)) {
                                 // This file was excluded
-                                subLog.info("Excluding file $thisItem", "\uD83D\uDEAB")
+                                activityLog.info("Excluding file $thisItem", "\uD83D\uDEAB")
                             } else {
-                                subLog.info(thisItem, "\uD83D\uDD0E")
+                                activityLog.info(thisItem, "\uD83D\uDD0E")
 
                                 try {
                                     val thisFilesDescription = FileDescription(thisItem)
                                     thisFileSystem.add(thisFilesDescription)
                                 } catch (thisException: Throwable) {
-                                    subLog.error("Unable to Scan :  $thisItem")
-                                    subLog.showThrowable(thisException)
+                                    val msg = "Unable to Scan :  $thisItem"
+                                    errorLog.error(msg)
+                                    errorLog.showThrowable(thisException)
+                                    activityLog.error(msg)
+                                    activityLog.showThrowable(thisException)
                                 }
                             }
                         }
@@ -112,21 +118,26 @@ internal object ScanEngine {
                     directories?.forEach {
                         if (it.isDirectory) {
                             if (! workOrder.excludes(it.toString())) {
-                                scan(subLog, workOrder, it.toString(), thisFileSystem)
+                                scan(activityLog, errorLog, workOrder, it.toString(), thisFileSystem)
                             }
                         }
                     }
 
-                    log.showMemoir(subLog, "\uD83D\uDCC2")
+                    //log.showMemoir(subLog, "\uD83D\uDCC2")
                 }
             } else {
                 // This folder did not exist.
-                log.error("Declining non-existent folder $rootDirectory")
+                val msg = "Declining non-existent folder $rootDirectory"
+                errorLog.error(msg)
+                activityLog.error(msg)
             }
         } catch (thisException: Throwable) {
             // Alert that this folder is being ignored.
-            log.error("Unable to process folder $rootDirectory")
-            log.showThrowable(thisException)
+            val msg = "Unable to process folder $rootDirectory"
+            errorLog.error(msg)
+            errorLog.showThrowable(thisException)
+            activityLog.error(msg)
+            activityLog.showThrowable(thisException)
         }
 
         return

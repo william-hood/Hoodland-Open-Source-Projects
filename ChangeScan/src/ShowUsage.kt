@@ -25,15 +25,12 @@ import hoodland.opensource.toolbox.COPYRIGHT
 import hoodland.opensource.toolbox.justify
 
 fun showUsage() {
-    System.out.println("""
-Change Scan -  $COPYRIGHT 2020 William Arthur Hood
+    System.out.println("""Change Scan -  $COPYRIGHT 2020 William Arthur Hood
 (MIT Licensed: java -jar ChangeScan.jar LICENSE)
 
 Change Scan is a tool for seeing what changed on a file system as the
 result of a software install, uninstall, or any other process that
 might cause files to be created, changed, or deleted.
-
-USAGE
 
 * You may need to run this program with administrative priviledges.
 
@@ -49,8 +46,7 @@ USAGE
   between two already existing baselines.
 * Report is HTML format.
 * Exclude items using EXCLUDE <DIRECTORY|FILE|PATTERN> <excluded item>
-* Use verbose output with VERBOSE
-""")
+* Use verbose output with VERBOSE""")
 
     System.exit(0)
 }

@@ -24,7 +24,7 @@ package hoodland.opensource.changescan
 import java.io.*
 
 
-class FileSystemDescription : Serializable {
+internal class FileSystemDescription : Serializable {
     private val thisFileSystem = HashMap<String, FileDescription>()
 
     val fileDescriptions: Collection<FileDescription>

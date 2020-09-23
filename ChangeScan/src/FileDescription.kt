@@ -21,7 +21,6 @@
 
 package hoodland.opensource.changescan
 
-import hoodland.opensource.toolbox.UNSET_STRING
 import hoodland.opensource.toolbox.crc32ChecksumValue
 import java.io.File
 import java.io.Serializable
@@ -31,12 +30,22 @@ import java.nio.file.attribute.BasicFileAttributes
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-class FileDescription(val fullyQualifiedPath: String) : Any(), Serializable, Comparable<FileDescription> {
+internal class FileDescription(fullyQualifiedPathAndFileName: String) : Any(), Serializable, Comparable<FileDescription> {
     val checksum: Long
     val size: Long
     val creationTime: LocalDateTime
     val lastAccessTime: LocalDateTime
     val lastWriteTime: LocalDateTime
+    val directory: String
+    val fileName: String
+
+    init {
+        fileName = fullyQualifiedPathAndFileName.substringAfterLast(File.separator)
+        directory = fullyQualifiedPathAndFileName.substringBeforeLast(File.separator)
+    }
+
+    val fullyQualifiedPath: String
+        get() = "$directory${File.separator}$fileName"
 
     init  //BasicFileAttributes info)
     {
@@ -50,6 +59,10 @@ class FileDescription(val fullyQualifiedPath: String) : Any(), Serializable, Com
 
     override fun compareTo(other: FileDescription): Int {
         return fullyQualifiedPath.compareTo(other.fullyQualifiedPath)
+    }
+
+    fun isTheSameFile(theOther: FileDescription): Boolean {
+        return (this.fileName == theOther.fileName) && (this.checksum == theOther.checksum)
     }
 
     companion object {

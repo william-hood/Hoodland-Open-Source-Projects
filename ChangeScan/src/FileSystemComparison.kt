@@ -26,15 +26,19 @@ import hoodland.opensource.toolbox.stdout
 import java.util.*
 
 
-class FileSystemComparison(original: FileSystemDescription, candidate: FileSystemDescription, logTitle: String) {
+internal class FileSystemComparison(original: FileSystemDescription, candidate: FileSystemDescription, logTitle: String) {
     // New To Candidate
     val newToCandidate = ArrayList<FileDescription>()
 
     // Removed From Original
     val removedInCandidate = ArrayList<FileDescription>()
 
+    // Moved From Original
+    val movedInCandidate = ArrayList<FileDescription>()
+
     // Different
-    val fileSystemDifferences = HashMap<String, FileComparison>()
+    val contentDifferences = HashMap<String, FileComparison>()
+    val timeStampDifferences = HashMap<String, FileComparison>()
 
     val log = Memoir(logTitle, forPlainText = stdout)
 
@@ -49,16 +53,37 @@ class FileSystemComparison(original: FileSystemDescription, candidate: FileSyste
             } else {
                 val fileComparison = FileComparison(originalFileDescription, counterpart)
                 if (fileComparison.differences.size > 0) {
-                    log.info(" • ")
-                    fileSystemDifferences[fileComparison.fullyQualifiedPath] = fileComparison
+                    if (fileComparison.contentWasChanged) {
+                        log.info(" • Counting as content change: ${originalFileDescription.fullyQualifiedPath}")
+                        contentDifferences[fileComparison.fullyQualifiedPath] = fileComparison
+                    } else {
+                        log.info(" • Counting as timestamp change: ${originalFileDescription.fullyQualifiedPath}")
+                        timeStampDifferences[fileComparison.fullyQualifiedPath] = fileComparison
+                    }
                 }
             }
         }
 
         // At this point, only new files should remain in the Candidate
         for (newFileDescription in candidate.fileDescriptions) {
-            log.info(" • Counting as New to Candidate: ${newFileDescription.fullyQualifiedPath}")
-            newToCandidate.add(newFileDescription)
+            if (appearsMoved(newFileDescription)) {
+                log.info(" • Counting as Moved in Candidate: ${newFileDescription.fullyQualifiedPath}")
+                movedInCandidate.add(newFileDescription)
+            } else {
+                log.info(" • Counting as New to Candidate: ${newFileDescription.fullyQualifiedPath}")
+                newToCandidate.add(newFileDescription)
+            }
         }
+    }
+
+    private fun appearsMoved(newFileDescription: FileDescription): Boolean {
+        removedInCandidate.forEach {
+            if (it.isTheSameFile(newFileDescription)) {
+                removedInCandidate.remove(it)
+                return true
+            }
+        }
+
+        return false
     }
 }

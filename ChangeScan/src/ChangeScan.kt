@@ -27,20 +27,26 @@ import hoodland.opensource.toolbox.COPYRIGHT
 import hoodland.opensource.toolbox.stdout
 
 fun main(args: Array<String>) {
-    if (args.size < 1) showUsage()
+    if (args.size < 1) {
+        //System.out.println("No arguments given.")
+        showUsage()
+    }
+
     if (args[0].toUpperCase() == "LICENSE") showLicense()
 
     val workOrder = interpretArgs(args)
-    val log = Memoir("ChangeScan $COPYRIGHT 2020 William Hood", stdout)
+    val errorLog = Memoir("Errors Encountered During Scanning")
+    val activityLog = Memoir("ChangeScan $COPYRIGHT 2020 William Hood", stdout)
     val report = ReportGenerator(workOrder.reportPath)
 
     try {
-        workOrder.describeTo(log)
-        ScanEngine.run(log, workOrder, report)
-        log.info("Program completed.")
+        workOrder.describeTo(activityLog)
+        ScanEngine.run(activityLog, errorLog, workOrder, report)
+        activityLog.info("Program completed.")
     } catch (thisException: Throwable) {
-        log.showThrowable(thisException)
+        errorLog.showThrowable(thisException)
+        activityLog.showThrowable(thisException)
     }
 
-    report.conclude(log)
+    report.conclude(errorLog)
 }
