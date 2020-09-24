@@ -48,7 +48,7 @@ internal class ReportGenerator(val savePath: String) {
                 }
 
                 if (newToCandidateReport.wasUsed) {
-                    report.showMemoir(newToCandidateReport, NEW_FILES_HEADER_ICON, "implied_good")
+                    report.showMemoir(newToCandidateReport, NEW_FILES_HEADER_ICON, "passing_test_result")
                 }
             }
 
@@ -62,7 +62,7 @@ internal class ReportGenerator(val savePath: String) {
                 }
 
                 if (missingFromOriginalReport.wasUsed) {
-                    report.showMemoir(missingFromOriginalReport, MISSING_FILES_HEADER_ICON, "implied_bad")
+                    report.showMemoir(missingFromOriginalReport, MISSING_FILES_HEADER_ICON, "failing_test_result")
                 }
             }
 
@@ -77,7 +77,7 @@ internal class ReportGenerator(val savePath: String) {
                 }
 
                 if (movedInCandidateReport.wasUsed) {
-                    report.showMemoir(movedInCandidateReport, MOVED_FILES_HEADER_ICON, "implied_caution")
+                    report.showMemoir(movedInCandidateReport, MOVED_FILES_HEADER_ICON, "plate")
                 }
             }
 
@@ -96,7 +96,7 @@ internal class ReportGenerator(val savePath: String) {
                 }
 
                 if (contentChangesReport.wasUsed) {
-                    report.showMemoir(contentChangesReport, CONTENT_CHANGED_HEADER_ICON, "implied_caution")
+                    report.showMemoir(contentChangesReport, CONTENT_CHANGED_HEADER_ICON, "inconclusive_test_result")
                 }
             }
 
@@ -124,7 +124,7 @@ internal class ReportGenerator(val savePath: String) {
     fun conclude(errorLog: Memoir) {
         reportFile?.let { report ->
             if (errorLog.wasUsed) {
-                report.showMemoir(errorLog, ERROR_LOG_HEADER_ICON)
+                report.showMemoir(errorLog, ERROR_LOG_HEADER_ICON, "highlighted")
             }
 
             report.conclude()
