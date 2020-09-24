@@ -48,7 +48,7 @@ internal open class FileDescription(val directory: String, val fileName: String)
     }
 
     val fullyQualifiedPath: String
-        get() = "$directory${File.separator}$fileName"
+        get() = "$directory${File.separator}$fileName".replace("${File.separator}${File.separator}", File.separator)
 
     override fun compareTo(other: FileDescription): Int {
         return fullyQualifiedPath.compareTo(other.fullyQualifiedPath)

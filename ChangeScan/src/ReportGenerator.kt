@@ -25,7 +25,6 @@ import hoodland.opensource.memoir.Memoir
 import java.io.PrintWriter
 
 internal class ReportGenerator(val savePath: String) {
-    // TODO: Remove the extra slash on file names. (Unknown if before file or after directory.)
     // TODO: Test on Windows
     var reportFile: Memoir? = null
 
@@ -41,7 +40,7 @@ internal class ReportGenerator(val savePath: String) {
             // New
             if (targetData.newToCandidate.size > 0) {
                 targetData.newToCandidate.sort()
-                val newToCandidateReport = Memoir("${targetData.newToCandidate.size} New Files", null, null, false)
+                val newToCandidateReport = Memoir("${targetData.newToCandidate.size} New", null, null, false)
 
                 for (thisFile in targetData.newToCandidate) {
                     newToCandidateReport.info(thisFile.fullyQualifiedPath, "\uD83C\uDD95")
@@ -56,7 +55,7 @@ internal class ReportGenerator(val savePath: String) {
             // Removed
             if (targetData.removedInCandidate.size > 0) {
                 targetData.removedInCandidate.sort()
-                val missingFromOriginalReport = Memoir("${targetData.removedInCandidate.size} Deleted Files", null, null, false)
+                val missingFromOriginalReport = Memoir("${targetData.removedInCandidate.size} Missing", null, null, false)
                 for (thisFile in targetData.removedInCandidate) {
                     missingFromOriginalReport.info(thisFile.fullyQualifiedPath, "\uD83D\uDEAB")
                 }
@@ -70,7 +69,7 @@ internal class ReportGenerator(val savePath: String) {
             // Moved
             if (targetData.movedInCandidate.size > 0) {
                 targetData.movedInCandidate.sort()
-                val movedInCandidateReport = Memoir("${targetData.movedInCandidate.size} Moved Files", null, null, false)
+                val movedInCandidateReport = Memoir("${targetData.movedInCandidate.size} Moved", null, null, false)
 
                 for (thisFile in targetData.movedInCandidate) {
                     movedInCandidateReport.info("${thisFile.fullyQualifiedPath}<br><small>&nbsp;&nbsp;&nbsp;• Previous location ${thisFile.formerDirectory}</small>", "\uD83D\uDCC2")
@@ -87,7 +86,7 @@ internal class ReportGenerator(val savePath: String) {
             if (targetData.contentDifferences.size > 0) {
                 val sortedContentChangeData = targetData.contentDifferences.keys.toTypedArray()
                 sortedContentChangeData.sort()
-                val contentChangesReport = Memoir("${sortedContentChangeData.size} Files With Content Changes", null, null, false)
+                val contentChangesReport = Memoir("${sortedContentChangeData.size} Content Changes", null, null, false)
                 sortedContentChangeData.forEach {
                     val change = targetData.contentDifferences[it]
                     change?.let { thisChange ->
@@ -106,7 +105,7 @@ internal class ReportGenerator(val savePath: String) {
             if (targetData.timestampDifferences.size > 0) {
                 val sortedTimestampChangeData = targetData.timestampDifferences.keys.toTypedArray()
                 sortedTimestampChangeData.sort()
-                val timestampChangesReport = Memoir("${sortedTimestampChangeData.size} Files With Timestamp Changes", null, null, false)
+                val timestampChangesReport = Memoir("${sortedTimestampChangeData.size} Timestamp Changes", null, null, false)
                 sortedTimestampChangeData.forEach {
                     val change = targetData.timestampDifferences[it]
                     change?.let { thisChange ->
