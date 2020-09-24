@@ -33,11 +33,11 @@ private const val DEFAULT_STACKTRACE = "(no stacktrace)"
  * version provides click-to-expand views of the stack trace and causal exceptions.
  *
  * @param target The Exception, or other Throwable, to be rendered.
- * @param timeStamp Omit this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in.
+ * @param timestamp Omit this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in.
  * @param plainTextIndent This is used for Memoir's plain-text output. Unless you know what you're doing and why this should be omitted.
  * @return Returns the HTML representation of the exception that it logged.
  */
-fun Memoir.showThrowable(target: Throwable, timeStamp: LocalDateTime? = LocalDateTime.now(), plainTextIndent: String = ""): String {
+fun Memoir.showThrowable(target: Throwable, timestamp: LocalDateTime? = LocalDateTime.now(), plainTextIndent: String = ""): String {
     val result = StringBuilder("<div class=\"object exception\">\r\n")
     val name = target.javaClass.simpleName
     val htmlStackTrace = StringBuilder(DEFAULT_STACKTRACE)
@@ -49,9 +49,9 @@ fun Memoir.showThrowable(target: Throwable, timeStamp: LocalDateTime? = LocalDat
         loggedTextEmoji = EMOJI_CAUSED_BY
     }
 
-    this.echoPlainText("", timeStamp = timeStamp)
-    this.echoPlainText("$plainTextIndent$name", loggedTextEmoji, timeStamp)
-    this.echoPlainText("$plainTextIndent$target.message", timeStamp = timeStamp)
+    this.echoPlainText("", timestamp = timestamp)
+    this.echoPlainText("$plainTextIndent$name", loggedTextEmoji, timestamp)
+    this.echoPlainText("$plainTextIndent$target.message", timestamp = timestamp)
 
     // Build the stacktrace  strings
     if (target.stackTrace != null) {
@@ -90,7 +90,7 @@ fun Memoir.showThrowable(target: Throwable, timeStamp: LocalDateTime? = LocalDat
                     }
                 }
 
-                this.echoPlainText("$plainTextIndent$plainTextLine", timeStamp = timeStamp)
+                this.echoPlainText("$plainTextIndent$plainTextLine", timestamp = timestamp)
             }
         }
     }
@@ -113,7 +113,7 @@ fun Memoir.showThrowable(target: Throwable, timeStamp: LocalDateTime? = LocalDat
         result.append("<label for=\"$identifier\">\r\n<h2>$name</h2>\r\n<small><i>${target.message}</i></small><br><br><input id=\"$identifier\" type=\"checkbox\"><small><i>($indicator)</i></small>\r\n<div class=\"${this.encapsulationTag}\">\r\n<br><small><i>\r\n$htmlStackTrace\r\n</i></small>\r\n")
 
         if (target.cause != null) {
-            result.append("<br>\r\n<table><tr><td>&nbsp;</td><td><small><b>Cause</b></small>&nbsp;$EMOJI_CAUSED_BY</td><td>&nbsp;</td><td>${this.showThrowable(target.cause!!, timeStamp, "$plainTextIndent   ")}</td></tr></table>")
+            result.append("<br>\r\n<table><tr><td>&nbsp;</td><td><small><b>Cause</b></small>&nbsp;$EMOJI_CAUSED_BY</td><td>&nbsp;</td><td>${this.showThrowable(target.cause!!, timestamp, "$plainTextIndent   ")}</td></tr></table>")
         }
 
         result.append("</div>\r\n</label>")
@@ -124,10 +124,10 @@ fun Memoir.showThrowable(target: Throwable, timeStamp: LocalDateTime? = LocalDat
     result.append("</div>")
 
     // This is not nested if there is no plaintext indent.
-    if (plainTextIndent.length < 1) this.writeToHTML(result.toString(), EMOJI_ERROR, timeStamp)
+    if (plainTextIndent.length < 1) this.writeToHTML(result.toString(), EMOJI_ERROR, timestamp)
 
-    this.echoPlainText("$plainTextIndent$EMOJI_TEXT_MEMOIR_CONCLUDE", timeStamp = timeStamp)
-    this.echoPlainText("", timeStamp = timeStamp)
+    this.echoPlainText("$plainTextIndent$EMOJI_TEXT_MEMOIR_CONCLUDE", timestamp = timestamp)
+    this.echoPlainText("", timestamp = timestamp)
     return result.toString()
 }
 

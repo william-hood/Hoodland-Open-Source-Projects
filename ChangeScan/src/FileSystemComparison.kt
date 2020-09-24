@@ -26,7 +26,7 @@ import hoodland.opensource.toolbox.stdout
 import java.util.*
 
 
-internal class FileSystemComparison(original: FileSystemDescription, candidate: FileSystemDescription, logTitle: String) {
+internal class FileSystemComparison(activityLog: Memoir, original: FileSystemDescription, candidate: FileSystemDescription) {
     // New To Candidate
     val newToCandidate = ArrayList<FileDescription>()
 
@@ -38,27 +38,25 @@ internal class FileSystemComparison(original: FileSystemDescription, candidate: 
 
     // Different
     val contentDifferences = HashMap<String, FileComparison>()
-    val timeStampDifferences = HashMap<String, FileComparison>()
-
-    val log = Memoir(logTitle, forPlainText = stdout)
+    val timestampDifferences = HashMap<String, FileComparison>()
 
     init {
         // Given a description of an original and candidate file system, populate the categories of differences between the two.
         for (originalFileDescription in original.fileDescriptions) {
-            log.info("Comparing ${originalFileDescription.fullyQualifiedPath}")
+            activityLog.info("Comparing ${originalFileDescription.fullyQualifiedPath}")
             val counterpart = candidate.pop(originalFileDescription.fullyQualifiedPath)
             if (counterpart == null) {
-                log.info(" • Counting as Removed in Candidate: ${originalFileDescription.fullyQualifiedPath}")
+                activityLog.info(" • Counting as Removed in Candidate: ${originalFileDescription.fullyQualifiedPath}")
                 removedInCandidate.add(originalFileDescription)
             } else {
                 val fileComparison = FileComparison(originalFileDescription, counterpart)
                 if (fileComparison.differences.size > 0) {
                     if (fileComparison.contentWasChanged) {
-                        log.info(" • Counting as content change: ${originalFileDescription.fullyQualifiedPath}")
+                        activityLog.info(" • Counting as content change: ${originalFileDescription.fullyQualifiedPath}")
                         contentDifferences[fileComparison.fullyQualifiedPath] = fileComparison
                     } else {
-                        log.info(" • Counting as timestamp change: ${originalFileDescription.fullyQualifiedPath}")
-                        timeStampDifferences[fileComparison.fullyQualifiedPath] = fileComparison
+                        activityLog.info(" • Counting as timestamp change: ${originalFileDescription.fullyQualifiedPath}")
+                        timestampDifferences[fileComparison.fullyQualifiedPath] = fileComparison
                     }
                 }
             }
@@ -67,10 +65,10 @@ internal class FileSystemComparison(original: FileSystemDescription, candidate: 
         // At this point, only new files should remain in the Candidate
         for (newFileDescription in candidate.fileDescriptions) {
             if (appearsMoved(newFileDescription)) {
-                log.info(" • Counting as Moved in Candidate: ${newFileDescription.fullyQualifiedPath}")
+                activityLog.info(" • Counting as Moved in Candidate: ${newFileDescription.fullyQualifiedPath}")
                 movedInCandidate.add(newFileDescription)
             } else {
-                log.info(" • Counting as New to Candidate: ${newFileDescription.fullyQualifiedPath}")
+                activityLog.info(" • Counting as New to Candidate: ${newFileDescription.fullyQualifiedPath}")
                 newToCandidate.add(newFileDescription)
             }
         }
@@ -79,6 +77,7 @@ internal class FileSystemComparison(original: FileSystemDescription, candidate: 
     private fun appearsMoved(newFileDescription: FileDescription): Boolean {
         removedInCandidate.forEach {
             if (it.isTheSameFile(newFileDescription)) {
+                newFileDescription.formerDirectory = it.directory
                 removedInCandidate.remove(it)
                 return true
             }

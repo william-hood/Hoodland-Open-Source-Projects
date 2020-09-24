@@ -39,15 +39,15 @@ fun Memoir.showMap(target: Map<*, *>, targetVariableName: String = NAMELESS, rec
         return "<div class=\"outlined\">$EMOJI_INCONCLUSIVE_TEST Too Many Levels In $EMOJI_INCONCLUSIVE_TEST</div>"
     }
 
-    val targetClass = target::class as KClass<Any>
+    //val targetClass = target::class as KClass<Any>
 
     if (target.count() < 1) {
         return "<div class=\"outlined highlighted\">(the map \"$targetVariableName\" is empty)</div>"
     }
 
-    val timeStamp = LocalDateTime.now()
+    val timestamp = LocalDateTime.now()
 
-    val result = this.beginShow(timeStamp, targetClassName, targetVariableName, "neutral", recurseLevel)
+    val result = this.beginShow(timestamp, targetClassName, targetVariableName, "neutral", recurseLevel)
     val content = java.lang.StringBuilder("<br><table class=\"gridlines\">\r\n")
     var fieldCount = 0
 

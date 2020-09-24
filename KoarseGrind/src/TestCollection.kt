@@ -123,7 +123,7 @@ public class TestCollection(override val name: String): ArrayList<TestEchelon>()
         filterSet = filters
         var logFileName = "$name.html"
         if (rootDirectory === UNSET_STRING) {
-            rootDirectory = "$DEFAULT_PARENT_FOLDER${File.separatorChar}$quickTimeStamp $name"
+            rootDirectory = "$DEFAULT_PARENT_FOLDER${File.separatorChar}$quickTimestamp $name"
             logFileName = "All tests.html"
         }
 

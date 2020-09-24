@@ -44,9 +44,9 @@ fun Memoir.showObject(target: Any?, targetVariableName: String = NAMELESS, recur
         return highlight("(Object is Null)")
     }
 
-    val timeStamp = LocalDateTime.now()
+    val timestamp = LocalDateTime.now()
     val targetClass = target::class as KClass<Any>
-    val result = this.beginShow(timeStamp, targetClass.simpleName.toString(), targetVariableName, "plate", recurseLevel)
+    val result = this.beginShow(timestamp, targetClass.simpleName.toString(), targetVariableName, "plate", recurseLevel)
     val content = java.lang.StringBuilder("<br><table class=\"gridlines\">\r\n")
     var visibleProperties = 0
 

@@ -29,6 +29,8 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.util.*
 
+// TODO: Full test of callback function feature
+
 /**
  * HTTP_MESSAGE_BODY Indicates to your supplied callback function that the field being processed is the payload of an HTTP Request or Response.
  */
@@ -116,7 +118,7 @@ fun Memoir.showHttpResponse(response: HttpResponse<*>, callbackFunction: ((field
     val textRendition = "$statusCode ${statusCode.toStatusCodeDescription()}"
     result.append("<center><h2>$textRendition</h2>")
 
-    result.append(renderHeadersAndBody(response.headers(), response.body().toString()))
+    result.append(renderHeadersAndBody(response.headers(), response.body().toString(), callbackFunction))
 
     writeToHTML(result.toString(), EMOJI_INCOMING)
     echoPlainText(textRendition, EMOJI_INCOMING)

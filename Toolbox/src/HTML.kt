@@ -22,45 +22,29 @@
 package hoodland.opensource.toolbox
 
 /**
- * WebInterfaceControl: This is one of the remaining vestiges of deprecated code that programmatically represented HTML.
- * All WebInterfaceControl derivatives should assume that toString() will render their HTML.
- */
-public interface WebInterfaceControl { }
-
-/**
- * WebImage: This is one of the remaining vestiges of deprecated code that programmatically represented HTML.
- * This particular type represents an HTML image tag.
- */
-public interface WebImage {
-    /**
-     * A recommended site for this: http://jpillora.com/base64-encoder/
-     */
-    val base64ImageData: String
-
-    /**
-     * imageType: This should be the type of the image file that is represented by the Base64. Typically png, jpeg or gif.
-     */
-    val imageType: String
-}
-
-/**
  * InlineImage: This is one of the remaining vestiges of deprecated code that programmatically represented HTML.
  * It represents an image that has been inserted directly into an HTML file as Base64 encoded data. A deprecated
  * alternative used to exist that put the image in the CSS style section, but was deprecated because some
  * browsers did not work with it.
  */
-public abstract class InlineImage : WebInterfaceControl, WebImage
+public class InlineImage(
+        val base64ImageData: String,
+        val imageType: String,
+        val style: String? = null)
 {
-    public abstract override val base64ImageData: String
-    public abstract override val imageType: String
-
     public override fun toString(): String {
-        val result = StringBuilder("<img src=\"");
-        result.append("data:img/");
-        result.append(imageType);
-        result.append(";base64,");
-        result.append(base64ImageData);
-        result.append("\">");
-        return result.toString();
+        val result = StringBuilder("<img src=\"")
+        result.append("data:img/")
+        result.append(imageType)
+        result.append(";base64,")
+        result.append(base64ImageData)
+        result.append('"')
+
+        style?.let {
+            result.append(" style=\"$it\"")
+        }
+
+        result.append('>')
+        return result.toString()
     }
 }

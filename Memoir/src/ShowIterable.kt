@@ -44,9 +44,9 @@ fun Memoir.showIterable(target: Iterable<*>, targetVariableName: String = NAMELE
         return "<div class=\"outlined\">(${targetClass.simpleName} \"$targetVariableName\" is empty)</div>"
     }
 
-    val timeStamp = LocalDateTime.now()
+    val timestamp = LocalDateTime.now()
 
-    val result = this.beginShow(timeStamp, targetClass.simpleName.toString(), targetVariableName, "neutral", recurseLevel)
+    val result = this.beginShow(timestamp, targetClass.simpleName.toString(), targetVariableName, "neutral", recurseLevel)
     val content = java.lang.StringBuilder("<br><table class=\"gridlines\">\r\n")
     var fieldCount = 0
 

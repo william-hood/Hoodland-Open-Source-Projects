@@ -25,10 +25,8 @@ import hoodland.opensource.memoir.Memoir
 import java.io.PrintWriter
 
 internal class ReportGenerator(val savePath: String) {
-    // TODO: Moved Files must show the original location and the new one.
-    // TODO: New icons for the side of each report.
-    // TODO: Create icons to represent moved and timestamp changes
-    // TODO: Change all timeStamp to timestamp. --'Tis one word.
+    // TODO: Remove the extra slash on file names. (Unknown if before file or after directory.)
+    // TODO: Test on Windows
     var reportFile: Memoir? = null
 
     fun prepare(targetData: FileSystemComparison) {
@@ -46,11 +44,11 @@ internal class ReportGenerator(val savePath: String) {
                 val newToCandidateReport = Memoir("${targetData.newToCandidate.size} New Files", null, null, false)
 
                 for (thisFile in targetData.newToCandidate) {
-                    newToCandidateReport.info(thisFile.fullyQualifiedPath, NEW_BULLET.toString())
+                    newToCandidateReport.info(thisFile.fullyQualifiedPath, "\uD83C\uDD95")
                 }
 
                 if (newToCandidateReport.wasUsed) {
-                    report.showMemoir(newToCandidateReport, NEW_HEADER.toString(), "implied_good")
+                    report.showMemoir(newToCandidateReport, NEW_FILES_HEADER_ICON, "implied_good")
                 }
             }
 
@@ -60,11 +58,11 @@ internal class ReportGenerator(val savePath: String) {
                 targetData.removedInCandidate.sort()
                 val missingFromOriginalReport = Memoir("${targetData.removedInCandidate.size} Deleted Files", null, null, false)
                 for (thisFile in targetData.removedInCandidate) {
-                    missingFromOriginalReport.info(thisFile.fullyQualifiedPath, MISSING_BULLET.toString())
+                    missingFromOriginalReport.info(thisFile.fullyQualifiedPath, "\uD83D\uDEAB")
                 }
 
                 if (missingFromOriginalReport.wasUsed) {
-                    report.showMemoir(missingFromOriginalReport, MISSING_HEADER.toString(), "implied_bad")
+                    report.showMemoir(missingFromOriginalReport, MISSING_FILES_HEADER_ICON, "implied_bad")
                 }
             }
 
@@ -75,11 +73,11 @@ internal class ReportGenerator(val savePath: String) {
                 val movedInCandidateReport = Memoir("${targetData.movedInCandidate.size} Moved Files", null, null, false)
 
                 for (thisFile in targetData.movedInCandidate) {
-                    movedInCandidateReport.info(thisFile.fullyQualifiedPath, MISSING_BULLET.toString())
+                    movedInCandidateReport.info("${thisFile.fullyQualifiedPath}<br><small>&nbsp;&nbsp;&nbsp;• Previous location ${thisFile.formerDirectory}</small>", "\uD83D\uDCC2")
                 }
 
                 if (movedInCandidateReport.wasUsed) {
-                    report.showMemoir(movedInCandidateReport, MISSING_HEADER.toString(), "implied_caution")
+                    report.showMemoir(movedInCandidateReport, MOVED_FILES_HEADER_ICON, "implied_caution")
                 }
             }
 
@@ -93,31 +91,31 @@ internal class ReportGenerator(val savePath: String) {
                 sortedContentChangeData.forEach {
                     val change = targetData.contentDifferences[it]
                     change?.let { thisChange ->
-                        contentChangesReport.info("${thisChange.fullyQualifiedPath}<br><small>${thisChange.allDifferencesAsString}</small>", CHANGED_BULLET.toString())
+                        contentChangesReport.info("${thisChange.fullyQualifiedPath}<br><small>${thisChange.allDifferencesAsString}</small>", "⚠️")
                     }
                 }
 
                 if (contentChangesReport.wasUsed) {
-                    report.showMemoir(contentChangesReport, CHANGED_HEADER.toString(), "implied_caution")
+                    report.showMemoir(contentChangesReport, CONTENT_CHANGED_HEADER_ICON, "implied_caution")
                 }
             }
 
 
 
             // Timestamp Changes
-            if (targetData.timeStampDifferences.size > 0) {
-                val sortedTimestampChangeData = targetData.timeStampDifferences.keys.toTypedArray()
+            if (targetData.timestampDifferences.size > 0) {
+                val sortedTimestampChangeData = targetData.timestampDifferences.keys.toTypedArray()
                 sortedTimestampChangeData.sort()
                 val timestampChangesReport = Memoir("${sortedTimestampChangeData.size} Files With Timestamp Changes", null, null, false)
                 sortedTimestampChangeData.forEach {
-                    val change = targetData.timeStampDifferences[it]
+                    val change = targetData.timestampDifferences[it]
                     change?.let { thisChange ->
-                        timestampChangesReport.info("${thisChange.fullyQualifiedPath}<br><small>${thisChange.allDifferencesAsString}</small>", CHANGED_BULLET.toString())
+                        timestampChangesReport.info("${thisChange.fullyQualifiedPath}<br><small>${thisChange.allDifferencesAsString}</small>", "\uD83D\uDD51")
                     }
                 }
 
                 if (timestampChangesReport.wasUsed)  {
-                    report.showMemoir(timestampChangesReport, CHANGED_HEADER.toString(), "implied_caution")
+                    report.showMemoir(timestampChangesReport, TIMESTAMP_CHANGED_HEADER_ICON, "implied_caution")
                 }
             }
         }
@@ -126,7 +124,7 @@ internal class ReportGenerator(val savePath: String) {
     fun conclude(errorLog: Memoir) {
         reportFile?.let { report ->
             if (errorLog.wasUsed) {
-                report.showMemoir(errorLog)
+                report.showMemoir(errorLog, ERROR_LOG_HEADER_ICON)
             }
 
             report.conclude()
@@ -134,6 +132,6 @@ internal class ReportGenerator(val savePath: String) {
     }
 
     private fun logHeader(title: String): String {
-        return "<table style=\"margin-left: 0; margin-right: 0\"><tr><td>\r\n\r\n$CHANGESCAN_LOGO\r\n\r\n</td><td><h1>$title</h1>\r\nPowered by ChangeScan</i></small></td></tr></table>\r\n<hr>\r\n\r\n"
+        return "<table style=\"margin-left: 0; margin-right: 0\"><tr><td>\r\n\r\n$CHANGESCAN_LOGO_ICON\r\n\r\n</td><td><h1>$title</h1>\r\nPowered by ChangeScan</i></small></td></tr></table>\r\n<hr>\r\n\r\n"
     }
 }

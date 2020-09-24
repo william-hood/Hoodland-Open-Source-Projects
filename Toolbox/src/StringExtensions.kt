@@ -172,9 +172,9 @@ fun String.padVertical(totalRows: Int, justification: VerticalJustification = Ve
         }
         emptyLine = createStringFromBasisCharacter(' ', maxHorz) + CRLF
     }
-    var topPadding = (totalRows - splitMessage.size) / 2
+
     paddedMessage = ""
-    topPadding = when (justification) {
+    var topPadding = when (justification) {
         VerticalJustification.BOTTOM -> totalRows - splitMessage.size
         VerticalJustification.TOP -> 0
         else -> (totalRows - splitMessage.size) / 2

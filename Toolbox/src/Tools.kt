@@ -38,7 +38,7 @@ val stderr = PrintWriter(System.err)
 
 private val quickDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd kk-mm-ss.SSS")
 
-val quickTimeStamp: String
+val quickTimestamp: String
     get() = quickDateFormat.format(LocalDateTime.now())
 
 @Throws(FileNotFoundException::class)

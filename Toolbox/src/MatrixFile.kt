@@ -208,7 +208,6 @@ class MatrixFile<T>(var delimiter: Char = DEFAULT_DELIMITER, var spacing: Int = 
             val dataFromFile = MatrixFile<T>()
             dataFromFile.delimiter = delimitingChar
             val fileStream: BufferedReader = openForReading(completeFilePath)
-                    ?: throw IOException("Attempt to open $completeFilePath for reading produced a null BufferedReader.")
 
             var currentLine = fileStream.readLine()
             if (currentLine != null) dataFromFile.headers = dataFromFile

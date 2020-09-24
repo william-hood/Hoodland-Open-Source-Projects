@@ -55,7 +55,7 @@ class MemoirConcludedException: Exception(ALREADY_CONCLUDED_MESSAGE) { }
  * @property title This will be indicated at the top of the file in the header if this is a root-level Memoir. For a subsection it appears in bold above the click-to-expand portion.
  * @property forPlainText Typically this is pointed at stdout for console output. This can also be pointed at a plain text file.
  * @property forHTML This is the main log file. It may be left out when used as a subsection of another Memoir.
- * @property showTimeStamps If you don't want time stamps with every line of the log, set this to false.
+ * @property showTimestamps If you don't want time stamps with every line of the log, set this to false.
  * @property showEmojis Set this to false and no lines will display an Emoji even if one is supplied.
  * @constructor
  *
@@ -65,7 +65,7 @@ class Memoir (
         val title: String = UNKNOWN,
         val forPlainText: PrintWriter? = null,
         val forHTML: PrintWriter? = null,
-        val showTimeStamps: Boolean = true,
+        val showTimestamps: Boolean = true,
         val showEmojis: Boolean = true,
         headerFunction: (String)->String = ::defaultHeader) {
     private val printWriter_HTML: PrintWriter? = forHTML
@@ -75,11 +75,11 @@ class Memoir (
     private var titleName = title
 
     init {
-        val timeStamp = LocalDateTime.now()
+        val timestamp = LocalDateTime.now()
 
         if (printWriter_PlainText != null) {
             echoPlainText("")
-            echoPlainText(titleName, EMOJI_MEMOIR, timeStamp)
+            echoPlainText(titleName, EMOJI_MEMOIR, timestamp)
         }
 
         if (printWriter_HTML != null) {
@@ -141,9 +141,9 @@ class Memoir (
      *
      * @param message Text that is being logged. Note that if HTML is sent here, the tags will not be hidden.
      * @param emoji Used as an icon to indicate the nature of the message. There are emoji constants available in Constants.kt.
-     * @param timeStamp Omit this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in. Note that the time stamp will be discarded if this Memoir was created with showTimeStamps=false.
+     * @param timestamp Omit this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in. Note that the time stamp will be discarded if this Memoir was created with showTimestamps=false.
      */
-    fun echoPlainText(message: String, emoji: String = EMOJI_TEXT_BLANK_LINE, timeStamp: LocalDateTime? = LocalDateTime.now()) {
+    fun echoPlainText(message: String, emoji: String = EMOJI_TEXT_BLANK_LINE, timestamp: LocalDateTime? = LocalDateTime.now()) {
         if (printWriter_PlainText == null) {
             // Silently decline
             return
@@ -153,9 +153,9 @@ class Memoir (
             throw MemoirConcludedException()
         }
 
-        if (showTimeStamps) {
+        if (showTimestamps) {
             var dateTime = "                        "
-            timeStamp?.let {
+            timestamp?.let {
                 dateTime = it.format(PLAINTEXT_DATETIME_FORMATTER)
             }
 
@@ -178,17 +178,17 @@ class Memoir (
      *
      * @param message Text that is being logged.  Any HTML tags sent through this will be sent verbatim to the HTML output, and rendered by the browser that views the file.
      * @param emoji Used as an icon to indicate the nature of the message. There are emoji constants available in Constants.kt.
-     * @param timeStamp Omit this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in.
+     * @param timestamp Omit this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in.
      */
-    fun writeToHTML(message: String, emoji: String = EMOJI_TEXT_BLANK_LINE, timeStamp: LocalDateTime? = LocalDateTime.now()) {
+    fun writeToHTML(message: String, emoji: String = EMOJI_TEXT_BLANK_LINE, timestamp: LocalDateTime? = LocalDateTime.now()) {
         if (isConcluded) {
             throw MemoirConcludedException()
         }
 
         content.append("<tr>")
 
-        if (showTimeStamps) {
-            timeStamp?.let {
+        if (showTimestamps) {
+            timestamp?.let {
                 var date = it.format(HTML_DATE_FORMATTER)
                 var time = it.format(HTML_TIME_FORMATTER)
 
@@ -211,9 +211,9 @@ class Memoir (
      * @param emoji If not omitted, you can use this to designate an emoji to appear next to the line. There are emoji constants available in Constants.kt.
      */
     fun info(message: String, emoji: String = EMOJI_TEXT_BLANK_LINE) {
-        val timeStamp = LocalDateTime.now()
-        writeToHTML(message, emoji, timeStamp)
-        echoPlainText(message, emoji, timeStamp)
+        val timestamp = LocalDateTime.now()
+        writeToHTML(message, emoji, timestamp)
+        echoPlainText(message, emoji, timestamp)
     }
 
     /**
@@ -223,9 +223,9 @@ class Memoir (
      * @param message The information being logged.
      */
     fun debug(message: String) {
-        val timeStamp = LocalDateTime.now()
-        writeToHTML(highlight(message), EMOJI_DEBUG, timeStamp)
-        echoPlainText(message, EMOJI_DEBUG, timeStamp)
+        val timestamp = LocalDateTime.now()
+        writeToHTML(highlight(message), EMOJI_DEBUG, timestamp)
+        echoPlainText(message, EMOJI_DEBUG, timestamp)
     }
 
     /**
@@ -235,9 +235,9 @@ class Memoir (
      * @param message The information being logged.
      */
     fun error(message: String) {
-        val timeStamp = LocalDateTime.now()
-        writeToHTML(highlight(message), EMOJI_ERROR, timeStamp)
-        echoPlainText(message, EMOJI_ERROR, timeStamp)
+        val timestamp = LocalDateTime.now()
+        writeToHTML(highlight(message), EMOJI_ERROR, timestamp)
+        echoPlainText(message, EMOJI_ERROR, timestamp)
     }
 
     /**
@@ -265,12 +265,12 @@ class Memoir (
      * @return Returns the HTML to represent the subordinate Memoir as a subsection of this one.
      */
     fun showMemoir(subordinate: Memoir, emoji: String = EMOJI_MEMOIR, style: String = "neutral", recurseLevel: Int = 0) : String {
-        val timeStamp = LocalDateTime.now()
+        val timestamp = LocalDateTime.now()
         val subordinateContent = subordinate.conclude()
         val result = wrapAsSubordinate(subordinate.titleName, subordinateContent, style)
 
         if (recurseLevel < 1) {
-            writeToHTML(result, emoji, timeStamp)
+            writeToHTML(result, emoji, timestamp)
         }
 
         return result

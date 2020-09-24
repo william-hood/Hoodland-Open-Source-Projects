@@ -60,5 +60,5 @@ internal class FileComparison(
         }
 
     val contentWasChanged: Boolean
-        get() = differences.contains(DifferenceTypes.CHECKSUM_DIFFERS)
+        get() = differences.contains(DifferenceTypes.CHECKSUM_DIFFERS) || differences.contains(DifferenceTypes.CANDIDATE_LARGER) || differences.contains(DifferenceTypes.CANDIDATE_SMALLER)
     }

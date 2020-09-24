@@ -30,25 +30,15 @@ import java.nio.file.attribute.BasicFileAttributes
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-internal class FileDescription(fullyQualifiedPathAndFileName: String) : Any(), Serializable, Comparable<FileDescription> {
+internal open class FileDescription(val directory: String, val fileName: String) : Any(), Serializable, Comparable<FileDescription> {
     val checksum: Long
     val size: Long
     val creationTime: LocalDateTime
     val lastAccessTime: LocalDateTime
     val lastWriteTime: LocalDateTime
-    val directory: String
-    val fileName: String
+    var formerDirectory: String = ""
 
     init {
-        fileName = fullyQualifiedPathAndFileName.substringAfterLast(File.separator)
-        directory = fullyQualifiedPathAndFileName.substringBeforeLast(File.separator)
-    }
-
-    val fullyQualifiedPath: String
-        get() = "$directory${File.separator}$fileName"
-
-    init  //BasicFileAttributes info)
-    {
         var info: BasicFileAttributes = Files.readAttributes(Paths.get(fullyQualifiedPath), BasicFileAttributes::class.java)
         size = info.size()
         creationTime = LocalDateTime.ofInstant(info.creationTime().toInstant(), ZoneId.systemDefault())
@@ -56,6 +46,9 @@ internal class FileDescription(fullyQualifiedPathAndFileName: String) : Any(), S
         lastWriteTime = LocalDateTime.ofInstant(info.lastModifiedTime().toInstant(), ZoneId.systemDefault())
         checksum = File(fullyQualifiedPath).crc32ChecksumValue
     }
+
+    val fullyQualifiedPath: String
+        get() = "$directory${File.separator}$fileName"
 
     override fun compareTo(other: FileDescription): Int {
         return fullyQualifiedPath.compareTo(other.fullyQualifiedPath)

@@ -42,7 +42,7 @@ internal fun shouldRender(it: KProperty1<Any, *>): Boolean {
     return true
 }
 
-internal fun Memoir.beginShow(timeStamp: LocalDateTime, className: String, variableName: String, style: String, recurseLevel: Int): StringBuilder {
+internal fun Memoir.beginShow(timestamp: LocalDateTime, className: String, variableName: String, style: String, recurseLevel: Int): StringBuilder {
     val result = StringBuilder("\r\n<div class=\"object $style centered\">\r\n")
 
     if (recurseLevel > 0) {
@@ -59,7 +59,7 @@ internal fun Memoir.beginShow(timeStamp: LocalDateTime, className: String, varia
         result.append("<div class=\"${this.encapsulationTag}\">\r\n")
     }
 
-    this.echoPlainText("Showing $className: $variableName (details in HTML log)", EMOJI_OBJECT, timeStamp)
+    this.echoPlainText("Showing $className: $variableName (details in HTML log)", EMOJI_OBJECT, timestamp)
 
     return result
 }

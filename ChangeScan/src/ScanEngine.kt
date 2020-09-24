@@ -49,8 +49,8 @@ internal object ScanEngine {
                 activityLog.info("Loading baseline file ${workOrder.snapshotComparisonPath}")
                 val originalFileSystem = FileSystemDescription.loadInstance(workOrder.snapshotComparisonPath)
 
-                val comparison = FileSystemComparison(originalFileSystem, scannedFileSystem, "Comparing scan data to baseline file ${workOrder.snapshotComparisonPath}")
-                activityLog.showMemoir(comparison.log)
+                activityLog.info("Comparing scan data to baseline file ${workOrder.snapshotComparisonPath}")
+                val comparison = FileSystemComparison(activityLog, originalFileSystem, scannedFileSystem)
 
                 if (workOrder.reportRequested) {
                     activityLog.info("Generating report.", "\uD83D\uDCBE")
@@ -100,7 +100,7 @@ internal object ScanEngine {
                                 activityLog.info(thisItem, "\uD83D\uDD0E")
 
                                 try {
-                                    val thisFilesDescription = FileDescription(thisItem)
+                                    val thisFilesDescription = FileDescription(rootDirectory, it)
                                     thisFileSystem.add(thisFilesDescription)
                                 } catch (thisException: Throwable) {
                                     val msg = "Unable to Scan :  $thisItem"
