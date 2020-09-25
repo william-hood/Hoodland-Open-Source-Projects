@@ -72,14 +72,13 @@ class Memoir (
     private val printWriter_PlainText: PrintWriter? = forPlainText
     private val content = StringBuilder(STARTING_CONTENT)
     private var isConcluded = false
-    private var titleName = title
 
     init {
         val timestamp = LocalDateTime.now()
 
         if (printWriter_PlainText != null) {
             echoPlainText("")
-            echoPlainText(titleName, EMOJI_MEMOIR, timestamp)
+            echoPlainText(title, EMOJI_MEMOIR, timestamp)
         }
 
         if (printWriter_HTML != null) {
@@ -267,7 +266,7 @@ class Memoir (
     fun showMemoir(subordinate: Memoir, emoji: String = EMOJI_MEMOIR, style: String = "neutral", recurseLevel: Int = 0) : String {
         val timestamp = LocalDateTime.now()
         val subordinateContent = subordinate.conclude()
-        val result = wrapAsSubordinate(subordinate.titleName, subordinateContent, style)
+        val result = wrapAsSubordinate(subordinate.title, subordinateContent, style)
 
         if (recurseLevel < 1) {
             writeToHTML(result, emoji, timestamp)
