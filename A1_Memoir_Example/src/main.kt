@@ -141,11 +141,13 @@ internal fun subLog(check: TestStruct, inner: TestStruct): Memoir {
 
     log.info("Memoir can be very useful for testing HTTP Requests. Let's use Java's standard HTTP client to send a request and get a response.")
 
+    val payload = "This is the request body"
     val request = HttpRequest.newBuilder()
             .uri(URI.create("https://httpbin.org/get?param1=latida&param2=tweedledee&param3=whatever"))
+            .POST(HttpRequest.BodyPublishers.ofString(payload))
             .build()
 
-    log.showHttpTransaction(request)
+    log.showHttpTransaction(request, payload)
     log.skipLine()
 
     log.info("Let's think of all the heart-felt love and warmth you feel trying to make sense of an exception stacktrace from console output.")

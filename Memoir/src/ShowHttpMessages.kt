@@ -29,8 +29,6 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.util.*
 
-// TODO: Full test of callback function feature
-
 /**
  * HTTP_MESSAGE_BODY Indicates to your supplied callback function that the field being processed is the payload of an HTTP Request or Response.
  */
@@ -46,9 +44,11 @@ const val HTTP_MESSAGE_BODY = "HTTP Req/Resp Body/Payload"
  * supply a callbackFunction if none is needed.
  *
  * @param request The java.net.http.HttpRequest to be rendered.
+ * @param bodyContentAsString It is impossible to get the string content of HttpRequest.BodyPublishers.ofString(). Echo the string content here if you want Memoir to display the outgoing content.
  * @param callbackFunction Optional: Supply a callback function to make on-the-fly changes to certain fields, such as decoding Base64 or pretty-printing JSON.
  */
-fun Memoir.showHttpRequest(request: HttpRequest, callbackFunction: ((fieldName: String, fieldValue: String)->String)? = null) {
+
+fun Memoir.showHttpRequest(request: HttpRequest, bodyContentAsString: String? = null, callbackFunction: ((fieldName: String, fieldValue: String)->String)? = null) {
     val uri = request.uri()
     val queries = ArrayList<String>()
     val result = StringBuilder("<div class=\"outgoing implied_caution\">\r\n")
@@ -90,7 +90,19 @@ fun Memoir.showHttpRequest(request: HttpRequest, callbackFunction: ((fieldName: 
         result.append("\r\n</table>")
     }
 
-    result.append("<br>${renderHeadersAndBody(request.headers(), request.bodyPublisher().toString())}")
+    var payload = ""
+
+    bodyContentAsString?.let {
+        payload = it
+    }
+
+    if (payload.length < 1) {
+        if (request.bodyPublisher().isPresent) {
+            payload = "(unknown content)"
+        }
+    }
+
+    result.append("<br>${renderHeadersAndBody(request.headers(), payload)}")
 
     writeToHTML(result.toString(), EMOJI_OUTGOING)
     echoPlainText(textRendition, EMOJI_OUTGOING)
@@ -117,16 +129,15 @@ fun Memoir.showHttpResponse(response: HttpResponse<*>, callbackFunction: ((field
     // Status code & description
     val textRendition = "$statusCode ${statusCode.toStatusCodeDescription()}"
     result.append("<center><h2>$textRendition</h2>")
-
     result.append(renderHeadersAndBody(response.headers(), response.body().toString(), callbackFunction))
 
     writeToHTML(result.toString(), EMOJI_INCOMING)
     echoPlainText(textRendition, EMOJI_INCOMING)
 }
 
-private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: String, callbackFunction: ((fieldName: String, fieldValue: String)->String)? = null): String {
+private fun Memoir.renderHeadersAndBody(headers: HttpHeaders, stringPayload: String, callbackFunction: ((fieldName: String, fieldValue: String)->String)? = null): String {
     val result = StringBuilder()
-    val headerMap = Headers.map()
+    val headerMap = headers.map()
 
     // Headers
     if (headerMap.size > 0) {
@@ -168,18 +179,18 @@ private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: Str
         }
     }
     else {
-        result.append("<br><br><small><i>(no headers)</i></small>\r\n")
+        result.append("<br><br><small><i>(no headers)</i></small><br>\r\n")
     }
 
     // Body
-    if ((StringPayload == "") || (StringPayload == "Optional.empty")) {
+    if ((stringPayload == "") || (stringPayload == "Optional.empty")) {
         result.append("<br><br><small><i>(no payload)</i></small></center>")
     } else {
-        val size = StringPayload.length
+        val size = stringPayload.length
 
         result.append("<br><b>Payload</b><br></center>\r\n")
 
-        val renderedBody = treatAsCode(processString(HTTP_MESSAGE_BODY, StringPayload, callbackFunction))
+        val renderedBody = treatAsCode(processString(HTTP_MESSAGE_BODY, stringPayload, callbackFunction))
 
         if (size > MAX_BODY_LENGTH_TO_DISPLAY) {
             val identifier2 = UUID.randomUUID().toString()
@@ -204,12 +215,13 @@ private fun Memoir.renderHeadersAndBody(Headers: HttpHeaders, StringPayload: Str
  * the changed value with your callbackFunction. Return the field as it was sent if no changes are needed. Do not
  * supply a callbackFunction if none is needed.
  * @param request The java.net.http.HttpRequest to be logged and sent.
+ * @param bodyContentAsString It is impossible to get the string content of HttpRequest.BodyPublishers.ofString(). Echo the string content here if you want Memoir to display the outgoing content.
  * @param callbackFunction Optional: Supply a callback function to make on-the-fly changes to certain fields, such as decoding Base64 or pretty-printing JSON. This will be applied to BOTH the request and response.
  * @return The java.net.http.HttpResponse that was logged and returned.
  */
-fun Memoir.showHttpTransaction(request: HttpRequest, callbackFunction: ((fieldName: String, fieldValue: String)->String)? = null): HttpResponse<*> {
+fun Memoir.showHttpTransaction(request: HttpRequest, bodyContentAsString: String? = null, callbackFunction: ((fieldName: String, fieldValue: String)->String)? = null): HttpResponse<*> {
     val client = HttpClient.newHttpClient()
-    showHttpRequest(request, callbackFunction)
+    showHttpRequest(request, bodyContentAsString, callbackFunction)
     val result = client.send(request, HttpResponse.BodyHandlers.ofString())
     showHttpResponse(result, callbackFunction)
     return result
