@@ -72,14 +72,10 @@ class Memoir (
     private val printWriter_PlainText: PrintWriter? = forPlainText
     private val content = StringBuilder(STARTING_CONTENT)
     private var isConcluded = false
+    private var firstEcho = true
 
     init {
         val timestamp = LocalDateTime.now()
-
-        if (printWriter_PlainText != null) {
-            echoPlainText("")
-            echoPlainText(title, EMOJI_MEMOIR, timestamp)
-        }
 
         if (printWriter_HTML != null) {
             printWriter_HTML.print("<html>\r\n<meta charset=\"UTF-8\">\r\n<head>\r\n<title>$title</title>\r\n")
@@ -151,6 +147,13 @@ class Memoir (
         if (isConcluded) {
             throw MemoirConcludedException()
         }
+
+        if (firstEcho) {
+            firstEcho = false
+            echoPlainText("", timestamp = timestamp)
+            echoPlainText(title, EMOJI_MEMOIR, timestamp)
+        }
+
 
         if (showTimestamps) {
             var dateTime = "                        "
