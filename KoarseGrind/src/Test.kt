@@ -402,28 +402,30 @@ abstract class Test (
 
             // SETUP
             try {
-                try {
-                    setupContext.results.add(TestResult(TestStatus.PASS, "Setup was run"))
-                    setup()
-                } finally {
-                    wasSetup = true
-                    if (setupContext.memoir.wasUsed) {
-                        var style = "implied_bad"
-                        if (setupContext.overallStatus.isPassing()) { style = "implied_good" }
-                        testContext!!.memoir.showMemoir(setupContext.memoir, EMOJI_SETUP, style)
-                    }
-                }
+                setupContext.results.add(TestResult(TestStatus.PASS, "Setup was run"))
+                setup()
             } catch (thisFailure: Throwable) {
                 addResult(getResultForPreclusionInSetup(thisFailure))
+            } finally {
+                wasSetup = true
+                if (setupContext.memoir.wasUsed) {
+                    var style = "implied_bad"
+                    if (setupContext.overallStatus.isPassing()) { style = "implied_good" }
+                    testContext!!.memoir.showMemoir(setupContext.memoir, EMOJI_SETUP, style)
+                }
             }
 
             // RUN THE ACTUAL TEST
             if (setupContext.overallStatus.isPassing() && (! KILL_SWITCH)) {
                 try {
-                    executionThread = thread(start = true) { performTest() }
+                    executionThread = thread(start = true) {
+                        try {
+                            performTest()
+                        } catch (thisFailure: Throwable) {
+                            addResult(getResultForFailure(thisFailure))
+                        }
+                    }
                     executionThread!!.join()
-                } catch (thisFailure: Throwable) {
-                    addResult(getResultForFailure(thisFailure))
                 } finally {
                     wasRun = true
                     executionThread = null
