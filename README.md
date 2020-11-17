@@ -1,6 +1,6 @@
 # Hoodland Open Source Projects
 
-#####Release 1.0.BETA1
+##### Release 1.0.BETA1
 
 These projects are the "spiritual successors" to software I've developed over
 the course of my career as an SDET. In June of 2020, having grown frustrated
@@ -80,7 +80,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.*
 
 
-##Contact Information
+## Contact Information
 https://www.linkedin.com/in/william-a-hood-sdet-pdx/
 
 william.arthur.hood@gmail.com
