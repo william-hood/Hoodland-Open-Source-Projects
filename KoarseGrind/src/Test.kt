@@ -66,7 +66,7 @@ abstract class Test (
         override val name: String,
         private val detailedDescription: String = UNSET_DESCRIPTION,
         internal val identifier: String = "",
-        vararg categories: String): TestEchelon {
+        vararg categories: String): Inquiry {
         internal var categories: Array<out String> = categories
         internal val setupContext = TestPhaseContext(Memoir("Setup - Test $identifiedName", stdout))
         internal val cleanupContext = TestPhaseContext(Memoir("Cleanup -  Test $identifiedName", stdout))
@@ -379,41 +379,67 @@ abstract class Test (
         testContext!!.results.add(TestResult(TestStatus.SUBJECTIVE, "This test case requires analysis by appropriate personnel to determine pass/fail status"))
     }
 
+    internal fun runPreproduction(rootDirectory: String) {
+        parentArtifactsDirectory = rootDirectory
+        val expectedFileName = artifactsDirectory + File.separatorChar + logFileName
+
+        //forceParentDirectoryExistence(expectedFileName)
+        // Force the parent directory to exist...
+        File(expectedFileName).parentFile.mkdirs()
+
+        testContext = TestPhaseContext(Memoir(name, stdout, PrintWriter(expectedFileName), true, true, ::logHeader))
+
+        if (detailedDescription != UNSET_DESCRIPTION) {
+            testContext!!.memoir.writeToHTML("<small><i>$detailedDescription</i></small>", EMOJI_TEXT_BLANK_LINE)
+        }
+
+        testContext!!.memoir.skipLine()
+
+        // SETUP
+        try {
+            setupContext.results.add(TestResult(TestStatus.PASS, "Setup was run"))
+            setup()
+        } catch (thisFailure: Throwable) {
+            addResult(getResultForPreclusionInSetup(thisFailure))
+        } finally {
+            wasSetup = true
+            if (setupContext.memoir.wasUsed) {
+                var style = "implied_bad"
+                if (setupContext.overallStatus.isPassing()) { style = "implied_good" }
+                testContext!!.memoir.showMemoir(setupContext.memoir, EMOJI_SETUP, style)
+            }
+        }
+    }
+
+    internal fun runPostproduction() {
+        // CLEANUP
+        try {
+            cleanup()
+            wasCleanedUp = true
+        } catch (thisFailure: Throwable) {
+            addResult(getResultForFailureInCleanup(thisFailure))
+        } finally {
+            if (cleanupContext.memoir.wasUsed) {
+                var style = "implied_bad"
+                if (cleanupContext.overallStatus.isPassing()) { style = "implied_good" }
+                testContext!!.memoir.showMemoir(cleanupContext.memoir, EMOJI_CLEANUP, style)
+            }
+        }
+
+        val overall = overallStatus.toString()
+        val emoji = overallStatus.memoirIcon
+        testContext!!.memoir.writeToHTML("<h2>Overall Status: $overall</h2>", emoji)
+        testContext!!.memoir.echoPlainText("Overall Status: $overall", emoji)
+        testContext!!.memoir.conclude()
+    }
+
     // This was virtual/open in the C# version
     internal fun runTest(rootDirectory: String) {
         if (KILL_SWITCH) {
             // Decline to run
             // Deliberate NO-OP
         } else {
-            parentArtifactsDirectory = rootDirectory
-            val expectedFileName = artifactsDirectory + File.separatorChar + logFileName
-
-            //forceParentDirectoryExistence(expectedFileName)
-            // Force the parent directory to exist...
-            File(expectedFileName).parentFile.mkdirs()
-
-            testContext = TestPhaseContext(Memoir(name, stdout, PrintWriter(expectedFileName), true, true, ::logHeader))
-
-            if (detailedDescription != UNSET_DESCRIPTION) {
-                testContext!!.memoir.writeToHTML("<small><i>$detailedDescription</i></small>", EMOJI_TEXT_BLANK_LINE)
-            }
-
-            testContext!!.memoir.skipLine()
-
-            // SETUP
-            try {
-                setupContext.results.add(TestResult(TestStatus.PASS, "Setup was run"))
-                setup()
-            } catch (thisFailure: Throwable) {
-                addResult(getResultForPreclusionInSetup(thisFailure))
-            } finally {
-                wasSetup = true
-                if (setupContext.memoir.wasUsed) {
-                    var style = "implied_bad"
-                    if (setupContext.overallStatus.isPassing()) { style = "implied_good" }
-                    testContext!!.memoir.showMemoir(setupContext.memoir, EMOJI_SETUP, style)
-                }
-            }
+            runPreproduction(rootDirectory)
 
             // RUN THE ACTUAL TEST
             if (setupContext.overallStatus.isPassing() && (! KILL_SWITCH)) {
@@ -436,25 +462,7 @@ abstract class Test (
                 testContext!!.results.add(thisResult)
             }
 
-            // CLEANUP
-            try {
-                cleanup()
-                wasCleanedUp = true
-            } catch (thisFailure: Throwable) {
-                addResult(getResultForFailureInCleanup(thisFailure))
-            } finally {
-                if (cleanupContext.memoir.wasUsed) {
-                    var style = "implied_bad"
-                    if (cleanupContext.overallStatus.isPassing()) { style = "implied_good" }
-                    testContext!!.memoir.showMemoir(cleanupContext.memoir, EMOJI_CLEANUP, style)
-                }
-            }
-
-            val overall = overallStatus.toString()
-            val emoji = overallStatus.memoirIcon
-            testContext!!.memoir.writeToHTML("<h2>Overall Status: $overall</h2>", emoji)
-            testContext!!.memoir.echoPlainText("Overall Status: $overall", emoji)
-            testContext!!.memoir.conclude()
+            runPostproduction()
         }
     }
 }

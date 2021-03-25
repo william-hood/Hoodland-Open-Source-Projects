@@ -75,8 +75,6 @@ class Memoir (
     private var firstEcho = true
 
     init {
-        val timestamp = LocalDateTime.now()
-
         if (printWriter_HTML != null) {
             printWriter_HTML.print("<html>\r\n<meta charset=\"UTF-8\">\r\n<head>\r\n<title>$title</title>\r\n")
             printWriter_HTML.print(MEMOIR_LOG_STYLING)

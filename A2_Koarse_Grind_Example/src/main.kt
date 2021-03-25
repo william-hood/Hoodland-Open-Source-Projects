@@ -84,7 +84,7 @@ import hoodland.opensource.koarsegrind.TestProgram
 // First thing's first. Below is all you need for a main() function
 // to kick off your tests.
 fun main(args: Array<String>) {
-    TestProgram.run("Koarse Grind Demo", args)
+    TestProgram.run("Koarse Grind Demo", args = args)
 }
 
 // You can put a test in the same file as main() if you want.

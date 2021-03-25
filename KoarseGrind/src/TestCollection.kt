@@ -23,18 +23,16 @@ package hoodland.opensource.koarsegrind
 
 import hoodland.opensource.memoir.Memoir
 import hoodland.opensource.memoir.showThrowable
-import hoodland.opensource.memoir.UNKNOWN
 import hoodland.opensource.toolbox.*
 import java.io.File
 import java.io.PrintWriter
 import kotlin.concurrent.thread
-import kotlin.math.round
 
 /**
- * TestEchelon applies to any Test or TestCollection in the KoarseGrind system. It may be used
+ * An Inquiry is any Test or TestCollection in the KoarseGrind system. It may be used
  * if a field or variable must contain anything that is a derivative of either of those classes.
  */
-interface TestEchelon {
+interface Inquiry {
     val name: String
     val overallStatus: TestStatus
 }
@@ -49,16 +47,21 @@ interface TestEchelon {
  * the overall name for the entire suite (the same "name" passed into the TestProgram.run() method).
  * It may also apply to a subgroup of related tests (the same "collectionName" passed into a TestFectory).
  */
-public class TestCollection(override val name: String): ArrayList<TestEchelon>(), TestEchelon {
-    init {
-    System.err.println("Ran Init: ${this::class.simpleName}")
-    }
+public class TestCollection(override val name: String): ArrayList<Inquiry>(), Inquiry {
+    var outfitter: Outfitter? = null
     private var _currentTest: Test? = null
     private var currentArtifactsDirectory = UNSET_STRING
     private var executionThread: Thread? = null
     private var currentCount = Int.MAX_VALUE
     internal var rootDirectory: String = UNSET_STRING
     private var filterSet: FilterSet? = null
+
+    /* For debugging use if needed
+    init {
+        System.err.println("Ran Init: ${this::class.simpleName}")
+    }
+
+     */
 
     /*
      * These are for future use by a test runner program.
@@ -142,53 +145,84 @@ public class TestCollection(override val name: String): ArrayList<TestEchelon>()
             }
         }
 
-        for (indexCount in 0..(this.count() - 1)) {
-            currentCount = indexCount
+        // Collection Setup
+        if (KILL_SWITCH) {
+            // Decline to run
+        } else {
+            outfitter?.let {
+                it.runPreproduction(rootDirectory)
+                if (! it.setupContext.overallStatus.isPassing()) {
+                    val thisResult = TestResult(TestStatus.INCONCLUSIVE, "Declining to perform all tests in collection $name because collection-level setup failed.")
+                    overlog.showTestResult((thisResult))
+                    it.testContext!!.results.add(thisResult)
+                }
+            }
+        }
 
-            if (KILL_SWITCH) {
-                // Decline to run
-                break
-            } else {
-                val nextItem = this[currentCount]
-                if (nextItem is Test) {
-                    if (shouldRun(nextItem)) {
-                        _currentTest = nextItem as Test
-                        try {
-                            executionThread = thread(start = true) { _currentTest!!.runTest(currentArtifactsDirectory) } // C# used the public Run() function
-                            executionThread!!.join()
-                        } catch (thisFailure: Throwable) {
-                            // Uncertain why specifically calling GetResultForPreclusionInSetup()
-                            _currentTest!!.addResult(_currentTest!!.getResultForPreclusionInSetup(thisFailure))
-                        } finally {
-                            executionThread = null
-                            overlog.showMemoir(_currentTest!!.testContext!!.memoir, _currentTest!!.overallStatus.memoirIcon, _currentTest!!.overallStatus.memoirStyle)
+        var attemptTests = true
 
-                            // Prefix the test's artifacts directory with its overall status
+        outfitter?.let {
+            attemptTests = it.overallStatus.isPassing()
+        }
+
+        if (attemptTests) {
+            for (indexCount in 0..(this.count() - 1)) {
+                currentCount = indexCount
+
+                if (KILL_SWITCH) {
+                    // Decline to run
+                    break
+                } else {
+                    val nextItem = this[currentCount]
+                    if (nextItem is Test) {
+                        if (shouldRun(nextItem)) {
+                            _currentTest = nextItem as Test
                             try {
-                                File(_currentTest!!.artifactsDirectory).renameTo(File(currentArtifactsDirectory + File.separatorChar + _currentTest!!.prefixedName))
-                            } catch (loggedThrowable: Throwable) {
-                                overlog.error("Koarse Grind was unable to rename the current test's artifact directory to their permanent location")
-                                overlog.showThrowable(loggedThrowable)
+                                executionThread = thread(start = true) { _currentTest!!.runTest(currentArtifactsDirectory) } // C# used the public Run() function
+                                executionThread!!.join()
+                            } catch (thisFailure: Throwable) {
+                                // Uncertain why specifically calling GetResultForPreclusionInSetup()
+                                _currentTest!!.addResult(_currentTest!!.getResultForPreclusionInSetup(thisFailure))
+                            } finally {
+                                executionThread = null
+                                overlog.showMemoir(_currentTest!!.testContext!!.memoir, _currentTest!!.overallStatus.memoirIcon, _currentTest!!.overallStatus.memoirStyle)
+
+                                // Prefix the test's artifacts directory with its overall status
+                                try {
+                                    File(_currentTest!!.artifactsDirectory).renameTo(File(currentArtifactsDirectory + File.separatorChar + _currentTest!!.prefixedName))
+                                } catch (loggedThrowable: Throwable) {
+                                    overlog.error("Koarse Grind was unable to rename the current test's artifact directory to their permanent location")
+                                    overlog.showThrowable(loggedThrowable)
+                                }
                             }
                         }
-                    }
-                } else if (nextItem is TestCollection) {
-                    val subCollection = nextItem as TestCollection
-                    subCollection.rootDirectory = "$currentArtifactsDirectory${File.separatorChar}(collection '${subCollection.name}' in progress)"
+                    } else if (nextItem is TestCollection) {
+                        val subCollection = nextItem as TestCollection
+                        subCollection.rootDirectory = "$currentArtifactsDirectory${File.separatorChar}(collection '${subCollection.name}' in progress)"
 
-                    val subLog = subCollection.run(filterSet)
-                    if (subLog.wasUsed) {
-                        overlog.showMemoir(subLog, subCollection.overallStatus.memoirIcon, subCollection.overallStatus.memoirStyle)
-                    }
+                        val subLog = subCollection.run(filterSet)
+                        if (subLog.wasUsed) {
+                            overlog.showMemoir(subLog, subCollection.overallStatus.memoirIcon, subCollection.overallStatus.memoirStyle)
+                        }
 
-                    // Prefix the test's artifacts directory with its overall status
-                    try {
-                        File(subCollection.rootDirectory).renameTo(File(currentArtifactsDirectory + File.separatorChar + subCollection.prefixedName))
-                    } catch (loggedThrowable: Throwable) {
-                        overlog.error("Koarse Grind was unable to rename the current test collection's root directory to their permanent location")
-                        overlog.showThrowable(loggedThrowable)
+                        // Prefix the test's artifacts directory with its overall status
+                        try {
+                            File(subCollection.rootDirectory).renameTo(File(currentArtifactsDirectory + File.separatorChar + subCollection.prefixedName))
+                        } catch (loggedThrowable: Throwable) {
+                            overlog.error("Koarse Grind was unable to rename the current test collection's root directory to their permanent location")
+                            overlog.showThrowable(loggedThrowable)
+                        }
                     }
                 }
+            }
+        }
+
+        // Collection Cleanup
+        if (KILL_SWITCH) {
+            // Decline to run
+        } else {
+            outfitter?.let {
+                it.runPostproduction()
             }
         }
 
