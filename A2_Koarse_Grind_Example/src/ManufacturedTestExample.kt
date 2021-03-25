@@ -18,6 +18,7 @@ package com.mycompany.testing
 import hoodland.opensource.descriptions.StringFieldDescription
 import hoodland.opensource.descriptions.StringFieldTargets
 import hoodland.opensource.koarsegrind.ManufacturedTest
+import hoodland.opensource.koarsegrind.Outfitter
 import hoodland.opensource.koarsegrind.TestFactory
 import hoodland.opensource.memoir.treatAsCode
 import hoodland.opensource.toolbox.SubnameFactory
@@ -47,7 +48,7 @@ class ManufacturedTestExample(
 //
 // ‼️ IMPORTANT ‼️ Your TestFactory should only have the default constructor with no parameters.
 //
-class TestFactoryExample: TestFactory("Test Factory and Manufactured Test Example") {
+class TestFactoryExample: TestFactory("Test Factory and Manufactured Test Example", ExampleOutfitter) {
     override fun populateProducts() {
         val subname = SubnameFactory()
         val testDataGenerator = StringFieldDescription("The rain in Spain stays mainly on the plain.")
@@ -62,5 +63,17 @@ class TestFactoryExample: TestFactory("Test Factory and Manufactured Test Exampl
                         testDataGenerator.describedValue))
             }
         }
+    }
+}
+
+// If the tests created by your factory require a setup and/or cleanup, pass an Outfitter
+// object to the TestFactory constructor.
+object ExampleOutfitter : Outfitter() {
+    override fun setup() {
+        assert.shouldBeTrue(true, "Collection-level setup ran!")
+    }
+
+    override fun cleanup() {
+        assert.shouldBeTrue(true, "Collection-level cleanup ran!")
     }
 }

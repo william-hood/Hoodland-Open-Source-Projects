@@ -31,10 +31,17 @@ public abstract class ManufacturedTest(name: String, detailedDescription: String
 /**
  * An Outfitter is used to provide a setup and teardown, without an actual test to perform.
  */
-public class Outfitter: ManufacturedTest(UNSET_DESCRIPTION) {
-    override fun performTest() {
+public open class Outfitter: ManufacturedTest("Collection") {
+    final override fun performTest() {
         // DELIBERATE NO-OP
     }
+
+    override val overallStatus: TestStatus
+        get() {
+            if (setupContext.overallStatus == TestStatus.SUBJECTIVE) return TestStatus.SUBJECTIVE
+            if (! setupContext.overallStatus.isPassing()) return TestStatus.INCONCLUSIVE
+            return TestStatus.PASS
+        }
 
 }
 
@@ -46,13 +53,14 @@ public class Outfitter: ManufacturedTest(UNSET_DESCRIPTION) {
  * will be it's own subordinate section of the log and its own subdirctory within the results. Any further TestCollections you
  * add into "products" will be another subordinate log/directory within that one.
  */
-abstract class TestFactory(val collectionName: String) {
-    val products = TestCollection(collectionName)
+abstract class TestFactory(
+    val collectionName: String,
 
     /**
-     * Use this to provide a setup and teardown for the manufactured tests produced by this factory.
+     * Use this to provide a setup and cleanup for the manufactured tests produced by this factory.
      */
-    open val outfitter: Outfitter? = null
+    val collectionOutfitter: Outfitter? = null) {
+    val products = TestCollection(collectionName)
 
     /**
      * Use this to instantiate manufactured tests and put them into the Products Collection
@@ -60,7 +68,7 @@ abstract class TestFactory(val collectionName: String) {
     abstract fun populateProducts()
 
     init {
-        products.outfitter = this.outfitter
+        products.outfitter = collectionOutfitter
         populateProducts()
     }
 }

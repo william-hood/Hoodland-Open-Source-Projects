@@ -21,6 +21,7 @@
 
 package hoodland.opensource.koarsegrind
 
+import hoodland.opensource.memoir.EMOJI_CLEANUP
 import hoodland.opensource.memoir.Memoir
 import hoodland.opensource.memoir.showThrowable
 import hoodland.opensource.toolbox.*
@@ -60,66 +61,6 @@ public class TestCollection(override val name: String): ArrayList<Inquiry>(), In
     init {
         System.err.println("Ran Init: ${this::class.simpleName}")
     }
-
-     */
-
-    /*
-     * These are for future use by a test runner program.
-    fun reset() {
-        currentCount = Int.MAX_VALUE
-        _currentTest?.interrupt() // C# code did not check if the test was present and did not call Interrupt()
-        _currentTest = null
-        executionThread?.interrupt() // C# code tried to Abort() three times in a row if not null
-        executionThread = null
-        currentArtifactsDirectory = UNSET_STRING
-    }
-
-    val currentTest: String
-        get() {
-            if (_currentTest == null) { return UNKNOWN }
-            return _currentTest!!.identifiedName
-        }
-
-    // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
-    val progress: Int
-        get() {
-            synchronized(this) {
-                if (this.count() < 1) { return 100 }
-                if (currentCount >= this.count()) { return 100 }
-                var effectiveCount = currentCount.toFloat()
-
-                try {
-                    effectiveCount += _currentTest!!.progress
-                } catch (dontCare: Throwable) {
-                    // DELIBERATE NO-OP
-                }
-
-                return round((effectiveCount / this.count()) * 100).toInt()
-            }
-        }
-
-    // Omitting public functions Run() & InterruptCurrentTest() from C#
-    // which appears to be unnecessary in Kotlin. These might be relics
-    // from when Coarse Grind had a web interface.
-
-    // This may have only been used by the web UI in the old Coarse Grind.
-    // Might be needed for an external runner, which also might need the
-    // function InterruptCurrentTest() put back. Possibly also Run().
-    fun haltAllTesting() {
-        KILL_SWITCH = true
-        currentCount = Int.MAX_VALUE
-        _currentTest!!.interrupt() // C# used the public InterruptCurrentTest() function
-
-        try {
-            executionThread?.interrupt()
-            // C# version was followed by executionThread.Abort() three times in a row.
-        } catch (dontCare: Exception) {
-            // Deliberate NO-OP
-        } finally {
-            executionThread = null
-        }
-    }
-     *
      */
 
     internal fun run(filters: FilterSet? = null, preclusiveFailures: ArrayList<Throwable>? = null) : Memoir {
@@ -150,11 +91,12 @@ public class TestCollection(override val name: String): ArrayList<Inquiry>(), In
             // Decline to run
         } else {
             outfitter?.let {
-                it.runPreproduction(rootDirectory)
+                it.runSetup(rootDirectory)
+                it.setupContext.showWithStyle(overlog)
                 if (! it.setupContext.overallStatus.isPassing()) {
                     val thisResult = TestResult(TestStatus.INCONCLUSIVE, "Declining to perform all tests in collection $name because collection-level setup failed.")
+                    it.setupContext.results.add(thisResult)
                     overlog.showTestResult((thisResult))
-                    it.testContext!!.results.add(thisResult)
                 }
             }
         }
@@ -162,7 +104,7 @@ public class TestCollection(override val name: String): ArrayList<Inquiry>(), In
         var attemptTests = true
 
         outfitter?.let {
-            attemptTests = it.overallStatus.isPassing()
+            attemptTests = it.setupContext.overallStatus.isPassing()
         }
 
         if (attemptTests) {
@@ -222,7 +164,8 @@ public class TestCollection(override val name: String): ArrayList<Inquiry>(), In
             // Decline to run
         } else {
             outfitter?.let {
-                it.runPostproduction()
+                it.runCleanup()
+                it.cleanupContext.showWithStyle(overlog)
             }
         }
 
@@ -245,6 +188,9 @@ public class TestCollection(override val name: String): ArrayList<Inquiry>(), In
         get() {
             if (size < 1) { return TestStatus.INCONCLUSIVE }
             var result = TestStatus.PASS
+            outfitter?.let {
+                result += it.overallStatus
+            }
             this.forEach {
                 if (it is Test) {
                     if (shouldRun(it)) {
@@ -272,4 +218,63 @@ public class TestCollection(override val name: String): ArrayList<Inquiry>(), In
             }
         }
     }
+
+    /*
+     * These are for future use by a test runner program.
+    fun reset() {
+        currentCount = Int.MAX_VALUE
+        _currentTest?.interrupt() // C# code did not check if the test was present and did not call Interrupt()
+        _currentTest = null
+        executionThread?.interrupt() // C# code tried to Abort() three times in a row if not null
+        executionThread = null
+        currentArtifactsDirectory = UNSET_STRING
+    }
+
+    val currentTest: String
+        get() {
+            if (_currentTest == null) { return UNKNOWN }
+            return _currentTest!!.identifiedName
+        }
+
+    // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
+    val progress: Int
+        get() {
+            synchronized(this) {
+                if (this.count() < 1) { return 100 }
+                if (currentCount >= this.count()) { return 100 }
+                var effectiveCount = currentCount.toFloat()
+
+                try {
+                    effectiveCount += _currentTest!!.progress
+                } catch (dontCare: Throwable) {
+                    // DELIBERATE NO-OP
+                }
+
+                return round((effectiveCount / this.count()) * 100).toInt()
+            }
+        }
+
+    // Omitting public functions Run() & InterruptCurrentTest() from C#
+    // which appears to be unnecessary in Kotlin. These might be relics
+    // from when Coarse Grind had a web interface.
+
+    // This may have only been used by the web UI in the old Coarse Grind.
+    // Might be needed for an external runner, which also might need the
+    // function InterruptCurrentTest() put back. Possibly also Run().
+    fun haltAllTesting() {
+        KILL_SWITCH = true
+        currentCount = Int.MAX_VALUE
+        _currentTest!!.interrupt() // C# used the public InterruptCurrentTest() function
+
+        try {
+            executionThread?.interrupt()
+            // C# version was followed by executionThread.Abort() three times in a row.
+        } catch (dontCare: Exception) {
+            // Deliberate NO-OP
+        } finally {
+            executionThread = null
+        }
+    }
+     *
+     */
 }
