@@ -28,7 +28,7 @@ import java.io.File
 import java.io.PrintWriter
 import kotlin.concurrent.thread
 
-internal class TestPhaseContext(val memoir: Memoir) {
+internal class TestPhaseContext(val memoir: Memoir, val emoji: String = EMOJI_MEMOIR) {
     val results = ArrayList<TestResult>()
 
     val overallStatus: TestStatus
@@ -41,6 +41,12 @@ internal class TestPhaseContext(val memoir: Memoir) {
 
             return finalValue;
         }
+
+    fun showWithStyle(targetMemoir: Memoir, preferredEmoji: String = emoji) {
+        var style = "implied_bad"
+        if (overallStatus.isPassing()) { style = "implied_good" }
+        targetMemoir.showMemoir(memoir, preferredEmoji, style)
+    }
 }
 
 internal const val INFO_ICON = "ℹ️"
@@ -66,10 +72,10 @@ abstract class Test (
         override val name: String,
         private val detailedDescription: String = UNSET_DESCRIPTION,
         internal val identifier: String = "",
-        vararg categories: String): TestEchelon {
+        vararg categories: String): Inquiry {
         internal var categories: Array<out String> = categories
-        internal val setupContext = TestPhaseContext(Memoir("Setup - Test $identifiedName", stdout))
-        internal val cleanupContext = TestPhaseContext(Memoir("Cleanup -  Test $identifiedName", stdout))
+        internal val setupContext = TestPhaseContext(Memoir("Setup - Test $identifiedName", stdout), EMOJI_SETUP)
+        internal val cleanupContext = TestPhaseContext(Memoir("Cleanup -  Test $identifiedName", stdout), EMOJI_CLEANUP)
         internal var testContext: TestPhaseContext? = null
         private var parentArtifactsDirectory = UNSET_STRING
         private var executionThread: Thread? = null
@@ -135,7 +141,7 @@ abstract class Test (
         get() {
             val result = StringBuilder()
             categories.forEach {
-                if (result.length > 0 ) { result.append('/') }
+                if (result.length > 0) { result.append('/') }
                 result.append(it)
             }
 
@@ -177,30 +183,6 @@ abstract class Test (
             return setupContext
         }
 
-    /* For future use by a test runner program
-    // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
-    internal val progress: Float
-    get() {
-        synchronized(this) {
-            var result: Float = 0.toFloat()
-            val check = currentContext
-            if (check === testContext) result += 0.33.toFloat()
-            if (check === cleanupContext) result += 0.34.toFloat()
-            if (wasCleanedUp) result += 0.33.toFloat()
-            return result
-        }
-    }
-
-    fun interrupt() {
-        try {
-            executionThread?.interrupt()
-            // C# version was followed by executionThread.Abort() three times in a row.
-        } catch (dontCare: Exception) {
-            // Deliberate NO-OP
-        }
-    }
-    */
-
     /**
      * addResult:
      * Puts a single test result into the results list, while properly logging it.
@@ -220,9 +202,13 @@ abstract class Test (
      */
     override val overallStatus: TestStatus
         get() {
-            // Previous version also used INCONCLUSIVE if !wasRun
+            if (setupContext.overallStatus == TestStatus.SUBJECTIVE) return TestStatus.SUBJECTIVE
             if (! setupContext.overallStatus.isPassing()) return TestStatus.INCONCLUSIVE
-            return testContext!!.overallStatus
+            testContext?.let {
+                return it.overallStatus
+            }
+
+            return TestStatus.INCONCLUSIVE
         }
 
     // Is virtual/open in C#
@@ -376,7 +362,40 @@ abstract class Test (
      *
      */
     fun makeSubjective() {
-        testContext!!.results.add(TestResult(TestStatus.SUBJECTIVE, "This test case requires analysis by appropriate personnel to determine pass/fail status"))
+        testContext?.let { it.results.add(TestResult(TestStatus.SUBJECTIVE, "This test case requires analysis by appropriate personnel to determine pass/fail status")) }
+    }
+
+    internal fun runSetup(rootDirectory: String) {
+        // SETUP
+        try {
+            setupContext.results.add(TestResult(TestStatus.PASS, "Setup was run"))
+            setup()
+        } catch (thisFailure: Throwable) {
+            addResult(getResultForPreclusionInSetup(thisFailure))
+        } finally {
+            wasSetup = true
+            testContext?.let {
+                if (setupContext.memoir.wasUsed) {
+                    setupContext.showWithStyle(it.memoir)
+                }
+            }
+        }
+    }
+
+    internal fun runCleanup() {
+        // CLEANUP
+        try {
+            cleanup()
+            wasCleanedUp = true
+        } catch (thisFailure: Throwable) {
+            addResult(getResultForFailureInCleanup(thisFailure))
+        } finally {
+            testContext?.let {
+                if (cleanupContext.memoir.wasUsed) {
+                    cleanupContext.showWithStyle(it.memoir)
+                }
+            }
+        }
     }
 
     // This was virtual/open in the C# version
@@ -385,6 +404,7 @@ abstract class Test (
             // Decline to run
             // Deliberate NO-OP
         } else {
+            // Carry out the test with setup & cleanup applied
             parentArtifactsDirectory = rootDirectory
             val expectedFileName = artifactsDirectory + File.separatorChar + logFileName
 
@@ -395,25 +415,12 @@ abstract class Test (
             testContext = TestPhaseContext(Memoir(name, stdout, PrintWriter(expectedFileName), true, true, ::logHeader))
 
             if (detailedDescription != UNSET_DESCRIPTION) {
-                testContext!!.memoir.writeToHTML("<small><i>$detailedDescription</i></small>", EMOJI_TEXT_BLANK_LINE)
+                testContext?.let { it.memoir.writeToHTML("<small><i>$detailedDescription</i></small>", EMOJI_TEXT_BLANK_LINE) }
             }
 
-            testContext!!.memoir.skipLine()
+            testContext?.let { it.memoir.skipLine() }
 
-            // SETUP
-            try {
-                setupContext.results.add(TestResult(TestStatus.PASS, "Setup was run"))
-                setup()
-            } catch (thisFailure: Throwable) {
-                addResult(getResultForPreclusionInSetup(thisFailure))
-            } finally {
-                wasSetup = true
-                if (setupContext.memoir.wasUsed) {
-                    var style = "implied_bad"
-                    if (setupContext.overallStatus.isPassing()) { style = "implied_good" }
-                    testContext!!.memoir.showMemoir(setupContext.memoir, EMOJI_SETUP, style)
-                }
-            }
+            runSetup(rootDirectory)
 
             // RUN THE ACTUAL TEST
             if (setupContext.overallStatus.isPassing() && (! KILL_SWITCH)) {
@@ -432,29 +439,45 @@ abstract class Test (
                 }
             } else {
                 val thisResult = TestResult(TestStatus.INCONCLUSIVE, "Declining to perform test case $identifiedName because setup method failed.")
-                testContext!!.memoir.showTestResult((thisResult))
-                testContext!!.results.add(thisResult)
-            }
-
-            // CLEANUP
-            try {
-                cleanup()
-                wasCleanedUp = true
-            } catch (thisFailure: Throwable) {
-                addResult(getResultForFailureInCleanup(thisFailure))
-            } finally {
-                if (cleanupContext.memoir.wasUsed) {
-                    var style = "implied_bad"
-                    if (cleanupContext.overallStatus.isPassing()) { style = "implied_good" }
-                    testContext!!.memoir.showMemoir(cleanupContext.memoir, EMOJI_CLEANUP, style)
+                testContext?.let {
+                    it.memoir.showTestResult((thisResult))
+                    it.results.add(thisResult)
                 }
             }
 
+            runCleanup()
+
             val overall = overallStatus.toString()
             val emoji = overallStatus.memoirIcon
-            testContext!!.memoir.writeToHTML("<h2>Overall Status: $overall</h2>", emoji)
-            testContext!!.memoir.echoPlainText("Overall Status: $overall", emoji)
-            testContext!!.memoir.conclude()
+            testContext?.let {
+                it.memoir.writeToHTML("<h2>Overall Status: $overall</h2>", emoji)
+                it.memoir.echoPlainText("Overall Status: $overall", emoji)
+                it.memoir.conclude()
+            }
         }
     }
+
+    /* For future use by a test runner program
+    // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
+    internal val progress: Float
+    get() {
+        synchronized(this) {
+            var result: Float = 0.toFloat()
+            val check = currentContext
+            if (check === testContext) result += 0.33.toFloat()
+            if (check === cleanupContext) result += 0.34.toFloat()
+            if (wasCleanedUp) result += 0.33.toFloat()
+            return result
+        }
+    }
+
+    fun interrupt() {
+        try {
+            executionThread?.interrupt()
+            // C# version was followed by executionThread.Abort() three times in a row.
+        } catch (dontCare: Exception) {
+            // Deliberate NO-OP
+        }
+    }
+    */
 }
