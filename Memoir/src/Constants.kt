@@ -197,6 +197,10 @@ internal const val MEMOIR_LOG_STYLING = """
             padding: 1em 1em;
         }
 
+        .left_justified {
+	        float: left;
+        }
+
         table.gridlines,
         table.gridlines th,
         table.gridlines td {
