@@ -1,6 +1,6 @@
 # Hoodland Open Source Projects
 
-##### Release 1.0.BETA1
+##### Release 1.0
 
 These projects are the "spiritual successors" to software I've developed over
 the course of my career as an SDET. In June of 2020, having grown frustrated
@@ -58,7 +58,7 @@ Here's what sets it apart from other test frameworks:
 - These projects have been tested on macOS and Ubuntu. As of this writing I haven't tried using them under Windows but see no reason why they wouldn't work.
 
 ## Released under the terms of the MIT License
-©2020 William Hood
+©2021 William Hood
 
 *Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

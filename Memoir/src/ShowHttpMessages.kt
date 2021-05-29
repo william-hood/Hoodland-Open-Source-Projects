@@ -226,3 +226,12 @@ fun Memoir.showHttpTransaction(request: HttpRequest, bodyContentAsString: String
     showHttpResponse(result, callbackFunction)
     return result
 }
+
+/* TODO: Provide a version of the function that uses the request embedded in the response.
+ * The trick is getting a text version of the body correctly.
+fun Memoir.showHttpTransaction(response: HttpResponse<*>, callbackFunction: ((fieldName: String, fieldValue: String)->String)? = null) {
+    val request = response.request()
+    showHttpRequest(request, "(tbd)", callbackFunction)
+    showHttpResponse(response, callbackFunction)
+}
+ */
