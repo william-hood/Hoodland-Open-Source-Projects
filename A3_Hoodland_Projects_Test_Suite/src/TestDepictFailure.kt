@@ -71,6 +71,9 @@ Index 46378 out of bounds for length 4
         }
 
         assert.shouldNotBeNull(target, "The target should have been successfully initialized")
+
+        log.info("This is the target Exception rendered as HTML...")
+        log.show(target)
     }
 
     override fun performTest() {
