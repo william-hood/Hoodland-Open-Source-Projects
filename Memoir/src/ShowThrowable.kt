@@ -131,7 +131,6 @@ fun Memoir.showThrowable(target: Throwable, timestamp: LocalDateTime? = LocalDat
     return result.toString()
 }
 
-// TODO: Test and debug. (Needs a test in the Hoodland Suite.)
 fun depictFailure(thisFailure: Throwable): String {
     val stream = ByteArrayOutputStream()
     val printWriter = PrintWriter(stream)

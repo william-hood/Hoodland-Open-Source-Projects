@@ -207,7 +207,7 @@ private fun Memoir.renderHeadersAndBody(headers: HttpHeaders, stringPayload: Str
 
 /**
  * showHttpTransaction: Given a java.net.http.HttpRequest this renders it in the HTML log, uses java.net.http.HttpClient to send it and
- * receive a java.net.http.HttpResponse. The response will also be rendered tothe HTML log. In certain cases, particularly headers and body
+ * receive a java.net.http.HttpResponse. The response will also be rendered to the HTML log. In certain cases, particularly headers and body
  * of HTTP messages, it may be desirable to Base64 decode and/or JSON pretty-print the string. Because it can be difficult
  * to tell which fields really are Base64 or JSON, this task is left to the client code by way of the callbackFunction
  * parameter. When rendering HTTP messages, the fieldName parameter of the callback will be the header name, or

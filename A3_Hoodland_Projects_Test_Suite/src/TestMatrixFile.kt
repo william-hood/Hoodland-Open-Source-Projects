@@ -27,7 +27,7 @@ import hoodland.opensource.toolbox.*
 import java.io.File
 
 // Happy Path: Create a file read it back in.
-class TestMatrixFileTest:Test(
+class TestMatrixFile:Test(
         "MatrixFile - Happy Path",
         "Create a MatrixFile for Strings; Write it out; read it back in; make sure they're the same.",
         "TB-MF-01",
