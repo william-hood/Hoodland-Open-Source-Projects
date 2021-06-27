@@ -37,28 +37,28 @@ class TestDepictFailure:Test(
     }
 
     fun printSomeItem(doa: IntArray) {
-        System.out.println(doa[46378]);
+        System.out.println(doa[46378])
     }
 
     val EXPECTED = """ArrayIndexOutOfBoundsException
-java.lang.ArrayIndexOutOfBoundsException: Index 46378 out of bounds for length 4
-* TestDepictFailure.kt line 45 in method printSomeItem() of class hoodland.opensource.testsuite.TestDepictFailure
-* TestDepictFailure.kt line 41 in method makeAndPrint() of class hoodland.opensource.testsuite.TestDepictFailure
-* TestDepictFailure.kt line 51 in method setup() of class hoodland.opensource.testsuite.TestDepictFailure
-* Test.kt line 372 in method runSetup${"$"}KoarseGrind() of class hoodland.opensource.koarsegrind.Test
-* Test.kt line 423 in method runTest${"$"}KoarseGrind() of class hoodland.opensource.koarsegrind.Test
-* TestCollection.kt line 123 in method invoke() of class hoodland.opensource.koarsegrind.TestCollection${"$"}run$4
-* TestCollection.kt line 51 in method invoke() of class hoodland.opensource.koarsegrind.TestCollection${"$"}run$4
-* Thread.kt line 30 in method run() of class kotlin.concurrent.ThreadsKt${"$"}thread${"$"}thread$1
+Index 46378 out of bounds for length 4
+* TestDepictFailure.kt line 40 in method printSomeItem() of class hoodland.opensource.testsuite.TestDepictFailure
+* TestDepictFailure.kt line 36 in method makeAndPrint() of class hoodland.opensource.testsuite.TestDepictFailure
+* TestDepictFailure.kt line 66 in method setup() of class hoodland.opensource.testsuite.TestDepictFailure
+* Test.kt line 372 in method runSetup${'$'}KoarseGrind() of class hoodland.opensource.koarsegrind.Test
+* Test.kt line 423 in method runTest${'$'}KoarseGrind() of class hoodland.opensource.koarsegrind.Test
+* TestCollection.kt line 123 in method invoke() of class hoodland.opensource.koarsegrind.TestCollection${'$'}run${'$'}4
+* TestCollection.kt line 51 in method invoke() of class hoodland.opensource.koarsegrind.TestCollection${'$'}run${'$'}4
+* Thread.kt line 30 in method run() of class kotlin.concurrent.ThreadsKt${'$'}thread${'$'}thread${'$'}1
 
    Exception
-   java.lang.Exception: Just a fake exception to test this thing!
-   * TestDepictFailure.kt line 53 in method setup() of class hoodland.opensource.testsuite.TestDepictFailure
-   * Test.kt line 372 in method runSetup${"$"}KoarseGrind() of class hoodland.opensource.koarsegrind.Test
-   * Test.kt line 423 in method runTest${"$"}KoarseGrind() of class hoodland.opensource.koarsegrind.Test
-   * TestCollection.kt line 123 in method invoke() of class hoodland.opensource.koarsegrind.TestCollection${"$"}run$4
-   * TestCollection.kt line 51 in method invoke() of class hoodland.opensource.koarsegrind.TestCollection${"$"}run$4
-   * Thread.kt line 30 in method run() of class kotlin.concurrent.ThreadsKt${"$"}thread${"$"}thread$1"""
+   Just a fake exception to test this thing!
+   * TestDepictFailure.kt line 68 in method setup() of class hoodland.opensource.testsuite.TestDepictFailure
+   * Test.kt line 372 in method runSetup${'$'}KoarseGrind() of class hoodland.opensource.koarsegrind.Test
+   * Test.kt line 423 in method runTest${'$'}KoarseGrind() of class hoodland.opensource.koarsegrind.Test
+   * TestCollection.kt line 123 in method invoke() of class hoodland.opensource.koarsegrind.TestCollection${'$'}run${'$'}4
+   * TestCollection.kt line 51 in method invoke() of class hoodland.opensource.koarsegrind.TestCollection${'$'}run${'$'}4
+   * Thread.kt line 30 in method run() of class kotlin.concurrent.ThreadsKt${'$'}thread${'$'}thread${'$'}1"""
 
     override fun setup() {
         log.info("Constructing an Exception to test against")
@@ -84,6 +84,6 @@ java.lang.ArrayIndexOutOfBoundsException: Index 46378 out of bounds for length 4
 
         log.showObject(Comparison(), "Actual vs. Expected")
 
-        assert.shouldBeEqual(actual, EXPECTED, "Calling depictFailure() against the supplied target should produce the expected result")
+        assert.shouldBeEqual(actual.replace("\r", ""), EXPECTED.replace("\r", ""), "Calling depictFailure() against the supplied target should produce the expected result")
     }
 }

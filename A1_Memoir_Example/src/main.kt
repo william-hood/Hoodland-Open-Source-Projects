@@ -119,7 +119,7 @@ fun makeAndPrint() {
 }
 
 fun printSomeItem(doa: IntArray) {
-    System.out.println(doa[46378]);
+    System.out.println(doa[46378])
 }
 
 internal fun subLog(check: TestStruct, inner: TestStruct): Memoir {

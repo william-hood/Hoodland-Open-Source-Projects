@@ -51,7 +51,7 @@ fun Memoir.showThrowable(target: Throwable, timestamp: LocalDateTime? = LocalDat
 
     this.echoPlainText("", timestamp = timestamp)
     this.echoPlainText("$plainTextIndent$name", loggedTextEmoji, timestamp)
-    this.echoPlainText("$plainTextIndent$target.message", timestamp = timestamp)
+    this.echoPlainText("$plainTextIndent${target.message}", timestamp = timestamp)
 
     // Build the stacktrace  strings
     if (target.stackTrace != null) {
@@ -82,12 +82,10 @@ fun Memoir.showThrowable(target: Throwable, timestamp: LocalDateTime? = LocalDat
                 plainTextLine.append("$methodLocation ")
                 htmlStackTrace.append("$methodLocation ")
 
-                if (thisElement.className != null) {
-                    if (thisElement.className != "MainKt") {
-                        val className = "of class ${thisElement.className}"
-                        plainTextLine.append(className)
-                        htmlStackTrace.append(className)
-                    }
+                if (thisElement.className != "MainKt") {
+                    val className = "of class ${thisElement.className}"
+                    plainTextLine.append(className)
+                    htmlStackTrace.append(className)
                 }
 
                 this.echoPlainText("$plainTextIndent$plainTextLine", timestamp = timestamp)
@@ -126,7 +124,9 @@ fun Memoir.showThrowable(target: Throwable, timestamp: LocalDateTime? = LocalDat
     // This is not nested if there is no plaintext indent.
     if (plainTextIndent.length < 1) this.writeToHTML(result.toString(), EMOJI_ERROR, timestamp)
 
-    this.echoPlainText("$plainTextIndent$EMOJI_TEXT_MEMOIR_CONCLUDE", timestamp = timestamp)
+    var concludedIndicator = ""
+    if (showEmojis) { concludedIndicator = EMOJI_TEXT_MEMOIR_CONCLUDE }
+    this.echoPlainText("$plainTextIndent$concludedIndicator", timestamp = timestamp)
     this.echoPlainText("", timestamp = timestamp)
     return result.toString()
 }
@@ -135,12 +135,12 @@ fun depictFailure(thisFailure: Throwable): String {
     val stream = ByteArrayOutputStream()
     val printWriter = PrintWriter(stream)
     val memoir = Memoir(
-            thisFailure.javaClass.simpleName,
+            "",
             printWriter,
             null,
             false,
             false)
     memoir.showThrowable(thisFailure, null)
     memoir.conclude()
-    return String(stream.toByteArray())
+    return String(stream.toByteArray()).trim()
 }
