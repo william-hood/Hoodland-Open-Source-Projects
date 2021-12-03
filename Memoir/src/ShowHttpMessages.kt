@@ -102,7 +102,7 @@ fun Memoir.showHttpRequest(request: HttpRequest, bodyContentAsString: String? = 
         }
     }
 
-    result.append("<br>${renderHeadersAndBody(request.headers(), payload)}")
+    result.append("<br>${renderHeadersAndBody(request.headers(), payload, callbackFunction)}")
 
     writeToHTML(result.toString(), EMOJI_OUTGOING)
     echoPlainText(textRendition, EMOJI_OUTGOING)
