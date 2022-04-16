@@ -1,4 +1,4 @@
-// Copyright (c) 2020 William Arthur Hood
+// Copyright (c) 2020, 2022 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,9 +21,6 @@
 
 package hoodland.opensource.koarsegrind
 
-import hoodland.opensource.koarsegrind.*
-import hoodland.opensource.koarsegrind.SUMMARY_FILE_NAME
-import hoodland.opensource.koarsegrind.SUMMARY_TEXTFILE_NAME
 import hoodland.opensource.memoir.Memoir
 import hoodland.opensource.memoir.UNKNOWN
 import hoodland.opensource.memoir.showThrowable
@@ -33,6 +30,8 @@ import hoodland.opensource.toolbox.StringParser
 import hoodland.opensource.toolbox.stdout
 import java.io.File
 import java.lang.reflect.InvocationTargetException
+import java.net.URLDecoder
+import java.nio.charset.Charset
 import kotlin.reflect.full.isSubclassOf
 
 
@@ -40,8 +39,8 @@ import kotlin.reflect.full.isSubclassOf
 private val testLoader = Thread.currentThread().getContextClassLoader()
 private val preclusions = ArrayList<Throwable>()
 
-// private val debugFile = File("${System.getProperty("user.home")}${File.separator}Documents${File.separator}Test Results${File.separator}KGDEBUG.html")
-// private val debuggingMemoir = Memoir("\uD83D\uDC1E DEBUG", null, debugFile.printWriter() )
+ //private val debugFile = File("${System.getProperty("user.home")}${File.separator}Documents${File.separator}Test Results${File.separator}KGDEBUG.html")
+ //private val debuggingMemoir = Memoir("\uD83D\uDC1E DEBUG", null, debugFile.printWriter() )
 
 /**
  * TestProgram
@@ -72,7 +71,7 @@ object TestProgram {
         packages.forEach {
             val resources = testLoader.getResources(it.name.replace('.', File.separatorChar)).asIterator()
             resources.forEach {
-                recursiveIdentify(rootCollection, File(it.file))
+                recursiveIdentify(rootCollection, File(URLDecoder.decode(it.file, Charset.defaultCharset())))
             }
         }
 
@@ -120,8 +119,10 @@ object TestProgram {
         //debuggingMemoir.info("PATH ${candidate.absolutePath}")
 
         if (candidate.exists()) {
+            //debuggingMemoir.info("Candidate ${candidate.absolutePath} exists")
             val check = candidate.listFiles()
             check.forEach {
+                //debuggingMemoir.info("Considering ${it.absolutePath}")
                 if (it.isDirectory) {
                     if (!it.name.contains(".")) {
                         recursiveIdentify(rootCollection, it)
@@ -160,7 +161,9 @@ object TestProgram {
                     } while (attemptName.contains('.'))
                 }
             }
-        }
+        }/* else {
+            debuggingMemoir.info("Candidate ${candidate.absolutePath} does not exist")
+        }*/
     }
 
     private fun parseArguments(args: Array<String>): FilterSet? {
