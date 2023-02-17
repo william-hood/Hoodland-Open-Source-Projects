@@ -25,7 +25,7 @@ package hoodland.opensource.koarsegrind
  * A manufactured test has to be produced by a test factory in order to be included in the test run.
  * This provides the option of constructing tests on-the-fly at runtime.
  */
-public abstract class ManufacturedTest(name: String, detailedDescription: String = UNSET_DESCRIPTION, testCaseID: String = "", vararg categories: String) : Test(name, detailedDescription, testCaseID, *categories) {
+public abstract class ManufacturedTest(name: String, detailedDescription: String = UNSET_DESCRIPTION, ownerName: String? = null, testCaseID: String = "", vararg categories: String) : Test(name, detailedDescription, ownerName, testCaseID, *categories) {
 }
 
 /**
@@ -55,20 +55,25 @@ public open class Outfitter: ManufacturedTest("Collection") {
  */
 abstract class TestFactory(
     val collectionName: String,
+    val ownerName: String? = null,
 
     /**
      * Use this to provide a setup and cleanup for the manufactured tests produced by this factory.
      */
     val collectionOutfitter: Outfitter? = null) {
-    val products = TestCollection(collectionName)
+    val products = TestCollection(collectionName, ownerName)
 
     /**
      * Use this to instantiate manufactured tests and put them into the Products Collection
      */
+    // TODO: Might not be able to deprecate this. Still need to have manufactured tests directly inserted.
+    //  or might have to get rid of test factory and have the user declare collections?  Maybe collections
+    //  are made based on the owner name in the tests???
+    @Deprecated("Tests and collections now declare their owners. This function will be removed.", level = DeprecationLevel.ERROR)
     abstract fun populateProducts()
 
     init {
         products.outfitter = collectionOutfitter
-        populateProducts()
+        // TODO: Delete this line: populateProducts()
     }
 }

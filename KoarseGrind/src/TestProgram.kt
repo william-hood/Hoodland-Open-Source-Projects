@@ -65,8 +65,12 @@ object TestProgram {
      */
     fun run(name: String = UNKNOWN, globalSetupTeardown: Outfitter? = null, args: Array<String> = Array<String>(0) { "" }) {
         val filterSet = parseArguments(args)
-        val rootCollection = TestCollection(name)
+
+        val rootCollection = Collector(TestCollection(name), testLoader, preclusions).assembledCollection
+
+        //val rootCollection = TestCollection(name)
         rootCollection.outfitter = globalSetupTeardown
+        /*
         val packages = testLoader.definedPackages
         packages.forEach {
             val resources = testLoader.getResources(it.name.replace('.', File.separatorChar)).asIterator()
@@ -74,6 +78,7 @@ object TestProgram {
                 recursiveIdentify(rootCollection, File(URLDecoder.decode(it.file, Charset.defaultCharset())))
             }
         }
+        */
 
         val rootLog = rootCollection.run(filterSet, preclusions)
         createSummaryReport(rootCollection, rootLog)
@@ -115,6 +120,9 @@ object TestProgram {
 
 
     // TODO: Properly handle Jar files in the classpath (or verify if it already does)
+    // TODO: To support owner collections, probably best to make an object and put this in it.
+    // TODO: Being in an object would allow easier tracking of collections, test cases, duplicates,
+    //  etc. to be added after-the-fact of all the identifies.
     private fun recursiveIdentify(rootCollection: TestCollection, candidate: File) {
         //debuggingMemoir.info("PATH ${candidate.absolutePath}")
 

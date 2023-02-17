@@ -36,6 +36,7 @@ import kotlin.concurrent.thread
 interface Inquiry {
     val name: String
     val overallStatus: TestStatus
+    val ownerName: String?
 }
 
 /**
@@ -47,8 +48,13 @@ interface Inquiry {
  * @property name A human-readable name for this collection of tests. At the root level this should be
  * the overall name for the entire suite (the same "name" passed into the TestProgram.run() method).
  * It may also apply to a subgroup of related tests (the same "collectionName" passed into a TestFectory).
+ * All human readable names of either TestCollections or TestCases must be unique.
+ * @property ownerName The human readable name of the TestCollection or TestFactory that this should be
+ * immediately subordinate to. Leave it as null to make this top level.
  */
-public class TestCollection(override val name: String): ArrayList<Inquiry>(), Inquiry {
+public class TestCollection(
+    override val name: String,
+    override val ownerName: String? = null): ArrayList<Inquiry>(), Inquiry {
     var outfitter: Outfitter? = null
     private var _currentTest: Test? = null
     private var currentArtifactsDirectory = UNSET_STRING
