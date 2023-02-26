@@ -72,10 +72,8 @@ internal const val UNSET_DESCRIPTION = "(no details)"
 abstract class Test (
         override val name: String,
         private val detailedDescription: String = UNSET_DESCRIPTION,
-        override val ownerName: String? = null,
-        internal val identifier: String = "",
-        vararg categories: String): Inquiry {
-        internal var categories: Array<out String> = categories
+        val categoryPath: String = "",
+        internal val identifier: String = ""): Inquiry {
         internal val setupContext = TestPhaseContext(Memoir("Setup - Test $identifiedName", stdout), EMOJI_SETUP)
         internal val cleanupContext = TestPhaseContext(Memoir("Cleanup -  Test $identifiedName", stdout), EMOJI_CLEANUP)
         internal var testContext: TestPhaseContext? = null
@@ -139,6 +137,7 @@ abstract class Test (
      */
     abstract fun performTest()
 
+    /*
     private val categorization: String
         get() {
             val result = StringBuilder()
@@ -149,6 +148,7 @@ abstract class Test (
 
             return result.toString()
         }
+    */
 
     /**
      * log:
@@ -255,7 +255,7 @@ abstract class Test (
     internal val summaryDataRow: ArrayList<String>
         get() {
             val result = ArrayList<String>()
-            result.add(filterForSummary(categorization))
+            result.add(filterForSummary(categoryPath))
             result.add(filterForSummary(identifier))
             result.add(filterForSummary(name))
             result.add(filterForSummary(detailedDescription))

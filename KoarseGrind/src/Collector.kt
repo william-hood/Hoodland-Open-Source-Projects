@@ -6,19 +6,22 @@ import java.net.URLDecoder
 import java.nio.charset.Charset
 import kotlin.reflect.full.isSubclassOf
 
+
+// TODO: Properly handle Jar files in the classpath (or verify if it already does)
 internal class Collector(
-    val assembledCollection: TestCollection,
+    val assembledCollection: TestCategory,
     val testLoader: ClassLoader,
     val preclusions: ArrayList<Throwable>) {
-    private val foundCollections = ArrayList<TestCollection>()
+    //private val foundCollections = ArrayList<TestCollection>()
     private val foundTests = ArrayList<Test>()
+    private val foundOutfitters = ArrayList<Outfitter>()
 
+    // TODO: Need to also find outfitters and put them in the proper test categories.
     init {
         val packages = testLoader.definedPackages
         packages.forEach {
             val resources = testLoader.getResources(it.name.replace('.', File.separatorChar)).asIterator()
             resources.forEach {
-                // TODO: Call via object here
                 recursiveCollect(
                     File(
                         URLDecoder.decode(
@@ -27,6 +30,13 @@ internal class Collector(
                     )
                 )
             }
+        }
+
+        // We now construct the tree of collections and populate them with tests.
+        foundTests.forEach{
+            val splitPath = it.categoryPath.split(CATEGORY_PATH_DELIMITER)
+            val addedCategory = assembledCollection.addCategory(splitPath)
+            addedCategory.add(it)
         }
     }
 
@@ -57,11 +67,17 @@ internal class Collector(
                                     //debuggingMemoir.debug("Identified ${foundClass.kotlin} as NOT extending MaufacturedTest")
                                     val foundTestInstance: Test = foundClass.getDeclaredConstructor().newInstance() as Test
                                     foundTests.add(foundTestInstance)
+                                } else {
+                                    if (foundClass.kotlin.isSubclassOf(Outfitter::class)) {
+                                        val foundOutfitterInstance: Outfitter = foundClass.getDeclaredConstructor().newInstance() as Outfitter
+                                        foundOutfitters.add(foundOutfitterInstance)
+                                    }
                                 }
                             } else if (foundClass.kotlin.isSubclassOf(TestFactory::class)) {
                                 val factory: TestFactory = foundClass.getDeclaredConstructor().newInstance() as TestFactory
-                                // We now have to separately add the TestCollecction and tests to their respective lists.
-                                rootCollection.add(factory.products)
+                                factory.producedTests.forEach {
+                                    foundTests.add(it)
+                                }
                             }
                         } catch (materialFailure: InvocationTargetException) {
                             //debuggingMemoir.showThrowable(materialFailure)

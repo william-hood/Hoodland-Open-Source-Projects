@@ -66,10 +66,10 @@ object TestProgram {
     fun run(name: String = UNKNOWN, globalSetupTeardown: Outfitter? = null, args: Array<String> = Array<String>(0) { "" }) {
         val filterSet = parseArguments(args)
 
-        val rootCollection = Collector(TestCollection(name), testLoader, preclusions).assembledCollection
+        val topLevel = Collector(TestCategory(name), testLoader, preclusions).assembledCollection
 
         //val rootCollection = TestCollection(name)
-        rootCollection.outfitter = globalSetupTeardown
+        topLevel.outfitter = globalSetupTeardown
         /*
         val packages = testLoader.definedPackages
         packages.forEach {
@@ -80,16 +80,16 @@ object TestProgram {
         }
         */
 
-        val rootLog = rootCollection.run(filterSet, preclusions)
-        createSummaryReport(rootCollection, rootLog)
+        val rootLog = topLevel.run(filterSet, preclusions)
+        createSummaryReport(topLevel, rootLog)
         rootLog.conclude()
         //debuggingMemoir.conclude()
     }
 
-    private fun createSummaryReport(rootCollection: TestCollection, memoir: Memoir = Memoir(forPlainText = stdout)) {
-        val fullyQualifiedSummaryFileName = rootCollection.rootDirectory + File.separatorChar + SUMMARY_FILE_NAME
+    private fun createSummaryReport(topLevel: TestCategory, memoir: Memoir = Memoir(forPlainText = stdout)) {
+        val fullyQualifiedSummaryFileName = topLevel.rootDirectory + File.separatorChar + SUMMARY_FILE_NAME
         memoir.info("Creating Test Suite Summary Report ($fullyQualifiedSummaryFileName)")
-        var summaryReport = MatrixFile<String>("Categorization", "Test ID", "Name", "Description", "Status", "Reasons")
+        var summaryReport = MatrixFile<String>("Category", "Test ID", "Name", "Description", "Status", "Reasons")
 
         try {
             // Try to append to an existing one
@@ -99,17 +99,17 @@ object TestProgram {
             // Leave the summaryReport as created above
         }
 
-        rootCollection.gatherForReport(summaryReport)
+        topLevel.gatherForReport(summaryReport)
 
         summaryReport.write(fullyQualifiedSummaryFileName)
 
 
         // Section below creates a single line file stating the overall status
-        val fullyQualifiedSummaryTextFileName = rootCollection.rootDirectory + File.separatorChar + SUMMARY_TEXTFILE_NAME
+        val fullyQualifiedSummaryTextFileName = topLevel.rootDirectory + File.separatorChar + SUMMARY_TEXTFILE_NAME
 
         try {
             val textFile = QuantumTextFile(fullyQualifiedSummaryTextFileName)
-            textFile.println(rootCollection.overallStatus.toString())
+            textFile.println(topLevel.overallStatus.toString())
             textFile.flush()
             textFile.close() // Shouldn't need a getter because this is a val
         } catch (thisFailure: Throwable) {
@@ -123,7 +123,8 @@ object TestProgram {
     // TODO: To support owner collections, probably best to make an object and put this in it.
     // TODO: Being in an object would allow easier tracking of collections, test cases, duplicates,
     //  etc. to be added after-the-fact of all the identifies.
-    private fun recursiveIdentify(rootCollection: TestCollection, candidate: File) {
+    /*
+    private fun recursiveIdentify(rootCollection: TestCategory, candidate: File) {
         //debuggingMemoir.info("PATH ${candidate.absolutePath}")
 
         if (candidate.exists()) {
@@ -173,6 +174,7 @@ object TestProgram {
             debuggingMemoir.info("Candidate ${candidate.absolutePath} does not exist")
         }*/
     }
+    */
 
     private fun parseArguments(args: Array<String>): FilterSet? {
         val result = ArrayList<Filter>()

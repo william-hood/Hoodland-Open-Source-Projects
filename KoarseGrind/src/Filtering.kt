@@ -58,10 +58,8 @@ class Filter(
         matchIfContains.forEach {
             when(target) {
                 FilterTarget.CATEGORIES -> {
-                    candidate.categories.forEach { thisCategory ->
-                        if (thisCategory.contains(it, true)) {
-                            return true
-                        }
+                    if (candidate.categoryPath.contains(it, true)) {
+                        return true
                     }
                 }
                 FilterTarget.IDENTIFIERS -> if (candidate.identifier.contains(it, true)) { return true }

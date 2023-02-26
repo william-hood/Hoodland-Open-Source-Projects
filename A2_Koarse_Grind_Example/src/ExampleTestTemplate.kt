@@ -3,7 +3,7 @@ package com.mycompany.testing
 import hoodland.opensource.koarsegrind.Test
 
 // To create a typical Koarse Grind test, extend the Test class. Your extension class
-// should only have the deafault constructor with no parameters, but pass the following
+// should only have the default constructor with no parameters, but pass the following
 // into the constructor for the parent class...
 //
 // name:                A brief, human-readable name for the test.
@@ -26,8 +26,7 @@ import hoodland.opensource.koarsegrind.Test
 class ExampleTest: Test(
         "Koarse Grind Example Template",
         "Use this field to describe what the test does and what its pass criteria are. If someone other than you must evaluate the results or work with the source code, this description should help them understand what they are looking at. Commas, \tTabs, \rCarriage Returns, and \nLine Feed chars will be filtered out.",
-        "ET-001",
-        "Simple", "All", "Example"
+        identifier = "ET-001"
 ) {
     // You don't have to have a setup() function if you don't need one.
     // If an assertion fails in setup, your test becomes inconclusive

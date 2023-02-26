@@ -24,11 +24,11 @@ package hoodland.opensource.testsuite
 import hoodland.opensource.koarsegrind.Test
 import hoodland.opensource.memoir.*
 
-class TestDepictFailure:Test(
-        "Depict Failure",
-        "Verify that the Memoir-based depictFailure() function produces the expected string result. It should be properly indented, contain no superfluous text, and not contain the end-of-log emojis.",
-        "MR-DF-01",
-        "Memoir", "DepictFailure", "ShowThrowable", "All"
+class TestDepictFailure : Test(
+    "Depict Failure",
+    "Verify that the Memoir-based depictFailure() function produces the expected string result. It should be properly indented, contain no superfluous text, and not contain the end-of-log emojis.",
+    "Memoir",
+    "MR-DF-01"
 ) {
     lateinit var target: Throwable
 
@@ -47,8 +47,8 @@ Index 46378 out of bounds for length 4
 * TestDepictFailure.kt line 66 in method setup() of class hoodland.opensource.testsuite.TestDepictFailure
 * Test.kt line 372 in method runSetup${'$'}KoarseGrind() of class hoodland.opensource.koarsegrind.Test
 * Test.kt line 423 in method runTest${'$'}KoarseGrind() of class hoodland.opensource.koarsegrind.Test
-* TestCollection.kt line 123 in method invoke() of class hoodland.opensource.koarsegrind.TestCollection${'$'}run${'$'}4
-* TestCollection.kt line 51 in method invoke() of class hoodland.opensource.koarsegrind.TestCollection${'$'}run${'$'}4
+* TestCategory.kt line 123 in method invoke() of class hoodland.opensource.koarsegrind.TestCollection${'$'}run${'$'}4
+* TestCategory.kt line 51 in method invoke() of class hoodland.opensource.koarsegrind.TestCollection${'$'}run${'$'}4
 * Thread.kt line 30 in method run() of class kotlin.concurrent.ThreadsKt${'$'}thread${'$'}thread${'$'}1
 
    Exception
@@ -56,8 +56,8 @@ Index 46378 out of bounds for length 4
    * TestDepictFailure.kt line 68 in method setup() of class hoodland.opensource.testsuite.TestDepictFailure
    * Test.kt line 372 in method runSetup${'$'}KoarseGrind() of class hoodland.opensource.koarsegrind.Test
    * Test.kt line 423 in method runTest${'$'}KoarseGrind() of class hoodland.opensource.koarsegrind.Test
-   * TestCollection.kt line 123 in method invoke() of class hoodland.opensource.koarsegrind.TestCollection${'$'}run${'$'}4
-   * TestCollection.kt line 51 in method invoke() of class hoodland.opensource.koarsegrind.TestCollection${'$'}run${'$'}4
+   * TestCategory.kt line 123 in method invoke() of class hoodland.opensource.koarsegrind.TestCollection${'$'}run${'$'}4
+   * TestCategory.kt line 51 in method invoke() of class hoodland.opensource.koarsegrind.TestCollection${'$'}run${'$'}4
    * Thread.kt line 30 in method run() of class kotlin.concurrent.ThreadsKt${'$'}thread${'$'}thread${'$'}1"""
 
     override fun setup() {
@@ -87,6 +87,10 @@ Index 46378 out of bounds for length 4
 
         log.showObject(Comparison(), "Actual vs. Expected")
 
-        assert.shouldBeEqual(actual.replace("\r", ""), EXPECTED.replace("\r", ""), "Calling depictFailure() against the supplied target should produce the expected result")
+        assert.shouldBeEqual(
+            actual.replace("\r", ""),
+            EXPECTED.replace("\r", ""),
+            "Calling depictFailure() against the supplied target should produce the expected result"
+        )
     }
 }

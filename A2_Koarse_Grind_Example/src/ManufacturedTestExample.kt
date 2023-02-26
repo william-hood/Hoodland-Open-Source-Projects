@@ -30,8 +30,7 @@ class ManufacturedTestExample(
         detailedDescription: String,
         identifier: String,
         val testData: String?)
-    : ManufacturedTest(name, detailedDescription, identifier,
-        "Manufactured", "Descriptions", "All", "Example") {
+    : ManufacturedTest(name, detailedDescription, "Manufactured Test Example", identifier) {
     override fun performTest() {
         log.info("Let's pretend we're sending this string into a database, REST call, or whatever else.")
         assert.shouldBeTrue(true, "This string worked:${treatAsCode(testData.toString())}")
@@ -48,15 +47,17 @@ class ManufacturedTestExample(
 //
 // ‼️ IMPORTANT ‼️ Your TestFactory should only have the default constructor with no parameters.
 //
-class TestFactoryExample: TestFactory("Test Factory and Manufactured Test Example", ExampleOutfitter) {
-    override fun populateProducts() {
+
+//TestFactory("Test Factory and Manufactured Test Example", ExampleOutfitter)
+class TestFactoryExample: TestFactory() {
+    override fun produceTests() {
         val subname = SubnameFactory()
         val testDataGenerator = StringFieldDescription("The rain in Spain stays mainly on the plain.")
 
         StringFieldTargets.values().forEach {
             if (it != StringFieldTargets.DEFAULT) {
                 testDataGenerator.target = it
-                products.add(ManufacturedTestExample(
+                producedTests.add(ManufacturedTestExample(
                         "Show messed up string: ${it.toString()}",
                         "This is just an example of using the Descriptions module to generate test data. This particular case modifies a basis string to meet the test data criterion. In this case: ${it.toString()}",
                         "ETF-01${subname.nextSubname}",
@@ -68,7 +69,7 @@ class TestFactoryExample: TestFactory("Test Factory and Manufactured Test Exampl
 
 // If the tests created by your factory require a setup and/or cleanup, pass an Outfitter
 // object to the TestFactory constructor.
-object ExampleOutfitter : Outfitter() {
+object ExampleOutfitter : Outfitter("Manufactured Test Example") {
     override fun setup() {
         assert.shouldBeTrue(true, "Collection-level setup ran!")
     }

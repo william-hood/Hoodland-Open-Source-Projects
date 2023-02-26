@@ -21,7 +21,6 @@
 
 package hoodland.opensource.koarsegrind
 
-import hoodland.opensource.memoir.EMOJI_CLEANUP
 import hoodland.opensource.memoir.Memoir
 import hoodland.opensource.memoir.showThrowable
 import hoodland.opensource.toolbox.*
@@ -33,10 +32,12 @@ import kotlin.concurrent.thread
  * An Inquiry is any Test or TestCollection in the KoarseGrind system. It may be used
  * if a field or variable must contain anything that is a derivative of either of those classes.
  */
+
+// May not make sense to have this anymore as collections (categories) are now entirely separate from tests
 interface Inquiry {
     val name: String
     val overallStatus: TestStatus
-    val ownerName: String?
+    //val categoryPath: String?
 }
 
 /**
@@ -49,16 +50,20 @@ interface Inquiry {
  * the overall name for the entire suite (the same "name" passed into the TestProgram.run() method).
  * It may also apply to a subgroup of related tests (the same "collectionName" passed into a TestFectory).
  * All human readable names of either TestCollections or TestCases must be unique.
- * @property ownerName The human readable name of the TestCollection or TestFactory that this should be
+ * @property categoryPath The human readable name of the TestCollection or TestFactory that this should be
  * immediately subordinate to. Leave it as null to make this top level.
  */
-public class TestCollection(
-    override val name: String,
-    override val ownerName: String? = null): ArrayList<Inquiry>(), Inquiry {
+
+// Making internal. Collections are created by naming them as the owner in a test or factory.
+// TestCollection is now explicitly the branch node of an N-ary Tree structure with Tests as the leaves.
+internal class TestCategory(override val name: String): ArrayList<Test>(), Inquiry {
+    val subCategories = HashMap<String, TestCategory>()
     var outfitter: Outfitter? = null
     private var _currentTest: Test? = null
     private var currentArtifactsDirectory = UNSET_STRING
     private var executionThread: Thread? = null
+
+    // This appears to be a hold-out from the old C# Webserver GUI. May not be needed.
     private var currentCount = Int.MAX_VALUE
     internal var rootDirectory: String = UNSET_STRING
     private var filterSet: FilterSet? = null
@@ -69,6 +74,50 @@ public class TestCollection(
     }
      */
 
+    internal fun getCategory(fullPath: List<String>): TestCategory? {
+        if (fullPath.size > 1) {
+            val nextCategory = fullPath.take(1)[0]
+            val remainingCategories = fullPath.drop(1)
+
+            val check = subCategories[nextCategory]
+            if (check == null) return null
+            return check.getCategory(remainingCategories)
+        }
+
+        return subCategories[fullPath[0]]
+    }
+
+    internal fun addCategory(fullPath: List<String>): TestCategory {
+        if (fullPath.size > 1) {
+            val nextCategory = fullPath.take(1)[0]
+            val remainingCategories = fullPath.drop(1)
+
+            var check = subCategories[nextCategory]
+            if (check == null) {
+                check = TestCategory(nextCategory)
+            }
+            subCategories[nextCategory] = check
+            return check.addCategory(remainingCategories)
+        }
+
+        subCategories.putIfAbsent(fullPath[0], TestCategory(fullPath[0]))
+        return subCategories[fullPath[0]]!!
+    }
+
+    internal fun deleteCategory(fullPath: List<String>): TestCategory? {
+        val deltedCategory = fullPath.takeLast(1)[0]
+        val remainingCategories = fullPath.dropLast(1)
+        val check = getCategory(remainingCategories)
+        if (check != null) {
+            return check.subCategories.remove(deltedCategory)
+        } else {
+            // TODO: Either throw an exception or NO-OP
+        }
+
+        return null
+    }
+
+    // TODO: TestCategories are now separate in a HashSet from the tests.
     internal fun run(filters: FilterSet? = null, preclusiveFailures: ArrayList<Throwable>? = null) : Memoir {
         filterSet = filters
         var logFileName = "$name.html"
@@ -116,53 +165,63 @@ public class TestCollection(
         if (attemptTests) {
             for (indexCount in 0..(this.count() - 1)) {
                 currentCount = indexCount
-
                 if (KILL_SWITCH) {
                     // Decline to run
                     break
                 } else {
                     val nextItem = this[currentCount]
-                    if (nextItem is Test) {
-                        if (shouldRun(nextItem)) {
-                            _currentTest = nextItem as Test
-                            try {
-                                executionThread = thread(start = true) { _currentTest!!.runTest(currentArtifactsDirectory) } // C# used the public Run() function
-                                executionThread!!.join()
-                            } catch (thisFailure: Throwable) {
-                                // Uncertain why specifically calling GetResultForPreclusionInSetup()
-                                _currentTest!!.addResult(_currentTest!!.getResultForPreclusionInSetup(thisFailure))
-                            } finally {
-                                executionThread = null
-                                overlog.showMemoir(_currentTest!!.testContext!!.memoir, _currentTest!!.overallStatus.memoirIcon, _currentTest!!.overallStatus.memoirStyle)
-
-                                // Prefix the test's artifacts directory with its overall status
-                                try {
-                                    File(_currentTest!!.artifactsDirectory).renameTo(File(currentArtifactsDirectory + File.separatorChar + _currentTest!!.prefixedName))
-                                } catch (loggedThrowable: Throwable) {
-                                    overlog.error("Koarse Grind was unable to rename the current test's artifact directory to their permanent location")
-                                    overlog.showThrowable(loggedThrowable)
-                                }
-                            }
-                        }
-                    } else if (nextItem is TestCollection) {
-                        val subCollection = nextItem as TestCollection
-                        subCollection.rootDirectory = "$currentArtifactsDirectory${File.separatorChar}(collection '${subCollection.name}' in progress)"
-
-                        val subLog = subCollection.run(filterSet)
-                        if (subLog.wasUsed) {
-                            overlog.showMemoir(subLog, subCollection.overallStatus.memoirIcon, subCollection.overallStatus.memoirStyle)
-                        }
-
-                        // Prefix the test's artifacts directory with its overall status
+                    if (shouldRun(nextItem)) {
+                        _currentTest = nextItem
                         try {
-                            File(subCollection.rootDirectory).renameTo(File(currentArtifactsDirectory + File.separatorChar + subCollection.prefixedName))
-                        } catch (loggedThrowable: Throwable) {
-                            overlog.error("Koarse Grind was unable to rename the current test collection's root directory to their permanent location")
-                            overlog.showThrowable(loggedThrowable)
+                            executionThread = thread(start = true) { _currentTest!!.runTest(currentArtifactsDirectory) } // C# used the public Run() function
+                            executionThread!!.join()
+                        } catch (thisFailure: Throwable) {
+                            // Uncertain why specifically calling GetResultForPreclusionInSetup()
+                            _currentTest!!.addResult(_currentTest!!.getResultForPreclusionInSetup(thisFailure))
+                        } finally {
+                            executionThread = null
+                            overlog.showMemoir(_currentTest!!.testContext!!.memoir, _currentTest!!.overallStatus.memoirIcon, _currentTest!!.overallStatus.memoirStyle)
+
+                            // Prefix the test's artifacts directory with its overall status
+                            try {
+                                File(_currentTest!!.artifactsDirectory).renameTo(File(currentArtifactsDirectory + File.separatorChar + _currentTest!!.prefixedName))
+                            } catch (loggedThrowable: Throwable) {
+                                overlog.error("Koarse Grind was unable to rename the current test's artifact directory to their permanent location")
+                                overlog.showThrowable(loggedThrowable)
+                            }
                         }
                     }
                 }
             }
+
+            // Attempt subordinate categories
+            this.subCategories.values.forEach {
+                if (KILL_SWITCH) {
+                    // Decline to run
+                } else {
+                    it.rootDirectory =
+                        "$currentArtifactsDirectory${File.separatorChar}(collection '${it.name}' in progress)"
+
+                    val subLog = it.run(filterSet)
+                    if (subLog.wasUsed) {
+                        overlog.showMemoir(
+                            subLog,
+                            it.overallStatus.memoirIcon,
+                            it.overallStatus.memoirStyle
+                        )
+                    }
+
+                    // Prefix the test's artifacts directory with its overall status
+                    try {
+                        File(it.rootDirectory).renameTo(File(currentArtifactsDirectory + File.separatorChar + it.prefixedName))
+                    } catch (loggedThrowable: Throwable) {
+                        overlog.error("Koarse Grind was unable to rename the current test collection's root directory to their permanent location")
+                        overlog.showThrowable(loggedThrowable)
+                    }
+
+                }
+            }
+
         }
 
         // Collection Cleanup
@@ -215,72 +274,12 @@ public class TestCollection(
 
     internal fun gatherForReport(summaryReport: MatrixFile<String>) {
         this.forEach {
-            if (it is Test){
-                if (it.wasSetup) {
-                    summaryReport.addDataRow(it.summaryDataRow)
-                }
-            } else if (it is TestCollection) {
-                it.gatherForReport(summaryReport)
+            if (it.wasSetup) {
+                summaryReport.addDataRow(it.summaryDataRow)
             }
         }
-    }
-
-    /*
-     * These are for future use by a test runner program.
-    fun reset() {
-        currentCount = Int.MAX_VALUE
-        _currentTest?.interrupt() // C# code did not check if the test was present and did not call Interrupt()
-        _currentTest = null
-        executionThread?.interrupt() // C# code tried to Abort() three times in a row if not null
-        executionThread = null
-        currentArtifactsDirectory = UNSET_STRING
-    }
-
-    val currentTest: String
-        get() {
-            if (_currentTest == null) { return UNKNOWN }
-            return _currentTest!!.identifiedName
-        }
-
-    // In C#: [MethodImpl(MethodImplOptions.Synchronized)]
-    val progress: Int
-        get() {
-            synchronized(this) {
-                if (this.count() < 1) { return 100 }
-                if (currentCount >= this.count()) { return 100 }
-                var effectiveCount = currentCount.toFloat()
-
-                try {
-                    effectiveCount += _currentTest!!.progress
-                } catch (dontCare: Throwable) {
-                    // DELIBERATE NO-OP
-                }
-
-                return round((effectiveCount / this.count()) * 100).toInt()
-            }
-        }
-
-    // Omitting public functions Run() & InterruptCurrentTest() from C#
-    // which appears to be unnecessary in Kotlin. These might be relics
-    // from when Coarse Grind had a web interface.
-
-    // This may have only been used by the web UI in the old Coarse Grind.
-    // Might be needed for an external runner, which also might need the
-    // function InterruptCurrentTest() put back. Possibly also Run().
-    fun haltAllTesting() {
-        KILL_SWITCH = true
-        currentCount = Int.MAX_VALUE
-        _currentTest!!.interrupt() // C# used the public InterruptCurrentTest() function
-
-        try {
-            executionThread?.interrupt()
-            // C# version was followed by executionThread.Abort() three times in a row.
-        } catch (dontCare: Exception) {
-            // Deliberate NO-OP
-        } finally {
-            executionThread = null
+        this.subCategories.values.forEach {
+            it.gatherForReport(summaryReport)
         }
     }
-     *
-     */
 }

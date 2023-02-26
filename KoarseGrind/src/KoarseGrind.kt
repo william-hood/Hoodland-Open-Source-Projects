@@ -42,6 +42,8 @@ internal const val SUMMARY_FILE_EXTENSION = ".csv"
 internal const val SUMMARY_FILE_NAME = SUMMARY_FILE + SUMMARY_FILE_EXTENSION
 internal const val SUMMARY_TEXTFILE_NAME = "." + SUMMARY_FILE // Single line stating the overall value. This file is hidden on Linux/Unix/macOS.
 
+internal const val CATEGORY_PATH_DELIMITER = '|'
+
 internal var KILL_SWITCH: Boolean = false
 
 internal val HEADER_ICON = InlineImage(

@@ -2,11 +2,10 @@ package com.mycompany.testing
 
 import hoodland.opensource.koarsegrind.Test
 
-class Passing: Test(
-        "This Test Should Pass",
-        "Let's see how each of the test statuses look when logged. Here's what passing looks like...",
-        "TS-001",
-        "Simple", "All", "Example", "Status"
+class Passing : Test(
+    "This Test Should Pass",
+    "Let's see how each of the test statuses look when logged. Here's what passing looks like...",
+    identifier = "TS-001"
 ) {
     override fun performTest() {
         log.info("Starting the test")
@@ -14,11 +13,10 @@ class Passing: Test(
     }
 }
 
-class Failing: Test(
-        "This Test Should Fail",
-        "Let's see how each of the test statuses look when logged. Here's what failing looks like...",
-        "TS-002",
-        "Simple", "All", "Example", "Status"
+class Failing : Test(
+    "This Test Should Fail",
+    "Let's see how each of the test statuses look when logged. Here's what failing looks like...",
+    identifier = "TS-002"
 ) {
     override fun performTest() {
         log.info("Starting the test")
@@ -26,11 +24,10 @@ class Failing: Test(
     }
 }
 
-class Inconclusive: Test(
-        "This Test Should Be Inconclusive",
-        "Let's see how each of the test statuses look when logged. Here's what inconclusive looks like...",
-        "TS-003",
-        "Simple", "All", "Example", "Status"
+class Inconclusive : Test(
+    "This Test Should Be Inconclusive",
+    "Let's see how each of the test statuses look when logged. Here's what inconclusive looks like...",
+    identifier = "TS-003"
 ) {
     override fun performTest() {
         log.info("Making sure we're correctly configured...")
@@ -38,11 +35,10 @@ class Inconclusive: Test(
     }
 }
 
-class Subjective: Test(
-        "This Test Should Be Subjective",
-        "Let's see how each of the test statuses look when logged. Here's what subjective looks like...",
-        "TS-004",
-        "Simple", "All", "Example", "Status"
+class Subjective : Test(
+    "This Test Should Be Subjective",
+    "Let's see how each of the test statuses look when logged. Here's what subjective looks like...",
+    identifier = "TS-004"
 ) {
     override fun performTest() {
         log.info("OK, here's a condition that could be open to interpretation...")

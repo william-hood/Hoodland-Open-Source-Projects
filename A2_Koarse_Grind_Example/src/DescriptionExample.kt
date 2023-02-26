@@ -37,8 +37,7 @@ class PackageTrackerTest(
         name: String,
         detailedDescription: String,
         identifier: String,
-        val testData: PackageTracker) : ManufacturedTest(name, detailedDescription, identifier,
-        "Manufactured", "Descriptions", "All", "Example") {
+        val testData: PackageTracker) : ManufacturedTest(name, detailedDescription, "Descriptions Example", identifier) {
 
     // ‼️ Sometimes developers make slight changes to an exception they throw --without telling QA.
     // ❗️ A ThrowableDescription will let you verify that an Exception's type name and message
@@ -79,8 +78,8 @@ class PackageTrackerTest(
 // Also, be careful about generating thousands of ancillary tests that no one cares about.
 // It is possible to exhaust every combination of test data, but that may not be of much value.
 //
-class DescriptionsExample: TestFactory("Descriptions Example") {
-    override fun populateProducts() {
+class DescriptionsExample: TestFactory() {
+    override fun produceTests() {
         val testDataGenerator = PackageTrackerDescription()
         val subname = SubnameFactory()
 
@@ -92,7 +91,7 @@ class DescriptionsExample: TestFactory("Descriptions Example") {
 
             try {
                 val testData = testDataGenerator.describedObject
-                products.add(PackageTrackerTest(
+                producedTests.add(PackageTrackerTest(
                         "PackageTracker: Total Stops ${it.toString()}",
                         "This test will show you what the candidate PackageTracker looks like and see if the verify() function throws an exception.",
                         "DES-01${subname.currentSubname}",
@@ -106,7 +105,7 @@ class DescriptionsExample: TestFactory("Descriptions Example") {
 
             try {
                 val testData = testDataGenerator.describedObject
-                products.add(PackageTrackerTest(
+                producedTests.add(PackageTrackerTest(
                         "PackageTracker: Expected Max Stops ${it.toString()}",
                         "This test will show you what the candidate PackageTracker looks like and see if the verify() function throws an exception.",
                         "DES-02${subname.currentSubname}",
@@ -124,7 +123,7 @@ class DescriptionsExample: TestFactory("Descriptions Example") {
 
             try {
                 val testData = testDataGenerator.describedObject
-                products.add(PackageTrackerTest(
+                producedTests.add(PackageTrackerTest(
                         "PackageTracker: Sent Date ${it.toString()}",
                         "This test will show you what the candidate PackageTracker looks like and see if the verify() function throws an exception.",
                         "DES-03${subname.currentSubname}",
@@ -138,7 +137,7 @@ class DescriptionsExample: TestFactory("Descriptions Example") {
 
             try {
                 val testData = testDataGenerator.describedObject
-                products.add(PackageTrackerTest(
+                producedTests.add(PackageTrackerTest(
                         "PackageTracker: Expected Arrival Date ${it.toString()}",
                         "This test will show you what the candidate PackageTracker looks like and see if the verify() function throws an exception.",
                         "DES-04${subname.currentSubname}",
@@ -156,7 +155,7 @@ class DescriptionsExample: TestFactory("Descriptions Example") {
                 testDataGenerator.addStopName.describedValue?.let {
                     val testData = testDataGenerator.describedObject
                     testData.addStop(it)
-                    products.add(PackageTrackerTest(
+                    producedTests.add(PackageTrackerTest(
                             "PackageTracker: Last Stop ${currentTarget.toString()}",
                             "This test will show you what the candidate PackageTracker looks like and see if the verify() function throws an exception.",
                             "DES-05${subname.currentSubname}",

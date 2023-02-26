@@ -27,11 +27,11 @@ import hoodland.opensource.toolbox.*
 import java.io.File
 
 // Happy Path: Create a file read it back in.
-class TestMatrixFile:Test(
-        "MatrixFile - Happy Path",
-        "Create a MatrixFile for Strings; Write it out; read it back in; make sure they're the same.",
-        "TB-MF-01",
-        "Toolbox", "MatrixFile", "All"
+class TestMatrixFile : Test(
+    "MatrixFile - Happy Path",
+    "Create a MatrixFile for Strings; Write it out; read it back in; make sure they're the same.",
+    "Toolbox",
+    "TB-MF-01"
 ) {
     override fun performTest() {
         val originalFileName = "$artifactsDirectory${File.separatorChar}original.csv"
@@ -72,7 +72,15 @@ class TestMatrixFile:Test(
         log.info("Writing a copy file based on the read-in data")
         copy.write(copyFileName)
 
-        assert.shouldBeEqual(File(originalFileName).readText(), File(copyFileName).readText(), "Read in contents of the original file and the copy file should be the same")
-        assert.shouldBeEqual(File(originalFileName).crc32ChecksumValue, File(copyFileName).crc32ChecksumValue, "CRC32 checksums of the original file and the copy file should be the same")
+        assert.shouldBeEqual(
+            File(originalFileName).readText(),
+            File(copyFileName).readText(),
+            "Read in contents of the original file and the copy file should be the same"
+        )
+        assert.shouldBeEqual(
+            File(originalFileName).crc32ChecksumValue,
+            File(copyFileName).crc32ChecksumValue,
+            "CRC32 checksums of the original file and the copy file should be the same"
+        )
     }
 }

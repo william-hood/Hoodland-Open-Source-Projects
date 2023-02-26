@@ -27,8 +27,8 @@ import hoodland.opensource.toolbox.*
 class TestStatusCodeDescription:Test(
         "Int.toStatusCodeDescription()",
         "This verifies that toStatusCodeDescription() gets the correct string value for a few given numbers. It is NOT exhaustive.",
-        "TB-SC-01",
-        "Toolbox", "StatusCode", "All"
+    "Toolbox|StatusCode",
+    "TB-SC-01"
 ) {
     override fun performTest() {
         assert.shouldBeEqual(100.toStatusCodeDescription(), "Continue", "Status code 100 should map to 'Continue'")
@@ -41,8 +41,8 @@ class TestStatusCodeDescription:Test(
 class TestErrorStatusCode:Test(
         "Int.isErrorStatusCode",
         "This verifies that Int.isErrorStatusCode gets the correct Boolean value for a few given numbers, reading 'true' for 4xx and 5xx. It is NOT exhaustive.",
-        "TB-SC-02",
-        "Toolbox", "StatusCode", "All"
+    "Toolbox|StatusCode",
+    "TB-SC-02"
 ) {
     override fun performTest() {
         for (candidate in -5..605) {
@@ -58,8 +58,8 @@ class TestErrorStatusCode:Test(
 class TestSuccessfulStatusCode:Test(
         "Int.isSuccessfulStatusCode",
         "This verifies that Int.isSuccessfulStatusCode gets the correct Boolean value for a few given numbers, reading 'true' for 2xx. It is NOT exhaustive.",
-        "TB-SC-03",
-        "Toolbox", "StatusCode", "All"
+    "Toolbox|StatusCode",
+    "TB-SC-03"
 ) {
     override fun performTest() {
         for (candidate in -5..605) {
@@ -75,8 +75,8 @@ class TestSuccessfulStatusCode:Test(
 class TestValidStatusCode:Test(
         "Int.isValidStatusCode",
         "This verifies that Int.isValidStatusCode gets the correct Boolean value for a few given numbers, reading 'true' for anything between 100 and 599. It is NOT exhaustive.",
-        "TB-SC-04",
-        "Toolbox", "StatusCode", "All"
+    "Toolbox|StatusCode",
+    "TB-SC-04"
 ) {
     override fun performTest() {
         for (candidate in -5..605) {
@@ -92,8 +92,8 @@ class TestValidStatusCode:Test(
 class TestInvalidStatusCode:Test(
         "Int.isInvalidStatusCode",
         "This verifies that Int.isInvalidStatusCode gets the correct Boolean value for a few given numbers, reading 'true' for anything NOT between 100 and 599. It is NOT exhaustive.",
-        "TB-SC-05",
-        "Toolbox", "StatusCode", "All"
+    "Toolbox|StatusCode",
+    "TB-SC-05"
 ) {
     override fun performTest() {
         for (candidate in -5..605) {
