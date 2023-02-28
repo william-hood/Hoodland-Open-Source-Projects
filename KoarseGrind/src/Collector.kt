@@ -34,9 +34,44 @@ internal class Collector(
 
         // We now construct the tree of collections and populate them with tests.
         foundTests.forEach{
-            val splitPath = it.categoryPath.split(CATEGORY_PATH_DELIMITER)
-            val addedCategory = assembledCollection.addCategory(splitPath)
-            addedCategory.add(it)
+            if (it.categoryPath == null) {
+                assembledCollection.add(it)
+            } else {
+                val splitPath = it.categoryPath.split(CATEGORY_PATH_DELIMITER)
+                val addedCategory = assembledCollection.addCategory(splitPath)
+                addedCategory.add(it)
+            }
+        }
+
+        // Also put the outfitters where they belong.
+        // It is considered an error if an outfitter is added to a category that is not there.
+        // In other words, it won't create an empty category and put an outfitter in it. The
+        // category must have been created because a test declared it, or because it is the top-level.
+        // It is also an error if two different outfitters declare the same category.
+        // An outfitter declaring the empty string as it's category path (the default) is
+        // assigned to the root category.
+        foundOutfitters.forEach {
+            if (it.categoryPath == null) {
+                // This goes to the top-level category
+                if (assembledCollection.outfitter != null) {
+                    preclusions.add(DuplicateOutfitterException("More than one Outfitter is assigned to the top-level category. This occurs when more than one Outfitter's categoryPath field is left default (blank)."))
+                } else {
+                    assembledCollection.outfitter = it
+                }
+            } else {
+                // This goes to a non-root category below the top-level.
+                val splitPath = it.categoryPath.split(CATEGORY_PATH_DELIMITER)
+                val declaredCategory = assembledCollection.getCategory(splitPath)
+                if (declaredCategory == null) {
+                    preclusions.add(StrayOutfitterException("An Outfitter tried to declare a category of ${it.categoryPath} but no tests are in that category. A category with an Outfitter but no tests is not allowed."))
+                } else {
+                    if (declaredCategory.outfitter != null) {
+                        preclusions.add(DuplicateOutfitterException("More than one Outfitter tried to declare a category of ${it.categoryPath}. A TestCategory may only have one Outfitter. Determine which Outfitter does not belong to ${it.categoryPath} and either correct the path or delete the Outfitter."))
+                    } else {
+                        declaredCategory.outfitter = it
+                    }
+                }
+            }
         }
     }
 
@@ -69,6 +104,7 @@ internal class Collector(
                                     foundTests.add(foundTestInstance)
                                 } else {
                                     if (foundClass.kotlin.isSubclassOf(Outfitter::class)) {
+                                        //debuggingMemoir.debug("Identified ${foundClass.kotlin} as extending an Outfitter")
                                         val foundOutfitterInstance: Outfitter = foundClass.getDeclaredConstructor().newInstance() as Outfitter
                                         foundOutfitters.add(foundOutfitterInstance)
                                     }

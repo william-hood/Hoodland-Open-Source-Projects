@@ -25,29 +25,8 @@ package hoodland.opensource.koarsegrind
  * A manufactured test has to be produced by a test factory in order to be included in the test run.
  * This provides the option of constructing tests on-the-fly at runtime.
  */
-public abstract class ManufacturedTest(name: String, detailedDescription: String = UNSET_DESCRIPTION, categoryPath: String = "", testCaseID: String = "") : Test(name, detailedDescription, categoryPath, testCaseID) {
+public abstract class ManufacturedTest(name: String, detailedDescription: String = UNSET_DESCRIPTION, categoryPath: String? = null, testCaseID: String = "") : Test(name, detailedDescription, categoryPath, testCaseID) {
 }
-
-/**
- * An Outfitter is used to provide a setup and teardown, without an actual test to perform.
- */
-public open class Outfitter(categoryPath: String = ""): ManufacturedTest("Outfitter for $categoryPath", categoryPath = categoryPath) {
-    final override fun performTest() {
-        // DELIBERATE NO-OP
-    }
-
-    override val overallStatus: TestStatus
-        get() {
-            if (setupContext.overallStatus == TestStatus.SUBJECTIVE) return TestStatus.SUBJECTIVE
-            if (! setupContext.overallStatus.isPassing()) return TestStatus.INCONCLUSIVE
-            return TestStatus.PASS
-        }
-
-}
-
-
-// ? Is there actually a need for this ???
-
 
 /**
  * A TestFactory generates an TestCollection of ManufacturedTest objects. As with stand-alone tests, TestFactories

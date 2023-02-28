@@ -63,13 +63,13 @@ object TestProgram {
      * @param name A full descriptive name for the root collection of tests. This will be at the top of the log. Example: "Test Suite - Hoodland Open Source Projects"
      * @param args Pass in the args from main(). These will be analyzed to filter which tests will be run.
      */
-    fun run(name: String = UNKNOWN, globalSetupTeardown: Outfitter? = null, args: Array<String> = Array<String>(0) { "" }) {
+    fun run(name: String = UNKNOWN, args: Array<String> = Array<String>(0) { "" }) {
         val filterSet = parseArguments(args)
 
         val topLevel = Collector(TestCategory(name), testLoader, preclusions).assembledCollection
 
         //val rootCollection = TestCollection(name)
-        topLevel.outfitter = globalSetupTeardown
+        //topLevel.outfitter = globalSetupTeardown
         /*
         val packages = testLoader.definedPackages
         packages.forEach {

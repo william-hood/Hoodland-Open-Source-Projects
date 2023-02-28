@@ -85,15 +85,17 @@ import hoodland.opensource.koarsegrind.TestProgram
 // First thing's first. Below is all you need for a main() function
 // to kick off your tests.
 fun main(args: Array<String>) {
-    TestProgram.run("Koarse Grind Demo", TestSuiteOutfitter, args = args)
+    TestProgram.run("Koarse Grind Demo", args = args)
 }
 
 // You can put a test in the same file as main() if you want.
 // Start with the file "ExampleTestTemplate.kt" for an example of a "normal" test.
 // Take a look at "A3 Hoodland Projects Test Suite" for an example of an actual test project.
 
-// If the entire test suite needs a setup and/or cleanup, pass an Outfitter
-// object to the second parameter of TestProgram.run().
+// If the entire test suite needs a setup and/or cleanup, create an Outfitter
+// and omit the categoryPath field (or explcitly specify it to be ""). This
+// will assign the outfitter to the top-level category. It's setup will run before
+// the entire suite. It's teardown will run after all tests in the suite complete.
 object TestSuiteOutfitter: Outfitter() {
     override fun setup() {
         assert.shouldBeTrue(true, "Suite-level setup ran!")

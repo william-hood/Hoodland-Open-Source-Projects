@@ -23,6 +23,8 @@ import hoodland.opensource.koarsegrind.TestFactory
 import hoodland.opensource.memoir.treatAsCode
 import hoodland.opensource.toolbox.SubnameFactory
 
+private const val CATEGORY = "Manufactured Test Example"
+
 // This is the "generic" version of the test. Since it extends ManufacturedTest,
 // Koarse Grind will NOT attempt to instantiate and run it.
 class ManufacturedTestExample(
@@ -30,7 +32,7 @@ class ManufacturedTestExample(
         detailedDescription: String,
         identifier: String,
         val testData: String?)
-    : ManufacturedTest(name, detailedDescription, "Manufactured Test Example", identifier) {
+    : ManufacturedTest(name, detailedDescription, CATEGORY, identifier) {
     override fun performTest() {
         log.info("Let's pretend we're sending this string into a database, REST call, or whatever else.")
         assert.shouldBeTrue(true, "This string worked:${treatAsCode(testData.toString())}")
@@ -69,7 +71,7 @@ class TestFactoryExample: TestFactory() {
 
 // If the tests created by your factory require a setup and/or cleanup, pass an Outfitter
 // object to the TestFactory constructor.
-object ExampleOutfitter : Outfitter("Manufactured Test Example") {
+object ExampleOutfitter : Outfitter(CATEGORY) {
     override fun setup() {
         assert.shouldBeTrue(true, "Collection-level setup ran!")
     }

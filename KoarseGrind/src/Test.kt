@@ -72,10 +72,10 @@ internal const val UNSET_DESCRIPTION = "(no details)"
 abstract class Test (
         override val name: String,
         private val detailedDescription: String = UNSET_DESCRIPTION,
-        val categoryPath: String = "",
+        val categoryPath: String? = null,
         internal val identifier: String = ""): Inquiry {
-        internal val setupContext = TestPhaseContext(Memoir("Setup - Test $identifiedName", stdout), EMOJI_SETUP)
-        internal val cleanupContext = TestPhaseContext(Memoir("Cleanup -  Test $identifiedName", stdout), EMOJI_CLEANUP)
+        internal val setupContext = TestPhaseContext(Memoir("Setup - $identifiedName", stdout), EMOJI_SETUP)
+        internal val cleanupContext = TestPhaseContext(Memoir("Cleanup - $identifiedName", stdout), EMOJI_CLEANUP)
         internal var testContext: TestPhaseContext? = null
         private var parentArtifactsDirectory = UNSET_STRING
         private var executionThread: Thread? = null
@@ -255,7 +255,11 @@ abstract class Test (
     internal val summaryDataRow: ArrayList<String>
         get() {
             val result = ArrayList<String>()
-            result.add(filterForSummary(categoryPath))
+            var statedCategory = TOP_LEVEL
+            categoryPath?.let {
+                statedCategory = it
+            }
+            result.add(filterForSummary(statedCategory))
             result.add(filterForSummary(identifier))
             result.add(filterForSummary(name))
             result.add(filterForSummary(detailedDescription))
