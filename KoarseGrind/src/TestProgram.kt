@@ -65,20 +65,7 @@ object TestProgram {
      */
     fun run(name: String = UNKNOWN, args: Array<String> = Array<String>(0) { "" }) {
         val filterSet = parseArguments(args)
-
         val topLevel = Collector(TestCategory(name), testLoader, preclusions).assembledCollection
-
-        //val rootCollection = TestCollection(name)
-        //topLevel.outfitter = globalSetupTeardown
-        /*
-        val packages = testLoader.definedPackages
-        packages.forEach {
-            val resources = testLoader.getResources(it.name.replace('.', File.separatorChar)).asIterator()
-            resources.forEach {
-                recursiveIdentify(rootCollection, File(URLDecoder.decode(it.file, Charset.defaultCharset())))
-            }
-        }
-        */
 
         val rootLog = topLevel.run(filterSet, preclusions)
         createSummaryReport(topLevel, rootLog)
@@ -117,64 +104,6 @@ object TestProgram {
             memoir.showThrowable(thisFailure)
         }
     }
-
-
-    // TODO: Properly handle Jar files in the classpath (or verify if it already does)
-    // TODO: To support owner collections, probably best to make an object and put this in it.
-    // TODO: Being in an object would allow easier tracking of collections, test cases, duplicates,
-    //  etc. to be added after-the-fact of all the identifies.
-    /*
-    private fun recursiveIdentify(rootCollection: TestCategory, candidate: File) {
-        //debuggingMemoir.info("PATH ${candidate.absolutePath}")
-
-        if (candidate.exists()) {
-            //debuggingMemoir.info("Candidate ${candidate.absolutePath} exists")
-            val check = candidate.listFiles()
-            check.forEach {
-                //debuggingMemoir.info("Considering ${it.absolutePath}")
-                if (it.isDirectory) {
-                    if (!it.name.contains(".")) {
-                        recursiveIdentify(rootCollection, it)
-                    }
-                } else if (it.name.toLowerCase().endsWith(".class")) {
-                    var attemptName = it.invariantSeparatorsPath.replace('/', '.')
-                    do {
-                        attemptName = attemptName.substringAfter('.')
-                        try {
-                            //debuggingMemoir.info("Attempting to load $attemptName")
-                            val foundClass = testLoader.loadClass(attemptName.substring(0, attemptName.length - 6))
-                            attemptName = "" // Prevent another loop iteration
-                            //debuggingMemoir.info("foundClass.kotlin.isSubclassOf(Test::class) == ${foundClass.kotlin.isSubclassOf(Test::class)}")
-                            if (foundClass.kotlin.isSubclassOf(Test::class)) {
-                                //debuggingMemoir.debug("Identified ${foundClass.kotlin} as extending a KG Test")
-                                if (!(foundClass.kotlin.isSubclassOf(ManufacturedTest::class))) {
-                                    //debuggingMemoir.debug("Identified ${foundClass.kotlin} as NOT extending MaufacturedTest")
-                                    val foundTestInstance: Test = foundClass.getDeclaredConstructor().newInstance() as Test
-                                    rootCollection.add(foundTestInstance)
-                                }
-                            } else if (foundClass.kotlin.isSubclassOf(TestFactory::class)) {
-                                val factory: TestFactory = foundClass.getDeclaredConstructor().newInstance() as TestFactory
-                                rootCollection.add(factory.products)
-                            }
-                        } catch (materialFailure: InvocationTargetException) {
-                            //debuggingMemoir.showThrowable(materialFailure)
-                            //debuggingMemoir.debug("MATERIAL FAILURE")
-                            preclusions.add(materialFailure)
-                        } catch (dontCare: Throwable) {
-                            //debuggingMemoir.showThrowable(dontCare)
-                            // DELIBERATE NO-OP
-                            // Kotlin will hemorrhage exceptions during the process of identifying legitimate tests.
-                            // Use the line below if there is need to identify failures that matter.
-                            // addResult(getResultForFailureInCleanup(dontCare))
-                        }
-                    } while (attemptName.contains('.'))
-                }
-            }
-        }/* else {
-            debuggingMemoir.info("Candidate ${candidate.absolutePath} does not exist")
-        }*/
-    }
-    */
 
     private fun parseArguments(args: Array<String>): FilterSet? {
         val result = ArrayList<Filter>()

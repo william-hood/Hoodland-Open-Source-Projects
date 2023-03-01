@@ -58,9 +58,10 @@ internal fun logHeader(title: String): String {
 
 // This is calculated on the fly the first time it is called.
 // If a "Documents" folder exists off the user's home folder, the Test Results folder goes there.
-// Otherwise it goes in the user's home folder.
-private var defaultParentFolder = UNSET_STRING
-val DEFAULT_PARENT_FOLDER: String
+// Otherwise it goes in the user's home folder. A test programmer may override this default by
+// setting the defaultParentFolder field before calling TestProgram.run().
+public var defaultParentFolder = UNSET_STRING
+internal val DEFAULT_PARENT_FOLDER: String
     get() {
         if (defaultParentFolder == UNSET_STRING) {
             val rootShortName = File.separatorChar + "Test Results"
