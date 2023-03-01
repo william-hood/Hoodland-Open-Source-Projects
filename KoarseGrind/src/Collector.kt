@@ -12,7 +12,6 @@ internal class Collector(
     val assembledCollection: TestCategory,
     val testLoader: ClassLoader,
     val preclusions: ArrayList<Throwable>) {
-    //private val foundCollections = ArrayList<TestCollection>()
     private val foundTests = ArrayList<Test>()
     private val foundOutfitters = ArrayList<Outfitter>()
 

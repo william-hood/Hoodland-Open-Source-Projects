@@ -96,7 +96,7 @@ fun main(args: Array<String>) {
 // and omit the categoryPath field (or explcitly specify it to be ""). This
 // will assign the outfitter to the top-level category. It's setup will run before
 // the entire suite. It's teardown will run after all tests in the suite complete.
-object TestSuiteOutfitter: Outfitter() {
+class TestSuiteOutfitter: Outfitter() {
     override fun setup() {
         assert.shouldBeTrue(true, "Suite-level setup ran!")
     }

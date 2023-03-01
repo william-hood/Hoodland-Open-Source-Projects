@@ -71,7 +71,7 @@ class TestFactoryExample: TestFactory() {
 
 // If the tests created by your factory require a setup and/or cleanup, pass an Outfitter
 // object to the TestFactory constructor.
-object ExampleOutfitter : Outfitter(CATEGORY) {
+class ExampleOutfitter : Outfitter(CATEGORY) {
     override fun setup() {
         assert.shouldBeTrue(true, "Collection-level setup ran!")
     }
