@@ -73,10 +73,10 @@ class TestFactoryExample: TestFactory() {
 // object to the TestFactory constructor.
 class ExampleOutfitter : Outfitter(CATEGORY) {
     override fun setup() {
-        assert.shouldBeTrue(true, "Collection-level setup ran!")
+        assert.shouldBeTrue(true, "Category-level setup ran!")
     }
 
     override fun cleanup() {
-        assert.shouldBeTrue(true, "Collection-level cleanup ran!")
+        assert.shouldBeTrue(true, "Category-level cleanup ran!")
     }
 }

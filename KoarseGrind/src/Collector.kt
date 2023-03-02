@@ -33,10 +33,15 @@ internal class Collector(
 
         // We now construct the tree of collections and populate them with tests.
         foundTests.forEach{
-            if (it.categoryPath == null) {
+            // Force empty string to be treated as null.
+            var effectivePath = it.categoryPath
+            if (effectivePath == "") {
+                effectivePath = null
+            }
+            if (effectivePath == null) {
                 assembledCollection.add(it)
             } else {
-                val splitPath = it.categoryPath.split(CATEGORY_PATH_DELIMITER)
+                val splitPath = effectivePath.split(CATEGORY_PATH_DELIMITER)
                 val addedCategory = assembledCollection.addCategory(splitPath)
                 addedCategory.add(it)
             }
