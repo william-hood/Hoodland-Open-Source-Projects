@@ -8,7 +8,7 @@ of the author's legacy projects. While it's not yet exhaustive it shows a
 more real-world example of Koarse Grind in action.
 
  */
-// Copyright (c) 2020 William Arthur Hood
+// Copyright (c) 2020, 2023 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal

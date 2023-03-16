@@ -1,4 +1,4 @@
-// Copyright (c) 2020 William Arthur Hood
+// Copyright (c) 2020, 2023 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import java.io.PrintWriter
 import kotlin.concurrent.thread
 
 /**
- * An Inquiry is any Test or TestCollection in the KoarseGrind system. It may be used
+ * An Inquiry is any Test or TestCategory in the KoarseGrind system. It may be used
  * if a field or variable must contain anything that is a derivative of either of those classes.
  */
 
@@ -41,7 +41,7 @@ interface Inquiry {
 }
 
 /**
- * TestCollection:
+ * TestCategory:
  * This is the root-level container for a suite of tests to run. It is also used for a subgroup of
  * related tests, as typically produced by a TestFactory. The order in which it runs the tests or
  * subordinate TestCollections it contains is not guaranteed.
@@ -49,7 +49,7 @@ interface Inquiry {
  * @property name A human-readable name for this collection of tests. At the root level this should be
  * the overall name for the entire suite (the same "name" passed into the TestProgram.run() method).
  * It may also apply to a subgroup of related tests (the same "collectionName" passed into a TestFectory).
- * All human readable names of either TestCollections or TestCases must be unique.
+ * All human readable names of either TestCategories or TestCases must be unique.
  * @property categoryPath The human readable name of the TestCollection or TestFactory that this should be
  * immediately subordinate to. Leave it as null to make this top level.
  */
@@ -117,7 +117,7 @@ internal class TestCategory(override val name: String): ArrayList<Test>(), Inqui
         return null
     }
 
-    // TODO: TestCategories are now separate in a HashSet from the tests.
+    // TODO: TestCategories are now in a HashSet separate from the tests.
     internal fun run(filters: FilterSet? = null, preclusiveFailures: ArrayList<Throwable>? = null) : Memoir {
         filterSet = filters
         var logFileName = "$name.html"
@@ -149,7 +149,7 @@ internal class TestCategory(override val name: String): ArrayList<Test>(), Inqui
                 it.runSetup(rootDirectory)
                 it.setupContext.showWithStyle(overlog)
                 if (! it.setupContext.overallStatus.isPassing()) {
-                    val thisResult = TestResult(TestStatus.INCONCLUSIVE, "Declining to perform all tests in collection $name because collection-level setup failed.")
+                    val thisResult = TestResult(TestStatus.INCONCLUSIVE, "Declining to perform all tests in category $name because category-level setup failed.")
                     it.setupContext.results.add(thisResult)
                     overlog.showTestResult((thisResult))
                 }

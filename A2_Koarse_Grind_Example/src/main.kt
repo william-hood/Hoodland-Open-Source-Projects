@@ -19,12 +19,12 @@ least one of whom deployed it at their next job as well. While I didn’t use it
 most recent role, the fact that I’d written my own test framework carried weight when
 I interviewed.
 
-I’ve decided to get Coarse Grind into good enough shape that more than just me and my
+I decided to get Coarse Grind into good enough shape that more than just me and my
 friends might want to use it. After starting to improve the C# version, I got frustrated
 that both C# and Java would force me to put up with their own set of problems. In June,
 2020, I decided to drop C# and port all my personal projects to Kotlin.
 
-Koarse Grind (now with a ‘K’) is at least in pre-beta condition and ready for feedback.
+Koarse Grind (now with a ‘K’) is ready for use and ready for feedback.
 Here’s the core differences that set it apart from most other frameworks:
 
 * Not for Unit Tests – As the name suggests it’s intended for larger-grained tests one
