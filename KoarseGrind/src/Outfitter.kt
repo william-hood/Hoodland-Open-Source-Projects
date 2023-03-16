@@ -22,9 +22,11 @@
 package hoodland.opensource.koarsegrind
 
 /**
- * An Outfitter is used to provide a setup and teardown for a whole category of tests. Leave the categoryPath field
+ * An Outfitter is used to provide a setup and cleanup for a whole category of tests. Leave the categoryPath field
  * as the default (empty string) value to assign it to the top-level category. IMPORTANT: Your outfitter must be a
  * CLASS, not an OBJECT in Kotlin. Also it must use a default constructor with no parameters.
+ *
+ * @property categoryPath Tests are organized in a hierarchy of categories. This will be reflected in both the log file and the hierarchy of test result folders. Specify the fully qualified path, with path names separated by pipe ("|") characters, and this Outfitter will specify setup/cleanup for that specific category. The Outfitter will apply to the top level if this parameter is left null. Koarse Grind will throw a preculding exception at startup and decline to one if more than one Outfitter declares the same categoryPath.
  */
 public abstract class Outfitter(categoryPath: String? = null): ManufacturedTest(checkNull(categoryPath), categoryPath = categoryPath) {
     final override fun performTest() {

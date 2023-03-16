@@ -64,10 +64,9 @@ internal const val UNSET_DESCRIPTION = "(no details)"
  *
  * @property name A human-readable name for the test. This should not be too long. You may use a full sentence if you wish, but that might be better as the detailedDescription parameter.
  * @property detailedDescription This should be used to explain, in plain english, anything the test does that is not obvious to someone reviewing the results or editing the code. This is important if someone who did not write the test is assigned to write code that makes it pass.
- * @property ownerName This should designate the TestFactory (or TestCollection) that this test belongs to. Leave it as null to put this at the top level.
+ * @property categoryPath Tests are organized in a hierarchy of categories. This will be reflected in both the log file and the hierarchy of test result folders. Specify the test's fully qualified path, with path names separated by pipe ("|") characters. The test will be at the top level if this parameter is left null.
  * @property identifier You may omit this if you wish. If you are using a test tracking system that assigns a test case ID, this is the place it goes.
  *
- * @param categories This is an optional list of categories the test falls into. Examples might be "Short", "Long", "REST", "GUI", "HighPriority", "HappyPath", etc.
  */
 abstract class Test (
         override val name: String,

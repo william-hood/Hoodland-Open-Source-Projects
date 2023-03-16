@@ -1,6 +1,18 @@
 # Hoodland Open Source Projects
 
-##### Release 1.0
+##### Release 2.0
+
+Primary changes to this release are a new paradigm for Koarse Grind. **Refer to the Koarse Grind Example module.**
+
+- The concept of declaring several "Categories" each test might fit into is now abolished.
+- What was previously the "TestCollection" class now serves as each test's category. That class is now internal and renamed "TestCategory".
+- All tests now declare a "CategoryPath" delimited by the pipe character ( | ). This path determines how the tests are organized in the test log.
+- Example: "External API|Add Content|Negative Tests".
+- Outfitters also declare a CategoryPath which determine the specific category they setup/cleanup.
+- TestFactories no longer determine the name of the collection/category that the tests go in. The test programmer specifies this for each test.
+- Manually creating a "TestCollection" (now TestCategory) and populating it with tests is now prohibited. Use the CategoryPath field instead.
+
+---
 
 These projects are the "spiritual successors" to software I've developed over
 the course of my career as an SDET. In June of 2020, having grown frustrated
@@ -44,21 +56,20 @@ Here's what sets it apart from other test frameworks:
     - No Separate Runner Program – JUnit and NUnit both compile the tests to libraries requiring a separate runner program. This can be convenient for running in the IDE itself, or with a third party GUI, but it often proved difficult running from the command line. Koarse Grind tests compile as a runnable program, so running them from a script is already solved. (I’ve had GUI’s to run tests in older versions, but have not yet implemented that in the Kotlin version.)
     - Artifacts Folder – Every test has a folder for its own artifacts. This will contain at least the section of the log unique to that test. It can also hold screen shots, serialized data files, or other artifact files the test produces.
     - Rich Test-Object Description – A special “descriptions” module lets you describe how a candidate object might look and provides for ways to test the typical border conditions and edge cases.
-    - New to this version the top-level test program will identify your tests, instantiate one of each, and run them. Unless you’re generating a set of tests programmatically (a special TestFactory class provides for this) normal tests do not need to be instantiated or put into a container structure.
+    - Unlike legacy versions of Coarse Grind, the top-level test program will identify your tests, instantiate one of each, and run them. Unless you’re generating a set of tests programmatically (a special TestFactory class provides for this) normal tests do not need to be instantiated or put into a container structure.
 
 ## Usage & Known Issues
 - Clone the repository and open the root directory in IntelliJ IDEA CE.
 - There is an example project for the Memoir logging system when used as a stand-alone module.
 - A second example program exists for Koarse Grind, which uses Memoir for its logging.
-- There is also a partial start on a set of Koarse Grind tests for Toolbox which also serves as an example.
+- There is also a partial start on a set of Koarse Grind tests for the other Hoodland projects which also serves as an example.
 - The HTML-based output logs will appear in a folder titled "Test Results" off of your Documents directory.
 - Known Koarse Grind Issue: If a module, or its directory, has a space in its name any tests it contains will not be found and will not run. Don't put spaces in module names. Use an underscore instead.
 - The code is intended for use with IntelliJ IDEA CE. Eclipse is not supported, but feel free to adapt the code to any IDE or Editor you're comfortable with.
 - These projects do work with Java, provided you have experience using Kotlin based projects in Java. All projects are "Kotlin First" and use from Java is not officially supported.
-- These projects have been tested on macOS and Ubuntu. As of this writing I haven't tried using them under Windows but see no reason why they wouldn't work.
 
 ## Released under the terms of the MIT License
-©2021 William Hood
+© 2020, 2021, 2022, 2023 William Hood
 
 *Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

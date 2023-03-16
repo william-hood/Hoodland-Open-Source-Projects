@@ -24,6 +24,16 @@ package hoodland.opensource.koarsegrind
 /**
  * A manufactured test has to be produced by a test factory in order to be included in the test run.
  * This provides the option of constructing tests on-the-fly at runtime.
+ *
+ * If an optional setup() method exists it will be run first.
+ * Failed assertions in setup() render the test inconclusive. If an optional cleanup() method exists it will always
+ * be run, even if setup failed. The performTest() method will be run, unless setup failed.
+ *
+ * @property name A human-readable name for the test. This should not be too long. You may use a full sentence if you wish, but that might be better as the detailedDescription parameter.
+ * @property detailedDescription This should be used to explain, in plain english, anything the test does that is not obvious to someone reviewing the results or editing the code. This is important if someone who did not write the test is assigned to write code that makes it pass.
+ * @property categoryPath Tests are organized in a hierarchy of categories. This will be reflected in both the log file and the hierarchy of test result folders. Specify the test's fully qualified path, with path names separated by pipe ("|") characters. The test will be at the top level if this parameter is left null.
+ * @property testCaseID You may omit this if you wish. If you are using a test tracking system that assigns a test case ID, this is the place it goes.
+ *
  */
 public abstract class ManufacturedTest(name: String, detailedDescription: String = UNSET_DESCRIPTION, categoryPath: String? = null, testCaseID: String = "") : Test(name, detailedDescription, categoryPath, testCaseID) {
 }
@@ -37,32 +47,9 @@ public abstract class ManufacturedTest(name: String, detailedDescription: String
  * add into "products" will be another subordinate log/directory within that one.
  */
 abstract class TestFactory()
-    /*
-    val categoryName: String,
-    val categoryPath: String? = null,
-
-    /**
-     * Use this to provide a setup and cleanup for the manufactured tests produced by this factory.
-     */
-    val collectionOutfitter: Outfitter? = null*/
  {
-    val producedTests = ArrayList<ManufacturedTest>()//TestCollection(collectionName, ownerName)
+    val producedTests = ArrayList<ManufacturedTest>()
 
-    /**
-     * Use this to instantiate manufactured tests and put them into the Products Collection
-     */
-    // TODO: Might not be able to deprecate this. Still need to have manufactured tests directly inserted.
-    //  or might have to get rid of test factory and have the user declare collections?  Maybe collections
-    //  are made based on the owner name in the tests???
-    //
-    // Maybe new paradigm. Since everything declares an owner, you do not create collections or factories.
-    // Every test or outfitter declares an owner (or left blank for top level). You would have to declare
-    // fully qualified path, maybe with backslash delimiting the collection levels. The collector assembles
-    // everything and all you make are tests and outfitters. Would probably still need factories, but you
-    // just declare the owner of the tests as part of that.
-
-    // When products are populated, if they don't have the owner field filled in, it will default to the
-    // owner name specified in the factory.
     abstract fun produceTests()
 
     init {

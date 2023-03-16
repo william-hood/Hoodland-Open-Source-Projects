@@ -12,13 +12,14 @@ import hoodland.opensource.koarsegrind.Test
 //                      Make it detailed enough that someone unfamiliar with the test
 //                      can figure out what it does.
 //
+// categoryPath:        Tests are organized in a hierarchy of categories. This will be
+//                      reflected in both the log file and the hierarchy of test result
+//                      folders. Specify the test's fully qualified path, with path
+//                      names separated by pipe ("|") characters. The test will be at
+//                      the top level if this parameter is left null.
+//
 // identifier:          If you use a test tracking system it typically provides each
 //                      test with a test case ID. That's what this is for.
-//
-// categories:          Put some strings that each describe a category this test might
-//                      fall into. "HappyPath", "SmokeTests", "HighPriority" are some
-//                      suggested examples. It is possible to tell the test program
-//                      to only run tests that match a certain category.
 //
 // ‼️ IMPORTANT ‼️      Your test should only have the default constructor with no parameters.
 //                      Otherwise it can not be automatically instantiated.

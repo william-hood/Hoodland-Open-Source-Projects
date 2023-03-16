@@ -32,19 +32,16 @@ import kotlin.concurrent.thread
  * An Inquiry is any Test or TestCategory in the KoarseGrind system. It may be used
  * if a field or variable must contain anything that is a derivative of either of those classes.
  */
-
-// May not make sense to have this anymore as collections (categories) are now entirely separate from tests
 interface Inquiry {
     val name: String
     val overallStatus: TestStatus
-    //val categoryPath: String?
 }
 
 /**
  * TestCategory:
  * This is the root-level container for a suite of tests to run. It is also used for a subgroup of
  * related tests, as typically produced by a TestFactory. The order in which it runs the tests or
- * subordinate TestCollections it contains is not guaranteed.
+ * subordinate TestCategories it contains is not guaranteed.
  *
  * @property name A human-readable name for this collection of tests. At the root level this should be
  * the overall name for the entire suite (the same "name" passed into the TestProgram.run() method).
@@ -54,8 +51,9 @@ interface Inquiry {
  * immediately subordinate to. Leave it as null to make this top level.
  */
 
-// Making internal. Collections are created by naming them as the owner in a test or factory.
-// TestCollection is now explicitly the branch node of an N-ary Tree structure with Tests as the leaves.
+// Making this internal. Collections are created by naming them as the owner in a test or factory.
+// TestCategory (formerly TestCollection) is now explicitly the branch node of an N-ary Tree structure
+// with Tests as the leaves.
 internal class TestCategory(override val name: String): ArrayList<Test>(), Inquiry {
     val subCategories = HashMap<String, TestCategory>()
     var outfitter: Outfitter? = null
