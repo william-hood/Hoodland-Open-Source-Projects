@@ -14,8 +14,9 @@ internal class Collector(
     val preclusions: ArrayList<Throwable>) {
     private val foundTests = ArrayList<Test>()
     private val foundOutfitters = ArrayList<Outfitter>()
+    private val usedNames = HashSet<String>()
+    private val usedIdentifiers = HashSet<String>()
 
-    // TODO: Need to also find outfitters and put them in the proper test categories.
     init {
         val packages = testLoader.definedPackages
         packages.forEach {
@@ -106,6 +107,8 @@ internal class Collector(
                                     //debuggingMemoir.debug("Identified ${foundClass.kotlin} as NOT extending MaufacturedTest")
                                     val foundTestInstance: Test = foundClass.getDeclaredConstructor().newInstance() as Test
                                     foundTests.add(foundTestInstance)
+                                    addName(foundTestInstance.name)
+                                    addIdentifier(foundTestInstance.identifier)
                                 } else {
                                     if (foundClass.kotlin.isSubclassOf(Outfitter::class)) {
                                         //debuggingMemoir.debug("Identified ${foundClass.kotlin} as extending an Outfitter")
@@ -117,6 +120,8 @@ internal class Collector(
                                 val factory: TestFactory = foundClass.getDeclaredConstructor().newInstance() as TestFactory
                                 factory.producedTests.forEach {
                                     foundTests.add(it)
+                                    addName(it.name)
+                                    addIdentifier(it.identifier)
                                 }
                             }
                         } catch (materialFailure: InvocationTargetException) {
@@ -136,5 +141,25 @@ internal class Collector(
         }/* else {
             debuggingMemoir.info("Candidate ${candidate.absolutePath} does not exist")
         }*/
+    }
+
+    fun addName(thisName: String) {
+        if (usedNames.contains(thisName)) {
+            preclusions.add(NameCollisionException(thisName))
+        } else {
+            usedNames.add(thisName)
+        }
+    }
+
+    fun addIdentifier(thisIdentifier: String) {
+        if (thisIdentifier != null) {
+            if (thisIdentifier.length > 0) {
+                if (usedIdentifiers.contains(thisIdentifier)) {
+                    preclusions.add(IdentifierCollisionException(thisIdentifier))
+                } else {
+                    usedIdentifiers.add(thisIdentifier)
+                }
+            }
+        }
     }
 }

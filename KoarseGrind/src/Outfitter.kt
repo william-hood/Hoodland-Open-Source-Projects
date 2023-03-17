@@ -46,6 +46,3 @@ internal fun checkNull(candidate: String?): String {
     if (candidate == null) return TOP_LEVEL
     return candidate
 }
-
-class DuplicateOutfitterException(msg: String): Exception(msg) { }
-class StrayOutfitterException(msg: String): Exception(msg) { }

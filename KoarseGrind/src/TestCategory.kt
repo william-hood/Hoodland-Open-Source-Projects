@@ -129,10 +129,11 @@ internal class TestCategory(override val name: String): ArrayList<Test>(), Inqui
         // Force the parent directory to exist...
         File(logFileFullPath).parentFile.mkdirs()
 
-        val overlog = Memoir(name, null, PrintWriter(logFileFullPath), true, true, ::logHeader)
+        val overlog = Memoir(name, stdout, PrintWriter(logFileFullPath), true, true, ::logHeader)
         if (preclusiveFailures != null) {
             if (preclusiveFailures.size > 0) {
-                overlog.error("Failures were indicated while starting Koarse Grind!")
+                overlog.error("Failures were indicated while starting Koarse Grind! The suite will not be allowed to run.")
+                KILL_SWITCH = true
                 preclusiveFailures.forEach {
                     overlog.showThrowable(it)
                 }

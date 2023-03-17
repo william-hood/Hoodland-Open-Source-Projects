@@ -140,7 +140,7 @@ class DescriptionsExample: TestFactory() {
                 producedTests.add(PackageTrackerTest(
                         "PackageTracker: Expected Arrival Date ${it.toString()}",
                         "This test will show you what the candidate PackageTracker looks like and see if the verify() function throws an exception.",
-                        "DES-04${subname.currentSubname}",
+                        "DES-04${subname.nextSubname}",
                         testData))
             } catch (dontCare: Throwable) {
                 // Silently ignore inappropriate test cases
@@ -158,7 +158,7 @@ class DescriptionsExample: TestFactory() {
                     producedTests.add(PackageTrackerTest(
                             "PackageTracker: Last Stop ${currentTarget.toString()}",
                             "This test will show you what the candidate PackageTracker looks like and see if the verify() function throws an exception.",
-                            "DES-05${subname.currentSubname}",
+                            "DES-05${subname.nextSubname}",
                             testData))
                 }
             } catch (dontCare: Throwable) {
