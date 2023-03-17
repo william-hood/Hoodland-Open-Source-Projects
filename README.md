@@ -12,6 +12,7 @@ Primary changes to this release are a new paradigm for Koarse Grind. **Refer to 
 - TestFactories no longer determine the name of the collection/category that the tests go in. The test programmer specifies this for each test.
 - The root output folder can be changed from `$/Documents/TestResults` to the directory of your choice by setting `defaultParentFolder` before calling `TestProgram.run()`.
 - Manually creating a "TestCollection" (now TestCategory) and populating it with tests is now prohibited. Use the CategoryPath field instead.
+- This release of Koarse Grind is verified to work on Windows 11, macOS Ventura, and Linux Mint 21.1.
 
 ---
 

@@ -136,19 +136,6 @@ abstract class Test (
      */
     abstract fun performTest()
 
-    /*
-    private val categorization: String
-        get() {
-            val result = StringBuilder()
-            categories.forEach {
-                if (result.length > 0) { result.append('/') }
-                result.append(it)
-            }
-
-            return result.toString()
-        }
-    */
-
     /**
      * log:
      * Used to write information to Koarse Grind's HTML-based log file, as well as to the console. It is automatically
@@ -417,7 +404,7 @@ abstract class Test (
             // Force the parent directory to exist...
             File(expectedFileName).parentFile.mkdirs()
 
-            testContext = TestPhaseContext(Memoir(name, stdout, PrintWriter(expectedFileName), true, true, ::logHeader))
+            testContext = TestPhaseContext(Memoir(identifiedName, stdout, PrintWriter(expectedFileName), true, true, ::logHeader))
 
             if (detailedDescription != UNSET_DESCRIPTION) {
                 testContext?.let { it.memoir.writeToHTML("<small><i>$detailedDescription</i></small>", EMOJI_TEXT_BLANK_LINE) }
