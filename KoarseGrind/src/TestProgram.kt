@@ -23,7 +23,6 @@ package hoodland.opensource.koarsegrind
 
 import hoodland.opensource.memoir.Memoir
 import hoodland.opensource.memoir.UNKNOWN
-import hoodland.opensource.memoir.showThrowable
 import hoodland.opensource.toolbox.MatrixFile
 import hoodland.opensource.toolbox.QuantumTextFile
 import hoodland.opensource.toolbox.StringParser

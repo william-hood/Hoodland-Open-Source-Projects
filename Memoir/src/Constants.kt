@@ -38,6 +38,14 @@ const val EMOJI_OUTGOING = "↗️"
 const val EMOJI_INCOMING = "↩️"
 const val UNKNOWN = "(unknown)"
 
+//===================================================
+// Formerly in ShowHttpMessages.kt
+const val HTTP_MESSAGE_BODY = "HTTP Req/Resp Body/Payload"
+//===================================================
+// Formerly in ShowThrowable.kt
+internal const val DEFAULT_STACKTRACE = "(no stacktrace)"
+//===================================================
+
 internal const val NAMELESS = "(name not given)"
 internal const val ALREADY_CONCLUDED_MESSAGE = "An attempt was made to write to a memoir that was already concluded.\r\n<li>Once a Memoir has been concluded it can no longer be written to.\r\n<li>Passing a Memoir to the ShowMemoir() method will automatically conclude it."
 internal const val MAX_OBJECT_FIELDS_TO_DISPLAY = 10

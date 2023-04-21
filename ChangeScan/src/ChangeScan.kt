@@ -22,7 +22,6 @@
 package hoodland.opensource.changescan
 
 import hoodland.opensource.memoir.Memoir
-import hoodland.opensource.memoir.showThrowable
 import hoodland.opensource.toolbox.COPYRIGHT
 import hoodland.opensource.toolbox.stdout
 

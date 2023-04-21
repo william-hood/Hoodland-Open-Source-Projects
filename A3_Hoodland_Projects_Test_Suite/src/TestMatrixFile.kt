@@ -22,7 +22,6 @@
 package hoodland.opensource.testsuite
 
 import hoodland.opensource.koarsegrind.Test
-import hoodland.opensource.memoir.showObject
 import hoodland.opensource.toolbox.*
 import java.io.File
 

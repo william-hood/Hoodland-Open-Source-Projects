@@ -22,7 +22,6 @@
 package hoodland.opensource.koarsegrind
 
 import hoodland.opensource.memoir.Memoir
-import hoodland.opensource.memoir.showThrowable
 import hoodland.opensource.toolbox.*
 import java.io.File
 import java.io.PrintWriter

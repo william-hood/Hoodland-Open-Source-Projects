@@ -22,7 +22,6 @@
 package hoodland.opensource.changescan
 
 import hoodland.opensource.memoir.Memoir
-import hoodland.opensource.memoir.showThrowable
 import java.io.File
 
 internal object ScanEngine {

@@ -25,7 +25,6 @@
 package hoodland.opensource.koarsegrind
 
 import hoodland.opensource.memoir.Memoir
-import hoodland.opensource.memoir.showThrowable
 
 val SUMMARY_HEADERS = arrayOf("Criterion", "Status", "Artifacts", "Failures")
 
@@ -44,6 +43,7 @@ enum class TestConditionalType {
         when (this) {
             ASSERTION -> prefix = "(Assertion) "
             REQUIREMENT -> prefix = "(Requirement) "
+            else -> { /* Deliberate NO-OP */ }
         }
 
         val result = TestResult()
@@ -55,6 +55,7 @@ enum class TestConditionalType {
                 ASSERTION -> result.status = TestStatus.FAIL
                 CONSIDERATION -> result.status = TestStatus.SUBJECTIVE
                 // Otherwise leave the default status of inconclusive in-place.
+                else -> { /* Deliberate NO-OP */ }
             }
         }
 

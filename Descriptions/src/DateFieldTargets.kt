@@ -21,6 +21,8 @@
 
 package hoodland.opensource.descriptions
 
+import hoodland.opensource.toolbox.ImpossibleCodePathException
+
 enum class DateFieldTargets {
     DEFAULT, NULL, HAPPY_PATH, EXPLICIT, MAXIMUM_POSSIBLE_VALUE, RANDOM_WITHIN_LIMITS, SLIGHTLY_BELOW_MAXIMUM, SLIGHTLY_ABOVE_MINIMUM, MINIMUM_POSSIBLE_VALUE, WELL_BEYOND_UPPER_LIMIT, SLIGHTLY_BEYOND_UPPER_LIMIT, AT_UPPER_LIMIT, SLIGHTLY_WITHIN_UPPER_LIMIT, WELL_WITHIN_UPPER_LIMIT, WELL_IN_FUTURE, SLIGHTLY_IN_FUTURE, AT_PRESENT, SLIGHTLY_IN_PAST, WELL_IN_PAST, WELL_BEYOND_LOWER_LIMIT, SLIGHTLY_BEYOND_LOWER_LIMIT, AT_LOWER_LIMIT, SLIGHTLY_WITHIN_LOWER_LIMIT, WELL_WITHIN_LOWER_LIMIT, FIVE_DIGIT_YEAR, FOUR_DIGIT_YEAR, THREE_DIGIT_YEAR, TWO_DIGIT_YEAR, SINGLE_DIGIT_YEAR, TWO_DIGIT_MONTH, SINGLE_DIGIT_MONTH, TWO_DIGIT_DAY, SINGLE_DIGIT_DAY, SINGLE_DIGIT_MONTH_AND_DAY;
 
@@ -59,24 +61,24 @@ enum class DateFieldTargets {
             TWO_DIGIT_DAY -> return "Two Digit Day"
             SINGLE_DIGIT_DAY -> return "Single Digit Day"
             SINGLE_DIGIT_MONTH_AND_DAY -> return "Single Digit Month and Day"
+            else -> return "Left Default"
         }
-        return "Left Default"
     }
 
     val isLimitRelevant: Boolean
         get() {
             when (this) {
                 WELL_BEYOND_LOWER_LIMIT, WELL_BEYOND_UPPER_LIMIT, WELL_WITHIN_LOWER_LIMIT, WELL_WITHIN_UPPER_LIMIT, SLIGHTLY_BEYOND_LOWER_LIMIT, SLIGHTLY_BEYOND_UPPER_LIMIT, SLIGHTLY_WITHIN_LOWER_LIMIT, SLIGHTLY_WITHIN_UPPER_LIMIT, RANDOM_WITHIN_LIMITS, AT_LOWER_LIMIT, AT_UPPER_LIMIT -> return true
+                else -> return false
             }
-            return false
         }
 
     val isDigitRelevant: Boolean
         get() {
             when (this) {
                 FIVE_DIGIT_YEAR, FOUR_DIGIT_YEAR, THREE_DIGIT_YEAR, TWO_DIGIT_YEAR, SINGLE_DIGIT_YEAR, TWO_DIGIT_MONTH, SINGLE_DIGIT_MONTH, TWO_DIGIT_DAY, SINGLE_DIGIT_DAY, SINGLE_DIGIT_MONTH_AND_DAY -> return true
+                else -> return false
             }
-            return false
         }
 
     val isHappyOrExplicit: Boolean
