@@ -1,3 +1,6 @@
+# This branch, "memoir_java_compat", is being discarded. There are still a lot of issues using the jar directly in Java due to things like default parameters and constants at top level. Instead will just create a true Java compatibility layer that directly calls the appropriate underlying Kotlin code.
+
+
 # Hoodland Open Source Projects
 
 ##### Release 2.0
