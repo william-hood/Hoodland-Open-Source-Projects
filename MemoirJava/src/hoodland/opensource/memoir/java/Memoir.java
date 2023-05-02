@@ -1,14 +1,13 @@
 package hoodland.opensource.memoir.java;
 
 
-import hoodland.opensource.memoir.MemoirKt;
-import hoodland.opensource.memoir.ShowHttpMessagesKt;
-import hoodland.opensource.memoir.ShowThrowableKt;
+import hoodland.opensource.memoir.*;
 
 import java.io.PrintWriter;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 public class Memoir {
     private hoodland.opensource.memoir.Memoir KMemoir;
@@ -208,4 +207,107 @@ public class Memoir {
 
     //=== Showing Objects
 
+    public String showObject(Object target, String targetVariableName, int recurseLevel) {
+        return ShowObjectKt.showObject(KMemoir, target, targetVariableName, recurseLevel);
+    }
+
+    public String showObject(Object target) {
+        return showObject(target, Constants.NAMELESS, 0);
+    }
+
+    public String showObject(Object target, String targetVariableName) {
+        return showObject(target, targetVariableName, 0);
+    }
+
+    public String showObject(Object target, int recurseLevel) {
+        return showObject(target, Constants.NAMELESS, recurseLevel);
+    }
+
+    public String show(Object target, String targetVariableName, int recurseLevel) {
+        return ShowCommonKt.show(KMemoir, target, targetVariableName, recurseLevel);
+    }
+
+    public String show(Object target) {
+        return show(target, Constants.NAMELESS, 0);
+    }
+
+    public String show(Object target, String targetVariableName) {
+        return show(target, targetVariableName, 0);
+    }
+
+    public String show(Object target, int recurseLevel) {
+        return show(target, Constants.NAMELESS, recurseLevel);
+    }
+
+    public String showArray(Object[] target, String targetVariableName, int recurseLevel) {
+        return ShowArrayKt.showArray(KMemoir, target, targetVariableName, recurseLevel);
+    }
+
+    public String showArray(Object[] target) {
+        return showArray(target, Constants.NAMELESS, 0);
+    }
+
+    public String showArray(Object[] target, String targetVariableName) {
+        return showArray(target, targetVariableName, 0);
+    }
+
+    public String showArray(Object[] target, int recurseLevel) {
+        return showArray(target, Constants.NAMELESS, recurseLevel);
+    }
+
+    public String showPrimitiveArray(Object target, String targetVariableName, int recurseLevel) {
+        return ShowArrayKt.showPrimitiveArray(KMemoir, target, targetVariableName, recurseLevel);
+    }
+
+    public String showPrimitiveArray(Object target) {
+        return showPrimitiveArray(target, Constants.NAMELESS, 0);
+    }
+
+    public String showPrimitiveArray(Object target, String targetVariableName) {
+        return showPrimitiveArray(target, targetVariableName, 0);
+    }
+
+    public String showPrimitiveArray(Object target, int recurseLevel) {
+        return showPrimitiveArray(target, Constants.NAMELESS, recurseLevel);
+    }
+
+    public String showIterable(Iterable target, String targetVariableName, int recurseLevel) {
+        return ShowIterableKt.showIterable(KMemoir, target, targetVariableName, recurseLevel);
+    }
+
+    public String showIterable(Iterable target) {
+        return showIterable(target, Constants.NAMELESS, 0);
+    }
+
+    public String showIterable(Iterable target, String targetVariableName) {
+        return showIterable(target, targetVariableName, 0);
+    }
+
+    public String showIterable(Iterable target, int recurseLevel) {
+        return showIterable(target, Constants.NAMELESS, recurseLevel);
+    }
+
+    public String showMap(Map target, String targetVariableName, int recurseLevel, String targetClassName) {
+        return ShowMapKt.showMap(KMemoir, target, targetVariableName, recurseLevel, targetClassName);
+    }
+
+    public String showMap(Map target) {
+        return showMap(target, Constants.NAMELESS, 0, "Map");
+    }
+
+    public String showMap(Map target, String targetVariableName) {
+        return showMap(target, targetVariableName, 0, "Map");
+    }
+
+    public String showMap(Map target, int recurseLevel) {
+        return showMap(target, Constants.NAMELESS, recurseLevel, "Map");
+    }
+
+    public String showMap(Map target, String targetVariableName, String targetClassName) {
+        return showMap(target, targetVariableName, 0, targetClassName);
+    }
+
+    public String showMap(Map target, int recurseLevel, String targetClassName) {
+        return showMap(target, Constants.NAMELESS, recurseLevel, targetClassName);
+    }
 }

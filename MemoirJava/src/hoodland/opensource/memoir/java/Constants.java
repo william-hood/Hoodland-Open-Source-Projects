@@ -22,4 +22,5 @@ public class Constants {
     public static final String UNKNOWN = ConstantsKt.UNKNOWN;
 
     public static final String HTTP_MESSAGE_BODY = ShowHttpMessagesKt.HTTP_MESSAGE_BODY;
+    static final String NAMELESS = "(name not given)";
 }

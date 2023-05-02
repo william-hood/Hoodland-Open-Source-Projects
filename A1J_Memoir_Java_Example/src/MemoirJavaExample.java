@@ -8,7 +8,7 @@ public class MemoirJavaExample {
     public static void main(String[] args) throws FileNotFoundException {
         String homeFolder = System.getProperty("user.home");
         File outputFile = new File(homeFolder + File.separator + "Documents" + File.separator + "Test Results" + File.separator + "Memoir Java Example.html");
-        Memoir log = new Memoir("Memoir Example", new PrintWriter(System.out), new PrintWriter(outputFile));
+        Memoir log = new Memoir("Memoir Example (from Java)", new PrintWriter(System.out), new PrintWriter(outputFile));
 
         try {
             log.skipLine();
