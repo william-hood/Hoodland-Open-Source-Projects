@@ -29,8 +29,8 @@ enum class SimpleFieldTargets {
             EXPLICIT -> return "Explicit Value"
             HAPPY_PATH -> return "Happy Path"
             NULL -> return "Explicit Null"
+            else -> return "Left Default"
         }
-        return "Left Default"
     }
 
     val isHappyOrExplicit: Boolean

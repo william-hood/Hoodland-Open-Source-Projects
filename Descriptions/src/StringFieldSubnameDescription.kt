@@ -28,11 +28,11 @@ class StringFieldSubnameDescription : StringFieldDescription {
         subname = SubnameFactory()
     }
 
-    constructor(initialIndex: Long) : super("") {
+    constructor(initialIndex: Int) : super("") {
         subname = SubnameFactory(initialIndex)
     }
 
-    constructor(basisValue: String, initialIndex: Long) : super(basisValue) {
+    constructor(basisValue: String, initialIndex: Int) : super(basisValue) {
         subname = SubnameFactory(initialIndex)
     }
 

@@ -32,7 +32,7 @@ fun main(args: Array<String>) {
         showUsage()
     }
 
-    if (args[0].toUpperCase() == "LICENSE") showLicense()
+    if (args[0].uppercase() == "LICENSE") showLicense()
 
     val workOrder = interpretArgs(args)
     val errorLog = Memoir("Errors Encountered During Scanning")

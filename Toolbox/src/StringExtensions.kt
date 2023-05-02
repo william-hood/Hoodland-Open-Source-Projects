@@ -79,7 +79,7 @@ fun String?.matchesCaseInspecific(theOther: String?): Boolean {
 
     if (theOther == null) return false
 
-    return this.toUpperCase().compareTo(theOther.toUpperCase()) == 0
+    return this.uppercase().compareTo(theOther.uppercase()) == 0
 }
 
 fun String.makeParenthetic(): String {

@@ -281,10 +281,10 @@ abstract class Test (
     private fun getResultForIncident(status: TestStatus, section: String, failure: Throwable): TestResult {
         var reportedSection = section
         if (section.length > 0) {
-            reportedSection = "($section)"
+            reportedSection = " ($section)"
         }
 
-        val result = TestResult(status, "$identifiedName$section: An unanticipated failure occurred.")
+        val result = TestResult(status, "$identifiedName$reportedSection: An unanticipated failure occurred.")
         result.failures.add(failure)
         return result
     }
@@ -357,7 +357,7 @@ abstract class Test (
         testContext?.let { it.results.add(TestResult(TestStatus.SUBJECTIVE, "This test case requires analysis by appropriate personnel to determine pass/fail status")) }
     }
 
-    internal fun runSetup(rootDirectory: String) {
+    internal fun runSetup() {
         // SETUP
         try {
             setupContext.results.add(TestResult(TestStatus.PASS, "Setup was run"))
@@ -412,7 +412,7 @@ abstract class Test (
 
             testContext?.let { it.memoir.skipLine() }
 
-            runSetup(rootDirectory)
+            runSetup()
 
             // RUN THE ACTUAL TEST
             if (setupContext.overallStatus.isPassing() && (! KILL_SWITCH)) {

@@ -128,7 +128,7 @@ fun Memoir.showTestStatus(thisStatus: TestStatus, message: String) {
  * Defaults to inconclusive if it's not obvious.
  */
 fun String.toTestStatus(): TestStatus {
-    if (this.toUpperCase().startsWith("P")) { return TestStatus.PASS }
-    if (this.toUpperCase().startsWith("F")) { return TestStatus.FAIL }
+    if (this.uppercase().startsWith("P")) { return TestStatus.PASS }
+    if (this.uppercase().startsWith("F")) { return TestStatus.FAIL }
     return TestStatus.INCONCLUSIVE
 }

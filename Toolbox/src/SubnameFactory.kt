@@ -34,8 +34,8 @@ package hoodland.opensource.toolbox
  * @param startingIndex Each subname is a Base26 number with a corresponding long integer. Zero is A. Unless you know why you'd want to change it, omit this parameter so it uses the default value of zero.
  * @param totalPlaces When rendering the subname as a string, use this to force the subname to take a minimum of <totalPlaces> characters. The default placeholder is '.', but you can change it after construction.
  */
-class SubnameFactory(startingIndex: Long = 0, totalPlaces: Int = 0) {
-    var currentIndex: Long = startingIndex
+class SubnameFactory(startingIndex: Int = 0, totalPlaces: Int = 0) {
+    var currentIndex: Int = startingIndex
         private set
     var places = totalPlaces
     var placeholder = DEFAULT_PLACE_HOLDER
@@ -58,7 +58,7 @@ class SubnameFactory(startingIndex: Long = 0, totalPlaces: Int = 0) {
     /**
      * nextIndex: This advances the index and produces the next Long-Integer index value. (This is the numeric value, not the Base26 subname.)
      */
-    val nextIndex: Long
+    val nextIndex: Int
         get() {
             advance()
             return currentIndex
@@ -97,7 +97,7 @@ class SubnameFactory(startingIndex: Long = 0, totalPlaces: Int = 0) {
             var cursor = currentIndex
             while (cursor > 0) {
                 --cursor
-                result.append(('A'.toLong() + cursor % 26).toChar())
+                result.append(('A'.code + cursor % 26).toChar())
                 cursor /= 26
             }
             return prepend(result.reverse().toString())

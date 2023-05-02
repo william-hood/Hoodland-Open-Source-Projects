@@ -128,8 +128,8 @@ abstract class ValueFieldDescription<T>(basisValue: T, val limits: LimitsDescrip
                 ValueFieldTargets.WELL_WITHIN_UPPER_LIMIT -> return subtract(limits.upper, positiveModerateValue)
                 ValueFieldTargets.SLIGHTLY_ABOVE_MINIMUM -> return add(minimumPossibleValue, positiveMinisculeValue)
                 ValueFieldTargets.SLIGHTLY_BELOW_MAXIMUM -> return subtract(maximumPossibleValue, positiveMinisculeValue)
+                else -> throw NoValueException()
             }
-            throw NoValueException()
         }
 
     private fun enforceLowerNotMin() {

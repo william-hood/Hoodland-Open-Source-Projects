@@ -145,7 +145,7 @@ internal class TestCategory(override val name: String): ArrayList<Test>(), Inqui
             // Decline to run
         } else {
             outfitter?.let {
-                it.runSetup(rootDirectory)
+                it.runSetup()
                 it.setupContext.showWithStyle(overlog)
                 if (! it.setupContext.overallStatus.isPassing()) {
                     val thisResult = TestResult(TestStatus.INCONCLUSIVE, "Declining to perform all tests in category $name because category-level setup failed.")
@@ -256,11 +256,7 @@ internal class TestCategory(override val name: String): ArrayList<Test>(), Inqui
                 result += it.overallStatus
             }
             this.forEach {
-                if (it is Test) {
-                    if (shouldRun(it)) {
-                        result = result + it.overallStatus
-                    }
-                } else {
+                if (shouldRun(it)) {
                     result = result + it.overallStatus
                 }
             }

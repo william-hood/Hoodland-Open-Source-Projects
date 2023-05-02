@@ -44,6 +44,7 @@ enum class TestConditionalType {
         when (this) {
             ASSERTION -> prefix = "(Assertion) "
             REQUIREMENT -> prefix = "(Requirement) "
+            else -> {}// DELIBERATE NO-OP
         }
 
         val result = TestResult()
@@ -55,6 +56,7 @@ enum class TestConditionalType {
                 ASSERTION -> result.status = TestStatus.FAIL
                 CONSIDERATION -> result.status = TestStatus.SUBJECTIVE
                 // Otherwise leave the default status of inconclusive in-place.
+                else -> {}// DELIBERATE NO-OP
             }
         }
 

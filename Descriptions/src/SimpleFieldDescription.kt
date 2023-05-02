@@ -43,8 +43,8 @@ class SimpleFieldDescription<T>() : FieldDescription<T>() {
                 if (basisValue == null) throw InappropriateDescriptionException()
                 return basisValue
             }
+            else -> return null
         }
-        return null
     }
 
     override fun toString(): String {
