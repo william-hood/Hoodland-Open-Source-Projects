@@ -1,0 +1,211 @@
+package hoodland.opensource.memoir.java;
+
+
+import hoodland.opensource.memoir.MemoirKt;
+import hoodland.opensource.memoir.ShowHttpMessagesKt;
+import hoodland.opensource.memoir.ShowThrowableKt;
+
+import java.io.PrintWriter;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.LocalDateTime;
+
+public class Memoir {
+    private hoodland.opensource.memoir.Memoir KMemoir;
+
+    //=== Primary Constructor
+
+    public Memoir(String title,
+                  PrintWriter forPlainText,
+                  PrintWriter forHTML,
+                  Boolean showTimestamps,
+                  Boolean showEmojis,
+                  HeaderFunction headerFunction) {
+        if (headerFunction == null) {
+            KMemoir = new hoodland.opensource.memoir.Memoir(
+                    title,
+                    forPlainText,
+                    forHTML,
+                    showTimestamps,
+                    showEmojis,
+                    (p1) -> { return "<h1>" + title + "</h1>\r\n<hr>\r\n<small><i>Powered by the Memoir Java Logging System...</i></small>\r\n\r\n"; }
+            );
+        } else {
+            KMemoir = new hoodland.opensource.memoir.Memoir(
+                    title,
+                    forPlainText,
+                    forHTML,
+                    showTimestamps,
+                    showEmojis,
+                    headerFunction::displayHeader
+            );
+        }
+    }
+
+    //=== Alternate Constructors
+
+    public Memoir() {
+        this(Constants.UNKNOWN, null, null, true, true, null);
+    }
+
+    public Memoir(HeaderFunction headerFunction) {
+        this(Constants.UNKNOWN, null, null, true, true, headerFunction);
+    }
+
+    public Memoir(String title) {
+        this(title, null, null, true, true, null);
+    }
+
+    public Memoir(String title, HeaderFunction headerFunction) {
+        this(title, null, null, true, true, headerFunction);
+    }
+
+    public Memoir(String title, PrintWriter forPlainText, PrintWriter forHTML) {
+        this(title, forPlainText, forHTML, true, true, null);
+    }
+
+    public Memoir(String title, PrintWriter forPlainText, PrintWriter forHTML, HeaderFunction headerFunction) {
+        this(title, forPlainText, forHTML, true, true, headerFunction);
+    }
+
+    public Memoir(String title, Boolean showTimestamps, Boolean showEmojis) {
+        this(title, null, null, showTimestamps, showEmojis, null);
+    }
+
+    public Memoir(String title, Boolean showTimestamps, Boolean showEmojis, HeaderFunction headerFunction) {
+        this(title, null, null, showTimestamps, showEmojis, headerFunction);
+    }
+
+    //=== Property Field Getters
+
+    public String getTitle() { return KMemoir.getTitle(); }
+    public PrintWriter getForPlainText() { return KMemoir.getForPlainText(); }
+    public PrintWriter getForHTML() { return KMemoir.getForHTML(); }
+    public Boolean getShowTimestamps() { return KMemoir.getShowTimestamps(); }
+    public Boolean getShowEmojis() { return KMemoir.getShowEmojis(); }
+    public Boolean wasUsed() { return KMemoir.getWasUsed(); }
+
+    //=== Functions
+
+    public String conclude() { return KMemoir.conclude(); }
+
+    public void echoPlainText(String message, String emoji, LocalDateTime timestamp) {
+        KMemoir.echoPlainText(message, emoji, timestamp);
+    }
+
+    public void echoPlainText(String message, String emoji) { echoPlainText(message, emoji, LocalDateTime.now()); }
+
+    public void echoPlainText(String message, LocalDateTime timestamp) {
+        echoPlainText(message, Constants.EMOJI_TEXT_BLANK_LINE, timestamp);
+    }
+
+    public void echoPlainText(String message) {
+        echoPlainText(message, Constants.EMOJI_TEXT_BLANK_LINE, LocalDateTime.now());
+    }
+
+    public void writeToHTML(String message, String emoji, LocalDateTime timestamp) {
+        KMemoir.writeToHTML(message, emoji, timestamp);
+    }
+
+    public void writeToHTML(String message, String emoji) { writeToHTML(message, emoji, LocalDateTime.now()); }
+
+    public void writeToHTML(String message, LocalDateTime timestamp) {
+        writeToHTML(message, Constants.EMOJI_TEXT_BLANK_LINE, timestamp);
+    }
+
+    public void writeToHTML(String message) {
+        writeToHTML(message, Constants.EMOJI_TEXT_BLANK_LINE, LocalDateTime.now());
+    }
+
+    public void info(String message, String emoji) { KMemoir.info(message, emoji); }
+    public void info(String message) { info(message, Constants.EMOJI_TEXT_BLANK_LINE); }
+    public void debug(String message) { KMemoir.debug(message); }
+    public void error(String message) { KMemoir.error(message); }
+    public void skipLine() { KMemoir.skipLine(); }
+
+    public String showMemoir(Memoir subordinate, String emoji, String style, int recurseLevel) {
+        return KMemoir.showMemoir(subordinate.KMemoir, emoji, style, recurseLevel);
+    }
+
+    public String showMemoir(Memoir subordinate, String emoji, String style) {
+        return showMemoir(subordinate, emoji, style, 0);
+    }
+
+    public String showMemoir(Memoir subordinate) {
+        return showMemoir(subordinate, Constants.EMOJI_MEMOIR, "neutral", 0);
+    }
+
+    //=== ShowHttpMessages
+    public void showHttpRequest(HttpRequest request, String bodyContentAsString, HttpFieldProcessingFunction function) {
+        if (function == null) {
+            ShowHttpMessagesKt.showHttpRequest(KMemoir, request, bodyContentAsString, null);
+        } else {
+            ShowHttpMessagesKt.showHttpRequest(KMemoir, request, bodyContentAsString, function::processField);
+        }
+    }
+
+    public void showHttpRequest(HttpRequest request, String bodyContentAsString) {
+        showHttpRequest(request, bodyContentAsString, null);
+    }
+
+    public void showHttpRequest(HttpRequest request, HttpFieldProcessingFunction function) {
+        showHttpRequest(request, null, function);
+    }
+
+    public void showHttpRequest(HttpRequest request) {
+        showHttpRequest(request, null, null);
+    }
+
+    public void showHttpResponse(HttpResponse response, HttpFieldProcessingFunction function) {
+        if (function == null) {
+            ShowHttpMessagesKt.showHttpResponse(KMemoir, response, null);
+        } else {
+            ShowHttpMessagesKt.showHttpResponse(KMemoir, response, function::processField);
+        }
+    }
+
+    public void showHttpResponse(HttpResponse response) {
+        showHttpResponse(response, null);
+    }
+
+    public void showHttpTransaction(HttpRequest request, String bodyContentAsString, HttpFieldProcessingFunction function) {
+        if (function == null) {
+            ShowHttpMessagesKt.showHttpTransaction(KMemoir, request, bodyContentAsString, null);
+        } else {
+            ShowHttpMessagesKt.showHttpTransaction(KMemoir, request, bodyContentAsString, function::processField);
+        }
+    }
+
+    public void showHttpTransaction(HttpRequest request, String bodyContentAsString) {
+        showHttpTransaction(request, bodyContentAsString, null);
+    }
+
+    public void showHttpTransaction(HttpRequest request, HttpFieldProcessingFunction function) {
+        showHttpTransaction(request, null, function);
+    }
+
+    public void showHttpTransaction(HttpRequest request) {
+        showHttpTransaction(request, null, null);
+    }
+
+    //=== ShowThrowable
+
+    public String showThrowable(Throwable target, LocalDateTime timestamp, String plainTextIndent) {
+        return ShowThrowableKt.showThrowable(KMemoir, target, timestamp, plainTextIndent);
+    }
+
+    public String showThrowable(Throwable target) {
+        return showThrowable(target, LocalDateTime.now(), "");
+    }
+
+    public String showThrowable(Throwable target, LocalDateTime timestamp) {
+        return showThrowable(target, timestamp, "");
+    }
+
+    public String showThrowable(Throwable target, String plainTextIndent) {
+        return showThrowable(target, LocalDateTime.now(), plainTextIndent);
+    }
+
+    //=== Showing Objects
+
+}
