@@ -49,16 +49,16 @@ enum class ValueFieldTargets {
             WELL_BEYOND_UPPER_LIMIT -> return "Well Beyond Upper Limit"
             WELL_WITHIN_LOWER_LIMIT -> return "Well Within Lower Limit"
             WELL_WITHIN_UPPER_LIMIT -> return "Well Within Upper Limit"
+            else -> return "Left Default"
         }
-        return "Left Default"
     }
 
     val isLimitRelevant: Boolean
         get() {
             when (this) {
                 WELL_BEYOND_LOWER_LIMIT, WELL_BEYOND_UPPER_LIMIT, WELL_WITHIN_LOWER_LIMIT, WELL_WITHIN_UPPER_LIMIT, SLIGHTLY_BEYOND_LOWER_LIMIT, SLIGHTLY_BEYOND_UPPER_LIMIT, SLIGHTLY_WITHIN_LOWER_LIMIT, SLIGHTLY_WITHIN_UPPER_LIMIT, RANDOM_WITHIN_LIMITS, AT_LOWER_LIMIT, AT_UPPER_LIMIT -> return true
+                else -> return false
             }
-            return false
         }
 
     val isHappyOrExplicit: Boolean

@@ -27,7 +27,7 @@ import java.io.File
 import java.net.URI
 import java.net.http.HttpRequest
 
-fun main(args: Array<String>) {
+fun main() {
     val homeFolder = System.getProperty("user.home")
     val outputFile = File("$homeFolder${File.separator}Documents${File.separator}Test Results${File.separator}Memoir Example.html")
 
@@ -128,7 +128,7 @@ internal fun subLog(check: TestStruct, inner: TestStruct): Memoir {
     log.info("A Memoir can embed another Memoir. Time stamps, icons, and all!")
     log.info("Let's take up lots of space by rendering an array of those TestStruct things...")
 
-    val arrayOfObjects = Array<TestStruct>(3, {i -> check})
+    val arrayOfObjects = Array<TestStruct>(3, {_ -> check})
     arrayOfObjects[1] = inner
 
     log.show(arrayOfObjects, "arrayOfObjects")

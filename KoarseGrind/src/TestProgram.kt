@@ -110,7 +110,7 @@ object TestProgram {
 
         var index = 0
         while (index < args.size) {
-            val filterType = when(args[index].toUpperCase()) {
+            val filterType = when(args[index].uppercase()) {
                 "INCLUDE" -> FilterType.INCLUDE
                 "EXCLUDE" -> FilterType.EXCLUDE
                 else -> null
@@ -120,7 +120,7 @@ object TestProgram {
                 index++
                 val parts = args[index].split('=')
 
-                val filterTarget = when(parts[0].toUpperCase()) {
+                val filterTarget = when(parts[0].uppercase()) {
                     "CATEGORIES", "CATEGORY" -> FilterTarget.CATEGORIES
                     "IDENTIFIERS", "IDENTIFIER" -> FilterTarget.IDENTIFIERS
                     "NAMES", "NAME" -> FilterTarget.NAMES
@@ -131,7 +131,7 @@ object TestProgram {
                     if (parts.size > 1) {
                         val matchers = ArrayList<String>()
 
-                        matchers.addAll(parts[1].toUpperCase().split(';', ',', '|'))
+                        matchers.addAll(parts[1].uppercase().split(';', ',', '|'))
 
                         if (matchers.size > 0) {
                             result.add(Filter(filterType, filterTarget, matchers))

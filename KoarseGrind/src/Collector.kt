@@ -92,7 +92,7 @@ internal class Collector(
                     if (!it.name.contains(".")) {
                         recursiveCollect(it)
                     }
-                } else if (it.name.toLowerCase().endsWith(".class")) {
+                } else if (it.name.lowercase().endsWith(".class")) {
                     var attemptName = it.invariantSeparatorsPath.replace('/', '.')
                     do {
                         attemptName = attemptName.substringAfter('.')
@@ -152,13 +152,11 @@ internal class Collector(
     }
 
     fun addIdentifier(thisIdentifier: String) {
-        if (thisIdentifier != null) {
-            if (thisIdentifier.length > 0) {
-                if (usedIdentifiers.contains(thisIdentifier)) {
-                    preclusions.add(IdentifierCollisionException(thisIdentifier))
-                } else {
-                    usedIdentifiers.add(thisIdentifier)
-                }
+        if (thisIdentifier.length > 0) {
+            if (usedIdentifiers.contains(thisIdentifier)) {
+                preclusions.add(IdentifierCollisionException(thisIdentifier))
+            } else {
+                usedIdentifiers.add(thisIdentifier)
             }
         }
     }

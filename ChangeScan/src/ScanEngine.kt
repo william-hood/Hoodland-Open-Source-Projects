@@ -30,7 +30,7 @@ internal object ScanEngine {
 
     fun run(activityLog: Memoir, errorLog: Memoir, workOrder: WorkOrder, report: ReportGenerator) {
         try {
-            var scannedFileSystem = FileSystemDescription()
+            var scannedFileSystem: FileSystemDescription
             if (workOrder.isScanlessComparison) {
                 activityLog.info("Loading baseline file ${workOrder.snapshotSavePath} into memory and treating as the scan for comparison.")
                 scannedFileSystem = FileSystemDescription.loadInstance(workOrder.snapshotSavePath)

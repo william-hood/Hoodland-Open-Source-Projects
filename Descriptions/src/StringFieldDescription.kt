@@ -22,6 +22,7 @@
 package hoodland.opensource.descriptions
 
 import hoodland.opensource.toolbox.CRLF
+import hoodland.opensource.toolbox.ImpossibleCodePathException
 
 open class StringFieldDescription(basisValue: String) : FieldDescription<String>(basisValue) {
     var target = StringFieldTargets.HAPPY_PATH
@@ -119,8 +120,9 @@ open class StringFieldDescription(basisValue: String) : FieldDescription<String>
             StringFieldTargets.PRECEDING_WHITESPACE -> "     $basisValue"
             StringFieldTargets.TRAILING_WHITESPACE -> "$basisValue      "
         }
-        return null
-    }
+            @Suppress("UNREACHABLE_CODE")
+            throw ImpossibleCodePathException()
+        }
 
     override fun toString(): String {
         return if (target === StringFieldTargets.EXPLICIT) "$target ($basisValue)" else target.toString()

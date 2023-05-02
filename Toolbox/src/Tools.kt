@@ -109,7 +109,7 @@ fun StringsMatch(x: String?, y: String?): Boolean {
 fun StringsMatchCaseInspecific(x: String?, y: String?): Boolean {
     if (x == null && y == null) return true
     if (x == null && y != null) return false
-    return if (x != null && y == null) false else x!!.toUpperCase().compareTo(y!!.toUpperCase()) == 0
+    return if (x != null && y == null) false else x!!.uppercase().compareTo(y!!.uppercase()) == 0
 }
 
 fun StringArrayContains(candidateArray: Array<String?>,

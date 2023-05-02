@@ -40,7 +40,7 @@ object ZipFileCreator {
     fun make(fullPathToRoot: String, fullPathToOutputFile: String) {
         var usedOutputFile = fullPathToOutputFile
         // Enforce .zip extension
-        if (!fullPathToOutputFile.toUpperCase().endsWith(".ZIP")) usedOutputFile = "$fullPathToOutputFile.zip"
+        if (!fullPathToOutputFile.uppercase().endsWith(".ZIP")) usedOutputFile = "$fullPathToOutputFile.zip"
 
         // Get a complete list of all the files.
         filesToAdd.clear()

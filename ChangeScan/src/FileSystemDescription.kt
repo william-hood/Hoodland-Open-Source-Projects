@@ -62,15 +62,14 @@ internal class FileSystemDescription : Serializable {
             var thisFileStream: ObjectInputStream? = ObjectInputStream(FileInputStream(rightedFilePath(filePath)))
             val result = thisFileStream!!.readObject() as FileSystemDescription
             thisFileStream.close()
-            thisFileStream = null
             return result
             //using (FileStream thisFileStream = File.OpenRead(rightedFilePath(filePath))) return (FileSystemDescription)(new BinaryFormatter().Deserialize(thisFileStream));
         }
 
         private fun rightedFilePath(filePath: String): String {
-            var filePath = filePath
-            if (!filePath.endsWith(EXTENSION)) filePath += EXTENSION
-            return filePath
+            var result = filePath
+            if (!result.endsWith(EXTENSION)) result += EXTENSION
+            return result
         }
     }
 }

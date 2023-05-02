@@ -91,7 +91,7 @@ internal fun interpretArgs(args: Array<String>): WorkOrder {
     // Parse Command Line Arguments
     var index = 0
     while (index < args.size) {
-        when (args[index].toUpperCase()) {
+        when (args[index].uppercase()) {
             "USE" -> {
                 result.isScanlessComparison = true
                 index++
@@ -111,7 +111,7 @@ internal fun interpretArgs(args: Array<String>): WorkOrder {
             "REPORT" -> {
                 index++
                 result.reportPath = args[index]
-                if (!result.reportPath.toUpperCase().endsWith(".HTML")) result.reportPath += ".html"
+                if (!result.reportPath.uppercase().endsWith(".HTML")) result.reportPath += ".html"
             }
             "ROOT" -> if (result.isScanlessComparison) {
                 System.out.println("Can't accept a root directory for scanning when comparing one baseline to another.")
@@ -122,8 +122,7 @@ internal fun interpretArgs(args: Array<String>): WorkOrder {
             }
             "EXCLUDE" -> {
                 index++
-                var whichCategory = Categories.Pattern
-                whichCategory = when (args[index]) {
+                var whichCategory = when (args[index]) {
                     "FILE" -> Categories.Pattern
                     "DIRECTORY", "FOLDER" -> Categories.Directory
                     else -> Categories.Pattern
