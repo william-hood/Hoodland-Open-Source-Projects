@@ -14,6 +14,20 @@ public class Memoir {
 
     //=== Primary Constructor
 
+    /**
+     * Primary constructor for the Memoir Java Wrapper. This contains a Kotlin Memoir but does not extend it.
+     * Memoir is a logging system designed to produce rich, readable HTML-based output with appropriate
+     * console output accompanying it. A Memoir may be a root-level log file, a subsection of another Memoir, or both.
+     * It includes methods to render objects, HTTP transactions, exceptions, collections and other Memoirs
+     * in click-to-expand fashion.
+     *
+     * @param title This will be indicated at the top of the file in the header if this is a root-level Memoir. For a subsection it appears in bold above the click-to-expand portion.
+     * @param forPlainText Typically this is pointed at stdout for console output. This can also be pointed at a plain text file.
+     * @param forHTML This is the main log file. It may be left out when used as a subsection of another Memoir.
+     * @param showTimestamps If you don't want time stamps with every line of the log, set this to false.
+     * @param showEmojis Set this to false and no lines will display an Emoji even if one is supplied.
+     * @param headerFunction Use this to override the default header and make your own. Implement the displayHeader() method in a HeaderFunction interface.
+     */
     public Memoir(String title,
                   PrintWriter forPlainText,
                   PrintWriter forHTML,
