@@ -68,7 +68,6 @@ class Memoir (
         val showTimestamps: Boolean = true,
         val showEmojis: Boolean = true,
         headerFunction: (String)->String = ::defaultHeader) {
-    // TODO: These extra printwriter fields are redundant in Kotlin
     private val printWriter_HTML: PrintWriter? = forHTML
     private val printWriter_PlainText: PrintWriter? = forPlainText
     private val content = StringBuilder(STARTING_CONTENT)
@@ -137,7 +136,6 @@ class Memoir (
      * @param emoji Used as an icon to indicate the nature of the message. There are emoji constants available in Constants.kt.
      * @param timestamp Omit this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in. Note that the time stamp will be discarded if this Memoir was created with showTimestamps=false.
      */
-    // TODO: Should timestamp be allowed to be null?
     fun echoPlainText(message: String, emoji: String = EMOJI_TEXT_BLANK_LINE, timestamp: LocalDateTime? = LocalDateTime.now()) {
         if (printWriter_PlainText == null) {
             // Silently decline
@@ -182,7 +180,6 @@ class Memoir (
      * @param emoji Used as an icon to indicate the nature of the message. There are emoji constants available in Constants.kt.
      * @param timestamp Omit this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in.
      */
-    // TODO: Should timestamp be allowed to be null?
     fun writeToHTML(message: String, emoji: String = EMOJI_TEXT_BLANK_LINE, timestamp: LocalDateTime? = LocalDateTime.now()) {
         if (isConcluded) {
             throw MemoirConcludedException()
