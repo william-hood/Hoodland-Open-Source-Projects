@@ -219,18 +219,50 @@ public class Memoir {
      *
      * @param message Text that is being logged. Note that if HTML is sent here, the tags will not be hidden.
      * @param emoji Used as an icon to indicate the nature of the message. There are emoji constants available in Constants.kt.
-     * @param timestamp Omit this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in. Note that the time stamp will be discarded if this Memoir was created with showTimestamps=false.
+     * @param timestamp Use the function signature without this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in. Note that the time stamp will be discarded if this Memoir was created with showTimestamps=false.
      */
     public void echoPlainText(String message, String emoji, LocalDateTime timestamp) {
         KMemoir.echoPlainText(message, emoji, timestamp);
     }
 
+    /**
+     * echoPlainText: This sends non-HTML plain-text output to the designated PrintWriter. Typically, that
+     * is stdout console output, but it may also be sent to a plain-text log file. Unlike the HTML stream,
+     * plain text is typically sent immediately. It does not try to show as a subsection and it may omit
+     * details when rendering complicated objects. (For example, an HTTP Response will only show the status
+     * code and description on the plain-text stream.) Note that calling this does not result in a counterpart
+     * call to writeToHTML(). The timestamp will be assumed the current date/time.
+     *
+     * @param message Text that is being logged. Note that if HTML is sent here, the tags will not be hidden.
+     * @param emoji Used as an icon to indicate the nature of the message. There are emoji constants available in Constants.kt.
+     */
     public void echoPlainText(String message, String emoji) { echoPlainText(message, emoji, LocalDateTime.now()); }
 
+    /**
+     * echoPlainText: This sends non-HTML plain-text output to the designated PrintWriter. Typically, that
+     * is stdout console output, but it may also be sent to a plain-text log file. Unlike the HTML stream,
+     * plain text is typically sent immediately. It does not try to show as a subsection and it may omit
+     * details when rendering complicated objects. (For example, an HTTP Response will only show the status
+     * code and description on the plain-text stream.) Note that calling this does not result in a counterpart
+     * call to writeToHTML(). No emoji will be provided.
+     *
+     * @param message Text that is being logged. Note that if HTML is sent here, the tags will not be hidden.
+     * @param timestamp Use the function signature without this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in. Note that the time stamp will be discarded if this Memoir was created with showTimestamps=false.
+     */
     public void echoPlainText(String message, LocalDateTime timestamp) {
         echoPlainText(message, Constants.EMOJI_TEXT_BLANK_LINE, timestamp);
     }
 
+    /**
+     * echoPlainText: This sends non-HTML plain-text output to the designated PrintWriter. Typically, that
+     * is stdout console output, but it may also be sent to a plain-text log file. Unlike the HTML stream,
+     * plain text is typically sent immediately. It does not try to show as a subsection and it may omit
+     * details when rendering complicated objects. (For example, an HTTP Response will only show the status
+     * code and description on the plain-text stream.) Note that calling this does not result in a counterpart
+     * call to writeToHTML(). No emoji will be provided and the timestamp will be assumed the current date/time.
+     *
+     * @param message Text that is being logged. Note that if HTML is sent here, the tags will not be hidden.
+     */
     public void echoPlainText(String message) {
         echoPlainText(message, Constants.EMOJI_TEXT_BLANK_LINE, LocalDateTime.now());
     }
@@ -243,18 +275,44 @@ public class Memoir {
      *
      * @param message Text that is being logged.  Any HTML tags sent through this will be sent verbatim to the HTML output, and rendered by the browser that views the file.
      * @param emoji Used as an icon to indicate the nature of the message. There are emoji constants available in Constants.kt.
-     * @param timestamp Omit this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in.
+     * @param timestamp Use the function signature without this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in.
      */
     public void writeToHTML(String message, String emoji, LocalDateTime timestamp) {
         KMemoir.writeToHTML(message, emoji, timestamp);
     }
 
+    /**
+     * writeToHTML Sends output to the primary HTML file, or to the HTML used as another Memoir's subsection.
+     * Any HTML tags sent through this will be sent verbatim to the HTML output, and rendered by the browser
+     * that views the file. Note that calling this does not result in a counterpart call to echoPlainText().
+     * The timestamp will be assumed the current date/time.
+     *
+     * @param message Text that is being logged.  Any HTML tags sent through this will be sent verbatim to the HTML output, and rendered by the browser that views the file.
+     * @param emoji Used as an icon to indicate the nature of the message. There are emoji constants available in Constants.kt.
+     */
     public void writeToHTML(String message, String emoji) { writeToHTML(message, emoji, LocalDateTime.now()); }
 
+    /**
+     * writeToHTML Sends output to the primary HTML file, or to the HTML used as another Memoir's subsection.
+     * Any HTML tags sent through this will be sent verbatim to the HTML output, and rendered by the browser
+     * that views the file. Note that calling this does not result in a counterpart call to echoPlainText().
+     * No emoji will be provided.
+     *
+     * @param message Text that is being logged.  Any HTML tags sent through this will be sent verbatim to the HTML output, and rendered by the browser that views the file.
+     * @param timestamp Use the function signature without this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in.
+     */
     public void writeToHTML(String message, LocalDateTime timestamp) {
         writeToHTML(message, Constants.EMOJI_TEXT_BLANK_LINE, timestamp);
     }
 
+    /**
+     * writeToHTML Sends output to the primary HTML file, or to the HTML used as another Memoir's subsection.
+     * Any HTML tags sent through this will be sent verbatim to the HTML output, and rendered by the browser
+     * that views the file. Note that calling this does not result in a counterpart call to echoPlainText().
+     * No emoji will be provided and the timestamp will be assumed the current date/time.
+     *
+     * @param message Text that is being logged.  Any HTML tags sent through this will be sent verbatim to the HTML output, and rendered by the browser that views the file.
+     */
     public void writeToHTML(String message) {
         writeToHTML(message, Constants.EMOJI_TEXT_BLANK_LINE, LocalDateTime.now());
     }
@@ -299,17 +357,33 @@ public class Memoir {
      * @param subordinate The Memoir to be embedded as a subsection. If it is not yet concluded, it will be after this method returns.
      * @param emoji If not omitted, you can use this to override the "Memoir" emoji that normally appears next to the subsection. There are emoji constants available in Constants.kt.
      * @param style If not omitted, you can use this to override the "neutral" theme the subsection will have. This does not change the appearance of the subordinate Memoir's HTML file.
-     * @param recurseLevel Used to determine if this is the root level, and whether or not to send this to the HTML stream. If you don't know what you're doing with this, omit it.
+     * @param recurseLevel Used to determine if this is the root level, and whether or not to send this to the HTML stream. If you don't know what you're doing with this, Use the function signatures without it.
      * @return Returns the HTML to represent the subordinate Memoir as a subsection of this one.
      */
     public String showMemoir(Memoir subordinate, String emoji, String style, int recurseLevel) {
         return KMemoir.showMemoir(subordinate.KMemoir, emoji, style, recurseLevel);
     }
 
+    /**
+     * showMemoir will take another Memoir object, conclude it, and embed it as a subsection. If the subordinate
+     * Memoir has an HTML file associated with it, it will be written out and closed. A recurse level of 0 is assumed.
+     *
+     * @param subordinate The Memoir to be embedded as a subsection. If it is not yet concluded, it will be after this method returns.
+     * @param emoji If not omitted, you can use this to override the "Memoir" emoji that normally appears next to the subsection. There are emoji constants available in Constants.kt.
+     * @param style If not omitted, you can use this to override the "neutral" theme the subsection will have. This does not change the appearance of the subordinate Memoir's HTML file.
+     * @return Returns the HTML to represent the subordinate Memoir as a subsection of this one.
+     */
     public String showMemoir(Memoir subordinate, String emoji, String style) {
         return showMemoir(subordinate, emoji, style, 0);
     }
 
+    /**
+     * showMemoir will take another Memoir object, conclude it, and embed it as a subsection. If the subordinate
+     * Memoir has an HTML file associated with it, it will be written out and closed. Assumes a "Memoir" emoji and a "neutral" theme.
+     *
+     * @param subordinate The Memoir to be embedded as a subsection. If it is not yet concluded, it will be after this method returns.
+     * @return Returns the HTML to represent the subordinate Memoir as a subsection of this one.
+     */
     public String showMemoir(Memoir subordinate) {
         return showMemoir(subordinate, Constants.EMOJI_MEMOIR, "neutral", 0);
     }
@@ -337,14 +411,47 @@ public class Memoir {
         }
     }
 
+    /**
+     * showHttpRequest: This renders a java.net.http.HttpRequest to the HTML log. In certain cases, particularly headers and body
+     * of HTTP messages, it may be desirable to Base64 decode and/or JSON pretty-print the string. Because it can be difficult
+     * to tell which fields really are Base64 or JSON, this task is left to the client code by way of the callbackFunction
+     * parameter. When rendering HTTP messages, the fieldName parameter of the callback will be the header name, or
+     * the constant HTTP_MESSAGE_BODY for the message body/payload. Make any necessary changes to the supplied field and return
+     * the changed value with your callbackFunction. Return the field as it was sent if no changes are needed. This version assumes no callback function for HTTP field processing.
+     *
+     * @param request The java.net.http.HttpRequest to be rendered.
+     * @param bodyContentAsString It is impossible to get the string content of HttpRequest.BodyPublishers.ofString(). Echo the string content here if you want Memoir to display the outgoing content.
+     */
     public void showHttpRequest(HttpRequest request, String bodyContentAsString) {
         showHttpRequest(request, bodyContentAsString, null);
     }
 
-    public void showHttpRequest(HttpRequest request, HttpFieldProcessingFunction function) {
-        showHttpRequest(request, null, function);
+    /**
+     * showHttpRequest: This renders a java.net.http.HttpRequest to the HTML log. In certain cases, particularly headers and body
+     * of HTTP messages, it may be desirable to Base64 decode and/or JSON pretty-print the string. Because it can be difficult
+     * to tell which fields really are Base64 or JSON, this task is left to the client code by way of the callbackFunction
+     * parameter. When rendering HTTP messages, the fieldName parameter of the callback will be the header name, or
+     * the constant HTTP_MESSAGE_BODY for the message body/payload. Make any necessary changes to the supplied field and return
+     * the changed value with your callbackFunction. Return the field as it was sent if no changes are needed. This version assumes no body content.
+     *
+     * @param request The java.net.http.HttpRequest to be rendered.
+     * @param callbackFunction Optional: Supply a callback function to make on-the-fly changes to certain fields, such as decoding Base64 or pretty-printing JSON.
+     */
+    public void showHttpRequest(HttpRequest request, HttpFieldProcessingFunction callbackFunction) {
+        showHttpRequest(request, null, callbackFunction);
     }
 
+    /**
+     * showHttpRequest: This renders a java.net.http.HttpRequest to the HTML log. In certain cases, particularly headers and body
+     * of HTTP messages, it may be desirable to Base64 decode and/or JSON pretty-print the string. Because it can be difficult
+     * to tell which fields really are Base64 or JSON, this task is left to the client code by way of the callbackFunction
+     * parameter. When rendering HTTP messages, the fieldName parameter of the callback will be the header name, or
+     * the constant HTTP_MESSAGE_BODY for the message body/payload. Make any necessary changes to the supplied field and return
+     * the changed value with your callbackFunction. Return the field as it was sent if no changes are needed. Do not
+     * supply a callbackFunction if none is needed. This version assumes no body content and no callback function for HTTP field processing.
+     *
+     * @param request The java.net.http.HttpRequest to be rendered.
+     */
     public void showHttpRequest(HttpRequest request) {
         showHttpRequest(request, null, null);
     }
@@ -369,6 +476,16 @@ public class Memoir {
         }
     }
 
+    /**
+     * showHttpResponse: Properly renders a java.net.http.HttpResponse to the HTML log. In certain cases, particularly headers and body
+     * of HTTP messages, it may be desirable to Base64 decode and/or JSON pretty-print the string. Because it can be difficult
+     * to tell which fields really are Base64 or JSON, this task is left to the client code by way of the callbackFunction
+     * parameter. When rendering HTTP messages, the fieldName parameter of the callback will be the header name, or
+     * the constant HTTP_MESSAGE_BODY for the message body/payload. Make any necessary changes to the supplied field and return
+     * the changed value with your callbackFunction. Return the field as it was sent if no changes are needed.  This version assumes no callback function for HTTP field processing.
+     *
+     * @param response The java.net.http.HttpResponse to be rendered.
+     */
     public void showHttpResponse(HttpResponse response) {
         showHttpResponse(response, null);
     }
@@ -383,6 +500,7 @@ public class Memoir {
      * the constant HTTP_MESSAGE_BODY for the message body/payload. Make any necessary changes to the supplied field and return
      * the changed value with your callbackFunction. Return the field as it was sent if no changes are needed. Do not
      * supply a callbackFunction if none is needed.
+     *
      * @param request The java.net.http.HttpRequest to be logged and sent.
      * @param bodyContentAsString It is impossible to get the string content of HttpRequest.BodyPublishers.ofString(). Echo the string content here if you want Memoir to display the outgoing content.
      * @param callbackFunction Optional: Supply a callback function to make on-the-fly changes to certain fields, such as decoding Base64 or pretty-printing JSON. This will be applied to BOTH the request and response.
@@ -396,14 +514,53 @@ public class Memoir {
         }
     }
 
+    /**
+     * showHttpTransaction: Given a java.net.http.HttpRequest this renders it in the HTML log, uses java.net.http.HttpClient to send it and
+     * receive a java.net.http.HttpResponse. The response will also be rendered to the HTML log. In certain cases, particularly headers and body
+     * of HTTP messages, it may be desirable to Base64 decode and/or JSON pretty-print the string. Because it can be difficult
+     * to tell which fields really are Base64 or JSON, this task is left to the client code by way of the callbackFunction
+     * parameter. When rendering HTTP messages, the fieldName parameter of the callback will be the header name, or
+     * the constant HTTP_MESSAGE_BODY for the message body/payload. Make any necessary changes to the supplied field and return
+     * the changed value with your callbackFunction. Return the field as it was sent if no changes are needed.  This version assumes no callback function for HTTP field processing.
+     *
+     * @param request The java.net.http.HttpRequest to be logged and sent.
+     * @param bodyContentAsString It is impossible to get the string content of HttpRequest.BodyPublishers.ofString(). Echo the string content here if you want Memoir to display the outgoing content.
+     * @return The java.net.http.HttpResponse that was logged and returned.
+     */
     public void showHttpTransaction(HttpRequest request, String bodyContentAsString) {
         showHttpTransaction(request, bodyContentAsString, null);
     }
 
-    public void showHttpTransaction(HttpRequest request, HttpFieldProcessingFunction function) {
-        showHttpTransaction(request, null, function);
+    /**
+     * showHttpTransaction: Given a java.net.http.HttpRequest this renders it in the HTML log, uses java.net.http.HttpClient to send it and
+     * receive a java.net.http.HttpResponse. The response will also be rendered to the HTML log. In certain cases, particularly headers and body
+     * of HTTP messages, it may be desirable to Base64 decode and/or JSON pretty-print the string. Because it can be difficult
+     * to tell which fields really are Base64 or JSON, this task is left to the client code by way of the callbackFunction
+     * parameter. When rendering HTTP messages, the fieldName parameter of the callback will be the header name, or
+     * the constant HTTP_MESSAGE_BODY for the message body/payload. Make any necessary changes to the supplied field and return
+     * the changed value with your callbackFunction. Return the field as it was sent if no changes are needed. Do not
+     * supply a callbackFunction if none is needed. This version assumes no body content.
+     *
+     * @param request The java.net.http.HttpRequest to be logged and sent.
+     * @param callbackFunction Optional: Supply a callback function to make on-the-fly changes to certain fields, such as decoding Base64 or pretty-printing JSON. This will be applied to BOTH the request and response.
+     * @return The java.net.http.HttpResponse that was logged and returned.
+     */
+    public void showHttpTransaction(HttpRequest request, HttpFieldProcessingFunction callbackFunction) {
+        showHttpTransaction(request, null, callbackFunction);
     }
 
+    /**
+     * showHttpTransaction: Given a java.net.http.HttpRequest this renders it in the HTML log, uses java.net.http.HttpClient to send it and
+     * receive a java.net.http.HttpResponse. The response will also be rendered to the HTML log. In certain cases, particularly headers and body
+     * of HTTP messages, it may be desirable to Base64 decode and/or JSON pretty-print the string. Because it can be difficult
+     * to tell which fields really are Base64 or JSON, this task is left to the client code by way of the callbackFunction
+     * parameter. When rendering HTTP messages, the fieldName parameter of the callback will be the header name, or
+     * the constant HTTP_MESSAGE_BODY for the message body/payload. Make any necessary changes to the supplied field and return
+     * the changed value with your callbackFunction. Return the field as it was sent if no changes are needed.  This version assumes no body content and no callback function for HTTP field processing.
+     *
+     * @param request The java.net.http.HttpRequest to be logged and sent.
+     * @return The java.net.http.HttpResponse that was logged and returned.
+     */
     public void showHttpTransaction(HttpRequest request) {
         showHttpTransaction(request, null, null);
     }
@@ -423,14 +580,37 @@ public class Memoir {
         return ShowThrowableKt.showThrowable(KMemoir, target, timestamp, plainTextIndent);
     }
 
+    /**
+     * showThrowable: This function properly renders an Exception (or any Throwable) in a readable format. The HTML
+     * version provides click-to-expand views of the stack trace and causal exceptions.
+     *
+     * @param target The Exception, or other Throwable, to be rendered.
+     * @return Returns the HTML representation of the exception that it logged.
+     */
     public String showThrowable(Throwable target) {
         return showThrowable(target, LocalDateTime.now(), "");
     }
 
+    /**
+     * showThrowable: This function properly renders an Exception (or any Throwable) in a readable format. The HTML
+     * version provides click-to-expand views of the stack trace and causal exceptions.
+     *
+     * @param target The Exception, or other Throwable, to be rendered.
+     * @param timestamp Omit this to use the current date/time. There are some circumstances where an event is logged after-the-fact and an explicit time stamp should be passed in.
+     * @return Returns the HTML representation of the exception that it logged.
+     */
     public String showThrowable(Throwable target, LocalDateTime timestamp) {
         return showThrowable(target, timestamp, "");
     }
 
+    /**
+     * showThrowable: This function properly renders an Exception (or any Throwable) in a readable format. The HTML
+     * version provides click-to-expand views of the stack trace and causal exceptions.
+     *
+     * @param target The Exception, or other Throwable, to be rendered.
+     * @param plainTextIndent This is used for Memoir's plain-text output. Unless you know what you're doing and why this should be omitted.
+     * @return Returns the HTML representation of the exception that it logged.
+     */
     public String showThrowable(Throwable target, String plainTextIndent) {
         return showThrowable(target, LocalDateTime.now(), plainTextIndent);
     }
@@ -450,14 +630,37 @@ public class Memoir {
         return ShowObjectKt.showObject(KMemoir, target, targetVariableName, recurseLevel);
     }
 
+    /**
+     * showObject: Use this to render the visible portion of ANY object. Useful for debugging. Fields that are private
+     * or internal scope can not be shown, but the total number of fields will be known.
+     *
+     * @param target The class or object to be rendered.
+     * @return Returns the HTML rendition of the class/object as it was logged.
+     */
     public String showObject(Object target) {
         return showObject(target, Constants.NAMELESS, 0);
     }
 
+    /**
+     * showObject: Use this to render the visible portion of ANY object. Useful for debugging. Fields that are private
+     * or internal scope can not be shown, but the total number of fields will be known.
+     *
+     * @param target The class or object to be rendered.
+     * @param targetVariableName The name of the target object, if known.
+     * @return Returns the HTML rendition of the class/object as it was logged.
+     */
     public String showObject(Object target, String targetVariableName) {
         return showObject(target, targetVariableName, 0);
     }
 
+    /**
+     * showObject: Use this to render the visible portion of ANY object. Useful for debugging. Fields that are private
+     * or internal scope can not be shown, but the total number of fields will be known.
+     *
+     * @param target The class or object to be rendered.
+     * @param recurseLevel This function is necessarily recursive. It will decline to recurse down beyond the constant value MAX_SHOW_OBJECT_RECURSION in Constants.kt.
+     * @return Returns the HTML rendition of the class/object as it was logged.
+     */
     public String showObject(Object target, int recurseLevel) {
         return showObject(target, Constants.NAMELESS, recurseLevel);
     }
@@ -476,14 +679,37 @@ public class Memoir {
         return ShowCommonKt.show(KMemoir, target, targetVariableName, recurseLevel);
     }
 
+    /**
+     * show: This will render a class of any kind to the HTML log using the most appropriate function.
+     * IMPORTANT: Unlike in Kotlin you should not pass a Memoir to this function.
+     *
+     * @param target The class or object to be rendered.
+     * @return Returns the HTML rendition of the class/object as it was logged.
+     */
     public String show(Object target) {
         return show(target, Constants.NAMELESS, 0);
     }
 
+    /**
+     * show: This will render a class of any kind to the HTML log using the most appropriate function.
+     * IMPORTANT: Unlike in Kotlin you should not pass a Memoir to this function.
+     *
+     * @param target The class or object to be rendered.
+     * @param targetVariableName Variable name of said class/object, if known.
+     * @return Returns the HTML rendition of the class/object as it was logged.
+     */
     public String show(Object target, String targetVariableName) {
         return show(target, targetVariableName, 0);
     }
 
+    /**
+     * show: This will render a class of any kind to the HTML log using the most appropriate function.
+     * IMPORTANT: Unlike in Kotlin you should not pass a Memoir to this function.
+     *
+     * @param target The class or object to be rendered.
+     * @param recurseLevel Rendering data structures to HTML is is necessarily recursive. It will decline to recurse down beyond the constant value MAX_SHOW_OBJECT_RECURSION in Constants.kt.
+     * @return Returns the HTML rendition of the class/object as it was logged.
+     */
     public String show(Object target, int recurseLevel) {
         return show(target, Constants.NAMELESS, recurseLevel);
     }
@@ -500,14 +726,34 @@ public class Memoir {
         return ShowArrayKt.showArray(KMemoir, target, targetVariableName, recurseLevel);
     }
 
+    /**
+     * showArray: This will render any kind of non-primitive Array to the HTML log.
+     *
+     * @param target The non-primitive array to be rendered.
+     * @return Returns the HTML rendition of the array as it was logged.
+     */
     public String showArray(Object[] target) {
         return showArray(target, Constants.NAMELESS, 0);
     }
 
+    /**
+     * showArray: This will render any kind of non-primitive Array to the HTML log.
+     *
+     * @param target The non-primitive array to be rendered.
+     * @param targetVariableName The variable name of the array, if known.
+     * @return Returns the HTML rendition of the array as it was logged.
+     */
     public String showArray(Object[] target, String targetVariableName) {
         return showArray(target, targetVariableName, 0);
     }
 
+    /**
+     * showArray: This will render any kind of non-primitive Array to the HTML log.
+     *
+     * @param target The non-primitive array to be rendered.
+     * @param recurseLevel Rendering data structures to HTML is is necessarily recursive. It will decline to recurse down beyond the constant value MAX_SHOW_OBJECT_RECURSION in Constants.kt.
+     * @return Returns the HTML rendition of the array as it was logged.
+     */
     public String showArray(Object[] target, int recurseLevel) {
         return showArray(target, Constants.NAMELESS, recurseLevel);
     }
@@ -524,14 +770,34 @@ public class Memoir {
         return ShowArrayKt.showPrimitiveArray(KMemoir, candidate, targetVariableName, recurseLevel);
     }
 
+    /**
+     * showPrimitiveArray: This will render any kind of primitive array to the HTML log. Note that this works by translating it to a Map and calling showMap().
+     *
+     * @param candidate The primitive array to be rendered.
+     * @return Returns the HTML rendition of the primitive array as it was logged.
+     */
     public String showPrimitiveArray(Object candidate) {
         return showPrimitiveArray(candidate, Constants.NAMELESS, 0);
     }
 
+    /**
+     * showPrimitiveArray: This will render any kind of primitive array to the HTML log. Note that this works by translating it to a Map and calling showMap().
+     *
+     * @param candidate The primitive array to be rendered.
+     * @param targetVariableName The variable name of the primitive array, if known.
+     * @return Returns the HTML rendition of the primitive array as it was logged.
+     */
     public String showPrimitiveArray(Object candidate, String targetVariableName) {
         return showPrimitiveArray(candidate, targetVariableName, 0);
     }
 
+    /**
+     * showPrimitiveArray: This will render any kind of primitive array to the HTML log. Note that this works by translating it to a Map and calling showMap().
+     *
+     * @param candidate The primitive array to be rendered.
+     * @param recurseLevel Rendering data structures to HTML is is necessarily recursive. It will decline to recurse down beyond the constant value MAX_SHOW_OBJECT_RECURSION in Constants.kt.
+     * @return Returns the HTML rendition of the primitive array as it was logged.
+     */
     public String showPrimitiveArray(Object candidate, int recurseLevel) {
         return showPrimitiveArray(candidate, Constants.NAMELESS, recurseLevel);
     }
@@ -548,14 +814,34 @@ public class Memoir {
         return ShowIterableKt.showIterable(KMemoir, target, targetVariableName, recurseLevel);
     }
 
+    /**
+     * showIterable: This will render an iterable of any kind to the HTML log. Maps sent to this function will not necessarily be redirected to showMap().
+     *
+     * @param target The Iterable to be rendered.
+     * @return Returns the HTML rendition of the Iterable as it was logged.
+     */
     public String showIterable(Iterable target) {
         return showIterable(target, Constants.NAMELESS, 0);
     }
 
+    /**
+     * showIterable: This will render an iterable of any kind to the HTML log. Maps sent to this function will not necessarily be redirected to showMap().
+     *
+     * @param target The Iterable to be rendered.
+     * @param targetVariableName The variable name of the Iterable, if known.
+     * @return Returns the HTML rendition of the Iterable as it was logged.
+     */
     public String showIterable(Iterable target, String targetVariableName) {
         return showIterable(target, targetVariableName, 0);
     }
 
+    /**
+     * showIterable: This will render an iterable of any kind to the HTML log. Maps sent to this function will not necessarily be redirected to showMap().
+     *
+     * @param target The Iterable to be rendered.
+     * @param recurseLevel Rendering data structures to HTML is is necessarily recursive. It will decline to recurse down beyond the constant value MAX_SHOW_OBJECT_RECURSION in Constants.kt.
+     * @return Returns the HTML rendition of the Iterable as it was logged.
+     */
     public String showIterable(Iterable target, int recurseLevel) {
         return showIterable(target, Constants.NAMELESS, recurseLevel);
     }
@@ -573,22 +859,58 @@ public class Memoir {
         return ShowMapKt.showMap(KMemoir, target, targetVariableName, recurseLevel, targetClassName);
     }
 
+    /**
+     * showMap: This will render a Map of any kind to the HTML log.
+     *
+     * @param target The Map to be rendered.
+     * @return Returns the HTML rendition of the Map as it was logged.
+     */
     public String showMap(Map target) {
         return showMap(target, Constants.NAMELESS, 0, "Map");
     }
 
+    /**
+     * showMap: This will render a Map of any kind to the HTML log.
+     *
+     * @param target The Map to be rendered.
+     * @param targetVariableName The name of the Map, if known.
+     * @return Returns the HTML rendition of the Map as it was logged.
+     */
     public String showMap(Map target, String targetVariableName) {
         return showMap(target, targetVariableName, 0, "Map");
     }
 
+    /**
+     * showMap: This will render a Map of any kind to the HTML log.
+     *
+     * @param target The Map to be rendered.
+     * @param recurseLevel This function is necessarily recursive. It will decline to recurse down beyond the constant value MAX_SHOW_OBJECT_RECURSION in Constants.kt.
+     * @return Returns the HTML rendition of the Map as it was logged.
+     */
     public String showMap(Map target, int recurseLevel) {
         return showMap(target, Constants.NAMELESS, recurseLevel, "Map");
     }
 
+    /**
+     * showMap: This will render a Map of any kind to the HTML log.
+     *
+     * @param target The Map to be rendered.
+     * @param targetVariableName The name of the Map, if known.
+     * @param targetClassName Can be used to be more specific of the type of this Map.
+     * @return Returns the HTML rendition of the Map as it was logged.
+     */
     public String showMap(Map target, String targetVariableName, String targetClassName) {
         return showMap(target, targetVariableName, 0, targetClassName);
     }
 
+    /**
+     * showMap: This will render a Map of any kind to the HTML log.
+     *
+     * @param target The Map to be rendered.
+     * @param recurseLevel This function is necessarily recursive. It will decline to recurse down beyond the constant value MAX_SHOW_OBJECT_RECURSION in Constants.kt.
+     * @param targetClassName Can be used to be more specific of the type of this Map.
+     * @return Returns the HTML rendition of the Map as it was logged.
+     */
     public String showMap(Map target, int recurseLevel, String targetClassName) {
         return showMap(target, Constants.NAMELESS, recurseLevel, targetClassName);
     }
