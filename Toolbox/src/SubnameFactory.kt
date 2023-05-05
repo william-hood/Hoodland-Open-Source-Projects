@@ -27,7 +27,7 @@ package hoodland.opensource.toolbox
  * SubnameFactory is used in cases where a lot of records (or fields, test cases, etc.) need to have the same name,
  * with a unique suffix. MyTestA, MyTestB, etc. Use this to generate the suffix when programmatically generating
  * several similar items. (In the Koarse Grind test framework, this is recommended when creating manufactured
- * tests with a test factory.
+ * tests with a test factory.)
  *
  * @constructor
  *

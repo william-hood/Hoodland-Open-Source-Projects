@@ -12,6 +12,7 @@
       <module fileurl="file://$PROJECT_DIR$/Memoir/Memoir.iml" filepath="$PROJECT_DIR$/Memoir/Memoir.iml" />
       <module fileurl="file://$PROJECT_DIR$/MemoirJava/MemoirJava.iml" filepath="$PROJECT_DIR$/MemoirJava/MemoirJava.iml" />
       <module fileurl="file://$PROJECT_DIR$/Toolbox/Toolbox.iml" filepath="$PROJECT_DIR$/Toolbox/Toolbox.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ToolboxJava/ToolboxJava.iml" filepath="$PROJECT_DIR$/ToolboxJava/ToolboxJava.iml" />
     </modules>
   </component>
 </project>

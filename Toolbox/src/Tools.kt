@@ -94,25 +94,29 @@ fun randomInteger(min: Int, max: Int): Int {
     return randomInt(min, max)
 }
 
+// TODO: Many of the following functions are cased wrong! Should not start with upper case!
+// TODO: Should this be in String Extensions???
 fun StringIsEmpty(candidate: String?): Boolean {
     if (candidate == null) return true
     if (candidate === "") return true
     return if (candidate.length < 1) true else false
 }
 
+// TODO: Is this duplicated in String Extensions???
 fun StringsMatch(x: String?, y: String?): Boolean {
     if (x == null && y == null) return true
     if (x == null && y != null) return false
     return if (x != null && y == null) false else x!!.compareTo(y!!) == 0
 }
 
+// TODO: Is this duplicated in String Extensions???
 fun StringsMatchCaseInspecific(x: String?, y: String?): Boolean {
     if (x == null && y == null) return true
     if (x == null && y != null) return false
     return if (x != null && y == null) false else x!!.uppercase().compareTo(y!!.uppercase()) == 0
 }
 
-fun StringArrayContains(candidateArray: Array<String?>,
+fun stringArrayContains(candidateArray: Array<String?>,
                         candidateString: String?): Boolean {
     for (cursor in candidateArray.indices) {
         if (StringsMatch(candidateArray[cursor], candidateString)) return true
@@ -120,7 +124,7 @@ fun StringArrayContains(candidateArray: Array<String?>,
     return false
 }
 
-fun StringArrayContainsCaseInspecific(
+fun stringArrayContainsCaseInspecific(
         candidateArray: Array<String?>, candidateString: String?): Boolean {
     for (cursor in candidateArray.indices) {
         if (StringsMatchCaseInspecific(candidateArray[cursor],
@@ -192,6 +196,7 @@ val File.crc32ChecksumValue: Long
         return midStream.checksum.value
     }
 
+// TODO: Verify these comments are not needed. Does the Java wrapper need any of these?
 // Legacy method readLineFromInputStream() is OBSOLETE
 // val check = BufferedReader(InputStreamReader(rawInputStream))
 // check.readLine()
