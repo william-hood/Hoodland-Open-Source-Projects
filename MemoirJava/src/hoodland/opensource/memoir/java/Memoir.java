@@ -180,6 +180,10 @@ public class Memoir {
         this(title, null, null, showTimestamps, showEmojis, headerFunction);
     }
 
+    public Memoir(hoodland.opensource.memoir.Memoir kotlinMemoir) {
+        KMemoir = kotlinMemoir;
+    }
+
     //=== Property Field Getters
 
     public String getTitle() { return KMemoir.getTitle(); }

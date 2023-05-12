@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/ChangeScan/ChangeScan.iml" filepath="$PROJECT_DIR$/ChangeScan/ChangeScan.iml" />
       <module fileurl="file://$PROJECT_DIR$/Descriptions/Descriptions.iml" filepath="$PROJECT_DIR$/Descriptions/Descriptions.iml" />
       <module fileurl="file://$PROJECT_DIR$/KoarseGrind/KoarseGrind.iml" filepath="$PROJECT_DIR$/KoarseGrind/KoarseGrind.iml" />
+      <module fileurl="file://$PROJECT_DIR$/KoarseGrindJava/KoarseGrindJava.iml" filepath="$PROJECT_DIR$/KoarseGrindJava/KoarseGrindJava.iml" />
       <module fileurl="file://$PROJECT_DIR$/Memoir/Memoir.iml" filepath="$PROJECT_DIR$/Memoir/Memoir.iml" />
       <module fileurl="file://$PROJECT_DIR$/MemoirJava/MemoirJava.iml" filepath="$PROJECT_DIR$/MemoirJava/MemoirJava.iml" />
       <module fileurl="file://$PROJECT_DIR$/Toolbox/Toolbox.iml" filepath="$PROJECT_DIR$/Toolbox/Toolbox.iml" />
