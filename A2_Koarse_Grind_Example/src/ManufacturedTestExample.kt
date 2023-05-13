@@ -12,7 +12,8 @@ knows to not attempt to instantiate them automatically.
 This example uses the "Descriptions" module to attempt several variations on the
 same base string value. Unlike a normal Koarse Grind test, Manufactured Tests
 may have as many parameters as you like in their constructor.
- */
+*/
+
 package com.mycompany.testing
 
 import hoodland.opensource.descriptions.StringFieldDescription

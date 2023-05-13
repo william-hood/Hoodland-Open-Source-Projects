@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/A1J_Memoir_Java_Example/A1J_Memoir_Java_Example.iml" filepath="$PROJECT_DIR$/A1J_Memoir_Java_Example/A1J_Memoir_Java_Example.iml" />
       <module fileurl="file://$PROJECT_DIR$/A1_Memoir_Example/A1_Memoir_Example.iml" filepath="$PROJECT_DIR$/A1_Memoir_Example/A1_Memoir_Example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/A2J_Koarse_Grind_Java_Example/A2J_Koarse_Grind_Java_Example.iml" filepath="$PROJECT_DIR$/A2J_Koarse_Grind_Java_Example/A2J_Koarse_Grind_Java_Example.iml" />
       <module fileurl="file://$PROJECT_DIR$/A2_Koarse_Grind_Example/A2_Koarse_Grind_Example.iml" filepath="$PROJECT_DIR$/A2_Koarse_Grind_Example/A2_Koarse_Grind_Example.iml" />
       <module fileurl="file://$PROJECT_DIR$/A3_Hoodland_Projects_Test_Suite/A3_Hoodland_Projects_Test_Suite.iml" filepath="$PROJECT_DIR$/A3_Hoodland_Projects_Test_Suite/A3_Hoodland_Projects_Test_Suite.iml" />
       <module fileurl="file://$PROJECT_DIR$/ChangeScan/ChangeScan.iml" filepath="$PROJECT_DIR$/ChangeScan/ChangeScan.iml" />
