@@ -11,6 +11,9 @@
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-reflect.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-stdlib-jdk7.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-stdlib-jdk8.jar" path-in-jar="/" />
+      <element id="module-source" name="KoarseGrindJava" />
+      <element id="module-source" name="MemoirJava" />
+      <element id="module-source" name="ToolboxJava" />
     </root>
   </artifact>
 </component>
