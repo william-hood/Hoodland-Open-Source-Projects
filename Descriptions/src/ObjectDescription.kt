@@ -20,6 +20,9 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 package hoodland.opensource.descriptions
 
+import kotlin.jvm.Throws
+
 abstract class ObjectDescription<T> {
+    @get:Throws(InappropriateDescriptionException::class)
     abstract val describedObject: T
 }
