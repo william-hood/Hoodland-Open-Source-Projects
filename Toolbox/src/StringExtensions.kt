@@ -124,15 +124,32 @@ fun String.makeQuoted(): String {
     return "\"$this\""
 }
 
+/**
+ * Encloses the target string in single quotes.
+ * @return the target string enclosed in single quotes.
+ */
 fun String.makeSingleQuoted(): String {
     return "'$this'"
 }
 
+/**
+ * removeCarriageReturns: Removes all carriage returns (\r) from the target string.
+ * DOES NOT ALSO REMOVE LINE FEED (\n) CHARACTERS. This function can be useful for
+ * changing Windows-style endlines (\r\n) into Unix/Linux endlines (just \n).
+ * @return The target string without any carriage return characters.
+ */
 fun String.removeCarriageReturns(): String {
     return this.replace("\r", "")
 }
 
-
+/**
+ * justify: Takes the target string and adds spaces and "Carriage Return/Line Feed" (Windows style)
+ * endlines to produce a rendition justified to the given number of columns.
+ * If columns are not specified, the default value of 75 is used.
+ * Windows-style endlines are used because macOS and Linux handle them without issue.
+ * @param columns The number of columns to justify to.
+ * @return The original string rendered as justified to the specified number of columns.
+ */
 fun String.justify(columns: Int = 75): String {
     var justifiedMessage = ""
 
@@ -168,15 +185,36 @@ fun String.justify(columns: Int = 75): String {
     return justifiedMessage
 }
 
-fun String.prependEveryLineWith(prependString: String): String? {
+/**
+ * prependEveryLineWith: Used to add a string to the beginning of every line in the target string.
+ * THIS ASSUMES WINDOWS STYLE LINE ENDINGS (\r\n)
+ * @param prependString This string to prepend every line with.
+ * @return The target string with every line prepended by the requested string (prependString).
+ */
+fun String.prependEveryLineWith(prependString: String): String {
     return prependString + this.replace(CRLF, CRLF + prependString)
 }
 
+/**
+ * indentEveryLineBy: Every line of the target string is prepended by (indentSize) space characters.
+ * @param indentSize The number of spaces to indent each line by. Default is 5.
+ * @return The target string rendered with each line indented.
+ */
 fun String.indentEveryLineBy(indentSize: Int = 5): String {
-    return createStringFromBasisCharacter(' ', indentSize) + this
+    val result: String = this ?: ""
+
+    val indent = createStringFromBasisCharacter(' ', indentSize)
+    return this.prependEveryLineWith(result)
 }
 
-fun String.padSides(totalSize: Int, paddingChar: Char = ' '): String? {
+/**
+ * padSides: Takes the target string and pads both sides with enough of the padding
+ * character to make (totalSize) columns. This assumes the target string to be one line.
+ * @param totalSize The total number of columns wide the string should be.
+ * @param paddingChar The character to use for padding. The default is a blank space (' ').
+ * @return The target string padded on both sides to make it (totalSize) characters wide.
+ */
+fun String.padSides(totalSize: Int, paddingChar: Char = ' '): String {
     if (this.length >= totalSize) {
         return this
     }
@@ -188,6 +226,13 @@ fun String.padSides(totalSize: Int, paddingChar: Char = ' '): String? {
     return padCenteredString.padRight(totalSize, paddingChar)
 }
 
+/**
+ * padVertical: Pads the target multi-line string with vertical rows at the top, bottom, or both.
+ * @param justification One of the three VerticalJustification enum values: TOP, CENTER (default), or BOTTOM
+ * @param totalRows The total number of rows that should be in the message.
+ * @param addHorizontalSpaces Defaults to false. Set to true to add horizontal spaces to make every line the same width.
+ * @return The target string padded vertically as requested.
+ */
 fun String.padVertical(totalRows: Int, justification: VerticalJustification = VerticalJustification.CENTER, addHorizontalSpaces: Boolean = false): String {
     var message = this
     var paddedMessage: String = message
@@ -233,11 +278,25 @@ fun String.padVertical(totalRows: Int, justification: VerticalJustification = Ve
     return paddedMessage
 }
 
-fun String.padLeft(totalWidth: Int, paddingChar: Char = ' '): String? {
+/**
+ * padLeft: Pads the target string on the left with the specified character to the total width of columns requested.
+ * This assumes the target string to be one line.
+ * @param totalWidth The total width the string should be after padding.
+ * @param paddingChar The character to use for padding. Default is a blank space (' ').
+ * @return The padded string as specified.
+ */
+fun String.padLeft(totalWidth: Int, paddingChar: Char = ' '): String {
     return this.padEither(paddingChar, totalWidth, PaddingSide.LEFT)
 }
 
-fun String.padRight(totalWidth: Int, paddingChar: Char = ' '): String? {
+/**
+ * padRight: Pads the target string on the right with the specified character to the total width of columns requested.
+ * This assumes the target string to be one line.
+ * @param totalWidth The total width the string should be after padding.
+ * @param paddingChar The character to use for padding. Default is a blank space (' ').
+ * @return The padded string as specified.
+ */
+fun String.padRight(totalWidth: Int, paddingChar: Char = ' '): String {
     return this.padEither(paddingChar, totalWidth, PaddingSide.RIGHT)
 }
 
