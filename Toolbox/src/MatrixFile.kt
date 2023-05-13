@@ -29,7 +29,7 @@ import java.util.*
  * MatrixFile: Manages a new or existing file with delimited data, such as comma or tab separated values.
  *
  * @param T The data type of the delimited data. Usually this is String.
- * @property delimiter The character to serve as the delimiter. THis defaults to a comma ','. A semicolon ';' is also a good choice.
+ * @property delimiter The character to serve as the delimiter. This defaults to a comma ','. A semicolon ';' is also a good choice.
  * @property spacing Number of spaces after the delimiter before the next cell of data starts. Defaults to 1.
  * @constructor
  *
@@ -37,12 +37,21 @@ import java.util.*
  */
 class MatrixFile<T>(var delimiter: Char = DEFAULT_DELIMITER, var spacing: Int = DEFAULT_SPACING, vararg columnNames: String) {
     private var headers: ArrayList<String> = ArrayList()
+
+    /**
+     * Provides the entire matrix of data without headers.
+     */
     val allData: ArrayList<ArrayList<T>> = ArrayList()
 
     init {
         headers.addAll(columnNames)
     }
 
+    /**
+     * MatrixFile: Manages a new or existing file with delimited data, such as comma or tab separated values.
+     * This will use the default delimiter (a comma ',') and the default spacing of 1.
+     * @param columnNames The names of the columns to use. These will be the headers in the first row of the data.
+     */
     constructor(vararg columnNames: String): this(DEFAULT_DELIMITER, DEFAULT_SPACING, *columnNames)
 
     private fun stripDelimiters(input: String): String {
@@ -83,6 +92,9 @@ class MatrixFile<T>(var delimiter: Char = DEFAULT_DELIMITER, var spacing: Int = 
         }
     }
 
+    /**
+     * @return The size, which is the number of headers.
+     */
     val size: Int
     get() {
         if (headers.size < 1) {
@@ -196,7 +208,7 @@ class MatrixFile<T>(var delimiter: Char = DEFAULT_DELIMITER, var spacing: Int = 
         }
 
         /**
-         * read: Constructs a MatrixFile instance based on the contents of an existing file. (This version uses the default delimiter.)
+         * read: Constructs a MatrixFile instance based on the contents of an existing file.
          *
          * @param T The data type for this MatrixFile. Use String if you're not sure.
          * @param completeFilePath The fully qualified path and file name to write to.

@@ -24,14 +24,37 @@ package hoodland.opensource.toolbox.java;
 public class InlineImage {
     private hoodland.opensource.toolbox.InlineImage KInlineImage;
 
+    /**
+     * InlineImage: This is one of the remaining vestiges of deprecated code that programmatically represented HTML.
+     * It represents an image that has been inserted directly into an HTML file as Base64 encoded data. A deprecated
+     * alternative used to exist that put the image in the CSS style section, but was deprecated because some
+     * browsers did not work with it.
+     *
+     * @param base64ImageData Base64 encoded image data
+     * @param imageType Typically this will be jpeg, png, gif, etc.
+     * @param style Style as specified in the CSS portion of the HTML document.
+     */
     public InlineImage(String base64ImageData, String imageType, String style) {
         KInlineImage = new hoodland.opensource.toolbox.InlineImage(base64ImageData, imageType, style);
     }
 
+    /**
+     * InlineImage: This is one of the remaining vestiges of deprecated code that programmatically represented HTML.
+     * It represents an image that has been inserted directly into an HTML file as Base64 encoded data. A deprecated
+     * alternative used to exist that put the image in the CSS style section, but was deprecated because some
+     * browsers did not work with it.
+     *
+     * @param base64ImageData Base64 encoded image data
+     * @param imageType Typically this will be jpeg, png, gif, etc.
+     */
     public InlineImage(String base64ImageData, String imageType) {
         this(base64ImageData, imageType, null);
     }
 
+    /**
+     *
+     * @return The complete image tag ready to insert into an HTML document.
+     */
     @Override
     public String toString() {
         return KInlineImage.toString();

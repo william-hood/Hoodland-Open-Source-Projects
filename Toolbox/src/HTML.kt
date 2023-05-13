@@ -26,12 +26,21 @@ package hoodland.opensource.toolbox
  * It represents an image that has been inserted directly into an HTML file as Base64 encoded data. A deprecated
  * alternative used to exist that put the image in the CSS style section, but was deprecated because some
  * browsers did not work with it.
+ *
+ * @param base64ImageData Base64 encoded image data
+ * @param imageType Typically this will be jpeg, png, gif, etc.
+ * @param style Style as specified in the CSS portion of the HTML document.
  */
 public class InlineImage(
         val base64ImageData: String,
         val imageType: String,
         val style: String? = null)
 {
+
+    /**
+     *
+     * @return The complete image tag ready to insert into an HTML document.
+     */
     public override fun toString(): String {
         val result = StringBuilder("<img src=\"")
         result.append("data:img/")
