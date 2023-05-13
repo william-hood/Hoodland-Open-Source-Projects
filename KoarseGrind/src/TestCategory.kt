@@ -109,13 +109,12 @@ internal class TestCategory(override val name: String): ArrayList<Test>(), Inqui
         if (check != null) {
             return check.subCategories.remove(deltedCategory)
         } else {
-            // TODO: Either throw an exception or NO-OP
+            // TODO: Deliberate NO-OP for now. Consider if this should throw an exception
         }
 
         return null
     }
 
-    // TODO: TestCategories are now in a HashSet separate from the tests.
     internal fun run(filters: FilterSet? = null, preclusiveFailures: ArrayList<Throwable>? = null) : Memoir {
         filterSet = filters
         var logFileName = "$name.html"

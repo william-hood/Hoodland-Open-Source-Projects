@@ -31,12 +31,25 @@ enum class HorizontalJustification {
     LEFT, CENTER, RIGHT
 }
 
+/**
+ * createStringFromBasisCharacter: Creates a string composed of the requested number of the
+ * basis character in a row.
+ * @param basisChar The character to use. Every character in the string will be this.
+ * @param length The total number of characters in the string.
+ * @return A string consisting of exactly (length) characters in a row, all of which are the basis character.
+ */
 fun createStringFromBasisCharacter(basisChar: Char, length: Int): String {
     val tempCharArray = CharArray(length)
     Arrays.fill(tempCharArray, basisChar)
     return String(tempCharArray)
 }
 
+/**
+ * repeatString: Creates a new string with the requested number of the string it is given.
+ * @param target The basis string which will be repeated.
+ * @param count The number of times to repeat the target string.
+ * @return A new string composed of exactly (count) copies of the (target) string.
+ */
 fun repeatString(target: String, count: Int): String {
     val result = StringBuilder()
 
@@ -47,13 +60,21 @@ fun repeatString(target: String, count: Int): String {
     return result.toString()
 }
 
+/**
+ * getDimensional
+ * @param x
+ * @param y
+ * @return Given x and y returns "(x x y)"
+ */
 fun getDimensional(x: Int, y: Int): String {
     return "($x x $y)"
 }
 
-// Reverse is not needed. Built into Kotlin.
-// IsBlank is not needed. Built into Kotlin.
-
+/**
+ * String?.matches: Compares strings, even if one or both are null.
+ * @param theOther
+ * @return true if both strings are null or if both are exactly the same content. false otherwise.
+ */
 fun String?.matches(theOther: String?): Boolean {
     if (this == null) {
         if (theOther == null) {
@@ -68,6 +89,11 @@ fun String?.matches(theOther: String?): Boolean {
     return this.compareTo(theOther) == 0
 }
 
+/**
+ * String?.matchesCaseInspecific: Compares strings without considering upper or lower case, even if one or both are null.
+ * @param theOther
+ * @return true if both strings are null or if both are exactly the same content without distinguishing between upper and lower case. false otherwise.
+ */
 fun String?.matchesCaseInspecific(theOther: String?): Boolean {
     if (this == null) {
         if (theOther == null) {
@@ -82,10 +108,18 @@ fun String?.matchesCaseInspecific(theOther: String?): Boolean {
     return this.uppercase().compareTo(theOther.uppercase()) == 0
 }
 
+/**
+ * Encloses the target string in parentheses. Given "this string" returns "(this string)".
+ * @return the target string in parentheses.
+ */
 fun String.makeParenthetic(): String {
     return "($this)"
 }
 
+/**
+ * Encloses the target string in double quotes.
+ * @return the target string enclosed in double quotes.
+ */
 fun String.makeQuoted(): String {
     return "\"$this\""
 }

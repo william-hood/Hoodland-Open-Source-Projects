@@ -35,8 +35,7 @@ import java.util.zip.ZipOutputStream
  *
  */
 object ZipFileCreator {
-    // TODO: Should this be private?
-    val filesToAdd = ArrayList<String>()
+    private val filesToAdd = ArrayList<String>()
 
     fun make(fullPathToRoot: String, fullPathToOutputFile: String) {
         var usedOutputFile = fullPathToOutputFile

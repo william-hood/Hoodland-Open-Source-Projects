@@ -9,6 +9,8 @@ test program output will be created in a new time-stamped subdirectory from ther
 Within the output directory will be an "All Tests.html" file, a CSV spreadsheet of
 the test results, and PASS/FAIL prefixed artifact directories for each test that ran.
 
+➡️ THIS IS AN EXAMPLE TEST SUITE AND MANY TESTS WON'T PASS FOR ILLUSTRATIVE PURPOSES ⬅️
+
 HISTORY: Years ago, after creating several variations of the same test framework for
 several different companies, I decided to create a “reference version” of what I
 typically do. If a new employer (again) asked that I create a brand new test framework
@@ -57,10 +59,6 @@ Here’s the core differences that set it apart from most other frameworks:
 * Rich Test-Object Description – A special “descriptions” module lets you describe how a
   candidate object might look and provides for ways to test the typical border conditions
   and edge cases.
-* New to this version the top-level test program will identify your tests, instantiate one
-  of each, and run them. Unless you’re generating a set of tests programmatically (a special
-  TestFactory class provides for this) normal tests do not need to be instantiated or put into
-  a container structure.
 
 I’d greatly appreciate for some of my fellow Test Automation Professionals to have a look at
 Koarse Grind (and it’s “Memoir” logging system), play around with the examples, and offer me
@@ -74,7 +72,7 @@ https://www.linkedin.com/in/william-a-hood-sdet-pdx/
 
  */
 
-// ‼️ IMPORTANT ‼️ If a module, or its directory, contains a space tests in it will not be run.
+// ‼️ IMPORTANT ‼️ If a module name, or the name of its directory, contains a space tests in it will not be run.
 // So don't do that!
 
 package com.mycompany.testing

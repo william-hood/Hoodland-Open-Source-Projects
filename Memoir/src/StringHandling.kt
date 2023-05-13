@@ -36,6 +36,7 @@ private val base64Decoder = Base64.getDecoder()
  */
 fun isBase64(candidate: String): Boolean {
     // TODO: Is there a more accurate check possible?. It is detecting Base64 where such is not the case.
+    // Apparently there are some simple english words that legally decrypt from Base64 to garbage.
     return base64Check.matches(candidate)
 }
 
