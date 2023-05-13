@@ -1,17 +1,12 @@
 <component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="KoarseGrind:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/KoarseGrind_jar</output-path>
-    <root id="archive" name="KoarseGrind.jar">
-      <element id="module-output" name="KoarseGrind" />
-      <element id="module-output" name="Memoir" />
+  <artifact type="jar" build-on-make="true" name="Toolbox:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Toolbox_jar</output-path>
+    <root id="archive" name="Toolbox.jar">
       <element id="module-output" name="Toolbox" />
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-stdlib.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-reflect.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-stdlib-jdk7.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-stdlib-jdk8.jar" path-in-jar="/" />
-      <element id="module-output" name="Descriptions" />
-      <element id="module-source" name="KoarseGrind" />
-      <element id="module-source" name="Memoir" />
       <element id="module-source" name="Toolbox" />
     </root>
   </artifact>

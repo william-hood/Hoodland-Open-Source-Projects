@@ -184,7 +184,7 @@ class MatrixFile<T>(var delimiter: Char = DEFAULT_DELIMITER, var spacing: Int = 
         const val DEFAULT_SPACING = 1
 
         /**
-         * read: Constructs a MtrixFile instance based on the contents of an existing file. (This version uses the default delimiter.)
+         * read: Constructs a MatrixFile instance based on the contents of an existing file. (This version uses the default delimiter.)
          *
          * @param T The data type for this MatrixFile. Use String if you're not sure.
          * @param completeFilePath The fully qualified path and file name to write to.
@@ -196,7 +196,7 @@ class MatrixFile<T>(var delimiter: Char = DEFAULT_DELIMITER, var spacing: Int = 
         }
 
         /**
-         * read: Constructs a MtrixFile instance based on the contents of an existing file. (This version uses the default delimiter.)
+         * read: Constructs a MatrixFile instance based on the contents of an existing file. (This version uses the default delimiter.)
          *
          * @param T The data type for this MatrixFile. Use String if you're not sure.
          * @param completeFilePath The fully qualified path and file name to write to.

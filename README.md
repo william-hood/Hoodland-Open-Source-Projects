@@ -1,20 +1,22 @@
-# Hoodland Open Source Projects
+##### Release 2.1
 
-##### Release 2.0
+On the Kotlin side not much has changed, save for updates to the latest version of Kotlin, efforts to cull
+down the number of warnings, and efforts to increase the documentation comments. Source code is now included
+in all JAR files to provide for better "intellisense" completions.
 
-Primary changes to this release are a new paradigm for Koarse Grind. **Refer to the Koarse Grind Example module.**
+The big news for this release are Java wrappers for Memoir, Toolbox and Koarse Grind. For those who haven't
+noticed, trying to use Kotlin from Java can sometimes get... er... messy. --Much more so than the other way around, using Java
+from Kotlin. I'd actually had hopes to be able to use these projects from Java when I first created them, so
+for this release I decided to focus on making that happen.
+I've taken the time to produce full Java wrappers for all of Memoir and Toolbox. Some parts of Koarse Grind,
+and all of the "Descriptions" module, have been left as unwrapped Kotlin since it is usable as it is.
+New examples for the Java bits have been provided, and some testing in Java was also done with the Eclipse IDE.
 
-- The concept of declaring several "Categories" each test might fit into is now abolished.
-- What was previously the "TestCollection" class now serves as each test's category. That class is now internal and renamed "TestCategory".
-- All tests now declare a "CategoryPath" delimited by the pipe character ( | ). This path determines how the tests are organized in the test log.
-- Example: "External API|Add Content|Negative Tests".
-- Outfitters also declare a CategoryPath which determine the specific category they setup/cleanup.
-- TestFactories no longer determine the name of the collection/category that the tests go in. The test programmer specifies this for each test.
-- The root output folder can be changed from `$/Documents/TestResults` to the directory of your choice by setting `defaultParentFolder` before calling `TestProgram.run()`.
-- Manually creating a "TestCollection" (now TestCategory) and populating it with tests is now prohibited. Use the CategoryPath field instead.
-- This release of Koarse Grind is verified to work on Windows 11, macOS Ventura, and Linux Mint 21.1.
+Testing was done against Linux Mint 21.1, Windows 11, and macOS Monterey.
 
 ---
+
+# Hoodland Open Source Projects
 
 These projects are the "spiritual successors" to software I've developed over
 the course of my career as an SDET. In June of 2020, having grown frustrated
@@ -52,23 +54,23 @@ based on the C# version, and makes use of Memoir as its integrated log system.
 Here's what sets it apart from other test frameworks:
     - Not for Unit Tests – As the name suggests it’s intended for larger-grained tests one might do against a program or service that’s already installed and configured; though it can certainly do unit tests if that’s what you want.
     - Rich Logging – Automated tests are often run in the middle of the night. If something fails, not only does the logging need to be verbose it has to be easy to read. Originally I used ascii-art in the logs to make failures stand out. Koarse Grind now uses an HTML-based logging system which I’ve broken out into a separate project called “Memoir.” It visualizes common object types, HTTP Transactions, Exceptions, and embedded log segments with a click-to-expand interface.
-    - No Annotations – I deliberately chose to NOT implement any form of “*Unit” where tests, setup, and cleanup are annotated functions. Standard aspects of object orientated programming are suitable for that.
+    - No Annotations – I deliberately chose to NOT implement any form of “*Unit” where tests, setup, and cleanup are annotated functions. Standard aspects of object orientated programming are suitable for that purpose.
     - Test Results are NOT Exceptions – I didn’t want Koarse Grind to be like JUnit/NUnit where every failure is a thrown exception and unless you trap them the test is over; --which leads to the next point…
     - Multiple Points of Failure – Employers always asked to not end the test if one criterion failed, which meant try/catch blocks everywhere since failures were exceptions. Koarse Grind does not end the test early unless the programmer explicitly tells it to.
     - No Separate Runner Program – JUnit and NUnit both compile the tests to libraries requiring a separate runner program. This can be convenient for running in the IDE itself, or with a third party GUI, but it often proved difficult running from the command line. Koarse Grind tests compile as a runnable program, so running them from a script is already solved. (I’ve had GUI’s to run tests in older versions, but have not yet implemented that in the Kotlin version.)
     - Artifacts Folder – Every test has a folder for its own artifacts. This will contain at least the section of the log unique to that test. It can also hold screen shots, serialized data files, or other artifact files the test produces.
     - Rich Test-Object Description – A special “descriptions” module lets you describe how a candidate object might look and provides for ways to test the typical border conditions and edge cases.
-    - Unlike legacy versions of Coarse Grind, the top-level test program will identify your tests, instantiate one of each, and run them. Unless you’re generating a set of tests programmatically (a special TestFactory class provides for this) normal tests do not need to be instantiated or put into a container structure.
+    - Unlike legacy versions of Coarse Grind, the top-level test program will identify your tests, instantiate one of each, and run them. Unless you’re generating a set of tests programmatically (a special TestFactory class provides for this) normal tests do not need to be instantiated or put into a container structure. Also, tests now have one-and-only-one category which is directly reflected by the folder hierarchy and the organization of the logs.
 
 ## Usage & Known Issues
 - Clone the repository and open the root directory in IntelliJ IDEA CE.
 - There is an example project for the Memoir logging system when used as a stand-alone module.
 - A second example program exists for Koarse Grind, which uses Memoir for its logging.
 - There is also a partial start on a set of Koarse Grind tests for the other Hoodland projects which also serves as an example.
-- The HTML-based output logs will appear in a folder titled "Test Results" off of your Documents directory.
+- The HTML-based output logs will appear in a folder titled "Test Results" off of your Documents directory. The root output folder can be changed from $/Documents/TestResults to the directory of your choice by setting defaultParentFolder before calling TestProgram.run().
 - Known Koarse Grind Issue: If a module, or its directory, has a space in its name any tests it contains will not be found and will not run. Don't put spaces in module names. Use an underscore instead.
-- The code is intended for use with IntelliJ IDEA CE. Eclipse is not supported, but feel free to adapt the code to any IDE or Editor you're comfortable with.
-- These projects do work with Java, provided you have experience using Kotlin based projects in Java. All projects are "Kotlin First" and use from Java is not officially supported.
+- The Kotlin code and the overall project is intended for use with IntelliJ IDEA CE. Eclipse is supported for using the Java wrappers in their compiled binary form (KoarseGrindJava.jar, MemoirJava.jar and ToolboxJava.jar). Feel free to adapt the code to any other IDE or Editor you're comfortable with, with the understanding that I don't officially support such use.
+- All projects are "Kotlin First". Use from Java is supported by way of the Java wrapper Jar files, and only using the Kotlin bits when a Java wrapping is not available.
 
 ## Released under the terms of the MIT License
 © 2020, 2021, 2022, 2023 William Hood
