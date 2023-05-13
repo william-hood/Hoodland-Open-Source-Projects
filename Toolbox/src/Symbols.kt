@@ -43,6 +43,13 @@ const val DEFAULT_DIVIDER_LENGTH = 79
 const val SINGLE_DIVIDER = '_'
 const val DOUBLE_DIVIDER = '='
 
+
+/**
+ * divider() - Produces a plaintext horizontal divider of a single or double line to the specified length.
+ * @param typeToUse DividerTypes.SINGLE (default) or DividerTypes.DOUBLE
+ * @param length Specify how many characters long the divider should be. Default is 79.
+ * @return a plaintext string rendition of the divider.
+ */
 fun divider(typeToUse: DividerTypes = DividerTypes.SINGLE, length: Int = DEFAULT_DIVIDER_LENGTH): String? {
     var dividerChar = DOUBLE_DIVIDER
     var dividerString = ""

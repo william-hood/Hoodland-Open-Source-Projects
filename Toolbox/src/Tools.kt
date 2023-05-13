@@ -33,14 +33,27 @@ import java.util.zip.CRC32
 import java.util.zip.CheckedInputStream
 import kotlin.collections.ArrayList
 
+/**
+ * Provides a PrintWriter pointed at stdout
+ */
 val stdout = PrintWriter(System.out)
+
+/**
+ * Provides a PrintWriter pointed at stderr
+ */
 val stderr = PrintWriter(System.err)
 
 private val quickDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd kk-mm-ss.SSS")
 
+/**
+ * Provides a plaintext date and time formatted as yyyy-MM-dd kk-mm-ss.SSS
+ */
 val quickTimestamp: String
     get() = quickDateFormat.format(LocalDateTime.now())
 
+/**
+ * Given a path to an existing file, provides an open BufferedReader for it.
+ */
 @Throws(FileNotFoundException::class)
 fun openForReading(filePath: String): BufferedReader {
     return BufferedReader(FileReader(filePath))
@@ -75,6 +88,13 @@ fun getUserHomeFolder(): String {
 }
 
 // From http://stackoverflow.com/questions/2546078/java-random-long-number-in-0-x-n-range
+
+/**
+ * Provides a random Long integer between 0 and n
+ * @param rng A random number generator (Random class) that you have already instantiated.
+ * @param n The upper bound of the random Long integer. 0 is the lower bound.
+ * @return a random Long integer between 0 and n
+ */
 fun nextLong(rng: Random, n: Long): Long {
     // error checking and 2^x checking removed for simplicity.
     var bits: Long

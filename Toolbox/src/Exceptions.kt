@@ -28,7 +28,9 @@ package hoodland.opensource.toolbox
 class ImpossibleCodePathException : Exception("A point in the code was reached that should not be possible to get to.")
 
 /**
- * ImproperConstructionException: Throw this in situations where an object or class has been constructed in such a way as to make it unusable. Example: An array needs to be passed in but the array given was size zero, or is populated with known bad data.
+ * ImproperConstructionException: Throw this in situations where an object or class has been constructed in
+ * such a way as to make it unusable. Example: An array needs to be passed in but the array given was size
+ * zero, or is populated with known bad data.
  *
  * @constructor
  *
