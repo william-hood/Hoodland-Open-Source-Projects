@@ -200,11 +200,11 @@ fun String.prependEveryLineWith(prependString: String): String {
  * @param indentSize The number of spaces to indent each line by. Default is 5.
  * @return The target string rendered with each line indented.
  */
-fun String.indentEveryLineBy(indentSize: Int = 5): String {
+fun String?.indentEveryLineBy(indentSize: Int = 5): String {
     val result: String = this ?: ""
 
     val indent = createStringFromBasisCharacter(' ', indentSize)
-    return this.prependEveryLineWith(result)
+    return result.prependEveryLineWith(indent)
 }
 
 /**

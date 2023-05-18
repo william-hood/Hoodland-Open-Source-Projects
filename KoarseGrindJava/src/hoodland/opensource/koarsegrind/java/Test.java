@@ -23,6 +23,12 @@ package hoodland.opensource.koarsegrind.java;
 
 import hoodland.opensource.memoir.java.Memoir;
 
+/**
+ * The base class for any kind of Koarse Grind Test. Any class that extends this, but is not also a derivative of
+ * the ManufacturedTest class, will be instantiated and run. If an optional setup() method exists it will be run first.
+ * Failed assertions in setup() render the test inconclusive. If an optional cleanup() method exists it will always
+ * be run, even if setup failed. The performTest() method will be run, unless setup failed.
+ */
 public abstract class Test extends hoodland.opensource.koarsegrind.Test {
     public Test(String name) {
         super (name, "", null, "");

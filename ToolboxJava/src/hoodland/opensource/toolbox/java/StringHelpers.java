@@ -24,6 +24,9 @@ package hoodland.opensource.toolbox.java;
 import hoodland.opensource.toolbox.StringExtensionsKt;
 import hoodland.opensource.toolbox.VerticalJustification;
 
+/**
+ * Provides various string manipulation functions.
+ */
 public class StringHelpers {
 
     /**

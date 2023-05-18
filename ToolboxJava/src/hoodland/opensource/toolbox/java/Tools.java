@@ -32,6 +32,9 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Provides miscellaneous programming helper and tool functions.
+ */
 public class Tools {
 
     /**

@@ -24,6 +24,9 @@ package hoodland.opensource.toolbox.java;
 import hoodland.opensource.toolbox.DividerTypes;
 import hoodland.opensource.toolbox.SymbolsKt;
 
+/**
+ * Used for creating plaintext dividers of various types and lengths.
+ */
 public class Divider {
     public static final int DEFAULT_DIVIDER_LENGTH = SymbolsKt.DEFAULT_DIVIDER_LENGTH;
     public static final hoodland.opensource.toolbox.DividerTypes DIVIDER_TYPE_SINGLE = DividerTypes.SINGLE;

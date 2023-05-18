@@ -23,6 +23,14 @@ package hoodland.opensource.koarsegrind.java;
 
 import hoodland.opensource.memoir.java.Memoir;
 
+/**
+ * A manufactured test has to be produced by a test factory in order to be included in the test run.
+ * This provides the option of constructing tests on-the-fly at runtime.
+ *
+ * If an optional setup() method exists it will be run first.
+ * Failed assertions in setup() render the test inconclusive. If an optional cleanup() method exists it will always
+ * be run, even if setup failed. The performTest() method will be run, unless setup failed.
+ */
 public abstract class ManufacturedTest extends hoodland.opensource.koarsegrind.ManufacturedTest {
     public ManufacturedTest(String name) {
         super (name, "", null, "");

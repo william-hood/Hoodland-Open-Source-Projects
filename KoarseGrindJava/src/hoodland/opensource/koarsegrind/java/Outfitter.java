@@ -23,6 +23,11 @@ package hoodland.opensource.koarsegrind.java;
 
 import hoodland.opensource.memoir.java.Memoir;
 
+/**
+ * An Outfitter is used to provide a setup and cleanup for a whole category of tests. Leave the categoryPath field
+ * as the default (empty string) value to assign it to the top-level category. IMPORTANT: Your outfitter must be a
+ * CLASS, not an OBJECT in Kotlin. Also it must use a default constructor with no parameters.
+ */
 public abstract class Outfitter extends hoodland.opensource.koarsegrind.Outfitter {
     public Outfitter(String categoryPath) {
         super(categoryPath);

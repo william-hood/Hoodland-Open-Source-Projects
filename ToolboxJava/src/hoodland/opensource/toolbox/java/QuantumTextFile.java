@@ -23,6 +23,9 @@ package hoodland.opensource.toolbox.java;
 
 import java.io.PrintWriter;
 
+/**
+ * QuantumTextFile: Prepares a text output file, but no file is actually created until and unless it is written to.
+ */
 public class QuantumTextFile {
     private hoodland.opensource.toolbox.QuantumTextFile KQuantumTextFile;
 

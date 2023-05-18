@@ -21,6 +21,11 @@
 
 package hoodland.opensource.toolbox.java;
 
+/**
+ * SubnameFactory is used in cases where a lot of records (or fields, test cases, etc.) need to have the same name,
+ * with a unique suffix. MyTestA, MyTestB, etc. Use this to generate the suffix when programmatically generating
+ * several similar items. This assumes a startingIndex and totalPlaces of zero.
+ */
 public class SubnameFactory {
     private hoodland.opensource.toolbox.SubnameFactory KSubnameFactory;
 

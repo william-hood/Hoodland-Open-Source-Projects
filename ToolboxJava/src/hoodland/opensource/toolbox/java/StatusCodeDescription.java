@@ -23,6 +23,9 @@ package hoodland.opensource.toolbox.java;
 
 import hoodland.opensource.toolbox.StatusCodeDescriptionKt;
 
+/**
+ * Used for converting an integer HTTP status code to a concise text description.
+ */
 public class StatusCodeDescription {
 
     /**

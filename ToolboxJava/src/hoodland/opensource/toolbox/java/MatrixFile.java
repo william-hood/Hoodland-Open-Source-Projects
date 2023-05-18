@@ -25,6 +25,9 @@ import hoodland.opensource.toolbox.Parser;
 
 import java.util.ArrayList;
 
+/**
+ * MatrixFile: Manages a new or existing file with delimited data, such as comma or tab separated values.
+ */
 public class MatrixFile<T> {
     private hoodland.opensource.toolbox.MatrixFile<T> KMatrixFile;
 

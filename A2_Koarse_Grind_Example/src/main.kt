@@ -1,3 +1,4 @@
+// TODO: Is this TLDR for most people?
 /*
 
 READ ME: KOARSE GRIND EXAMPLE (some editors will hide all but the first line of this comment)
@@ -61,7 +62,7 @@ Here’s the core differences that set it apart from most other frameworks:
   and edge cases.
 
 I’d greatly appreciate for some of my fellow Test Automation Professionals to have a look at
-Koarse Grind (and it’s “Memoir” logging system), play around with the examples, and offer me
+Koarse Grind (and its “Memoir” logging system), play around with the examples, and offer me
 some honest feedback.
 
 The source code is MIT Licensed and developed with InteliJ IDEA CE.

@@ -23,6 +23,9 @@ package hoodland.opensource.toolbox.java;
 
 import hoodland.opensource.toolbox.SymbolsKt;
 
+/**
+ * Provides commonly used constants and symbols.
+ */
 public class Symbols {
     public static final String PLATFORM_NEWLINE = SymbolsKt.getPLATFORM_NEWLINE();
     public static final String CRLF = SymbolsKt.CRLF;

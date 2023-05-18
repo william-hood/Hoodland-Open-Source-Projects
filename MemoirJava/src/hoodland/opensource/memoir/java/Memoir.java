@@ -29,6 +29,12 @@ import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+/**
+ * Memoir is a logging system designed to produce rich, readable HTML-based output with appropriate
+ * console output accompanying it. A Memoir may be a root-level log file, a subsection of another Memoir, or both.
+ * It includes methods to render objects, HTTP transactions, exceptions, collections and other Memoirs
+ * in click-to-expand fashion.
+ */
 public class Memoir {
     private hoodland.opensource.memoir.Memoir KMemoir;
 

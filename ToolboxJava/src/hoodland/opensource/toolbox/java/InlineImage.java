@@ -21,6 +21,12 @@
 
 package hoodland.opensource.toolbox.java;
 
+/**
+ * InlineImage: This is one of the remaining vestiges of deprecated code that programmatically represented HTML.
+ * It represents an image that has been inserted directly into an HTML file as Base64 encoded data. A deprecated
+ * alternative used to exist that put the image in the CSS style section, but was deprecated because some
+ * browsers did not work with it.
+ */
 public class InlineImage {
     private hoodland.opensource.toolbox.InlineImage KInlineImage;
 

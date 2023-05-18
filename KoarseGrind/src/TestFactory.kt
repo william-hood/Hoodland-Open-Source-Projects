@@ -48,6 +48,9 @@ public abstract class ManufacturedTest(name: String, detailedDescription: String
  */
 abstract class TestFactory()
  {
+     /**
+      * Fill this ArrayList with ManufacturedTests pre-instantiated to your specifications.
+      */
     val producedTests = ArrayList<ManufacturedTest>()
 
     abstract fun produceTests()
