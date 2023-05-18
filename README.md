@@ -12,7 +12,7 @@ I've taken the time to produce full Java wrappers for all of Memoir and Toolbox.
 and all of the "Descriptions" module, have been left as unwrapped Kotlin since it is usable as it is.
 New examples for the Java bits have been provided, and some testing in Java was also done with the Eclipse IDE.
 
-Testing was done against Linux Mint 21.1, Windows 11, and macOS Monterey.
+Testing was done against Linux Mint 21.1, and Windows 11.
 
 ---
 
