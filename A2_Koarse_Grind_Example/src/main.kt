@@ -32,7 +32,7 @@ fun main(args: Array<String>) {
 // Take a look at "A3 Hoodland Projects Test Suite" for an example of an actual test project.
 
 // If the entire test suite needs a setup and/or cleanup, create an Outfitter
-// and omit the categoryPath field (or explcitly specify it to be ""). This
+// and omit the categoryPath field (or explicitly specify it to be ""). This
 // will assign the outfitter to the top-level category. It's setup will run before
 // the entire suite. It's teardown will run after all tests in the suite complete.
 class TestSuiteOutfitter: Outfitter() {

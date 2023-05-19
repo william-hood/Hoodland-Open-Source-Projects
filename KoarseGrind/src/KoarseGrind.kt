@@ -56,10 +56,12 @@ internal fun logHeader(title: String): String {
     return "<table style=\"margin-left: 0; margin-right: 0\"><tr><td>\r\n\r\n$HEADER_ICON\r\n\r\n</td><td><h1>$title</h1>\r\nPowered by Koarse Grind\r\n&nbsp;&nbsp;<small><i>Initiated $quickTimestamp</i></small></td></tr></table>\r\n<hr>\r\n\r\n"
 }
 
-// This is calculated on the fly the first time it is called.
-// If a "Documents" folder exists off the user's home folder, the Test Results folder goes there.
-// Otherwise it goes in the user's home folder. A test programmer may override this default by
-// setting the defaultParentFolder field before calling TestProgram.run().
+/**
+ * This is calculated on the fly the first time it is called.
+ * If a "Documents" folder exists off the user's home folder, the Test Results folder goes there.
+ * Otherwise it goes in the user's home folder. A test programmer may override this default by
+ * setting the defaultParentFolder field before calling TestProgram.run().
+ */
 public var defaultParentFolder = UNSET_STRING
 internal val DEFAULT_PARENT_FOLDER: String
     get() {
