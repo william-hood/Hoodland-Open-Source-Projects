@@ -31,7 +31,7 @@ private val PLAINTEXT_DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-
 private val HTML_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 private val HTML_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
 
-private fun defaultHeader(title: String): String {
+internal fun defaultHeader(title: String): String {
     return "<h1>$title</h1>\r\n<hr>\r\n<small><i>Powered by the Memoir Logging System...</i></small>\r\n\r\n"
 }
 
@@ -61,7 +61,7 @@ class MemoirConcludedException: Exception(ALREADY_CONCLUDED_MESSAGE) { }
  *
  * @param headerFunction Use this to override the default header and make your own.
  */
-class Memoir (
+open class Memoir (
         val title: String = UNKNOWN,
         val forPlainText: PrintWriter? = null,
         val forHTML: PrintWriter? = null,
