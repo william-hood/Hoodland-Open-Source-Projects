@@ -13,7 +13,6 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public Status status = Status.UNSET;
 
     private void reportCondition(Status thisCondition) {
-        debug("Started as " + status);
         switch (thisCondition) {
             case PASSING:
                 if (status == Status.UNSET) {
@@ -36,7 +35,6 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             default:
                 // Deliberate NO-OP as UNSET should not be passed in.
         }
-        debug("Finished as " + status);
     }
 
     //=== Primary Constructor
