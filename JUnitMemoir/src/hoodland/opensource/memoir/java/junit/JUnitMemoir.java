@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import hoodland.opensource.memoir.java.Constants;
 import hoodland.opensource.memoir.java.HeaderFunction;
@@ -275,8 +276,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
 
     public void assertTrue(boolean condition) {
         try {
-            Assertions.assertTrue(condition);
             reportCondition(Status.PASSING);
+            Assertions.assertTrue(condition);
             info("(true as expected)", Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -291,8 +292,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
 
     public void assertTrue(boolean condition, String message) {
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertTrue(condition);
+            reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -322,8 +323,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
 
     public void assertTrue(BooleanSupplier condition, String message) {
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertTrue(condition);
+            reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -372,8 +373,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public void assertTimeoutPreemptively(Duration timeout, Executable executable, String message) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertTimeoutPreemptively(timeout, executable, message);
+            reportCondition(Status.PASSING);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
@@ -389,8 +390,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public void assertTimeoutPreemptively(Duration timeout, Executable executable) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertTimeoutPreemptively(timeout, executable);
+            reportCondition(Status.PASSING);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
@@ -440,8 +441,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public void assertTimeout(Duration timeout, Executable executable, String message) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertTimeout(timeout, executable, message);
+            reportCondition(Status.PASSING);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
@@ -457,8 +458,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public void assertTimeout(Duration timeout, Executable executable) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertTimeout(timeout, executable);
+            reportCondition(Status.PASSING);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
@@ -507,8 +508,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
 
     public void assertSame(Object expected, Object actual, String message) {
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertSame(expected, actual);
+            reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -523,8 +524,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public void assertSame(Object expected, Object actual) {
         final String msg = "Assert Objects are Same";
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertSame(expected, actual);
+            reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -538,8 +539,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
 
     public void assertNotSame(Object expected, Object actual, String message) {
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertNotSame(expected, actual);
+            reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -554,8 +555,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public void assertNotSame(Object expected, Object actual) {
         final String msg = "Assert Objects are not Same";
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertNotSame(expected, actual);
+            reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -569,8 +570,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
 
     public void assertNull(Object actual, String message) {
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertNull(actual);
+            reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -585,8 +586,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public void assertNull(Object actual) {
         final String msg = "Assert Object is Null";
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertNull(actual);
+            reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -600,8 +601,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
 
     public void assertNotNull(Object actual, String message) {
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertNotNull(actual);
+            reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -616,8 +617,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public void assertNotNull(Object actual) {
         final String msg = "Assert Object is Null";
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertNotNull(actual);
+            reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -631,8 +632,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
 
     public void assertFalse(boolean condition) {
         try {
-            Assertions.assertFalse(condition);
             reportCondition(Status.PASSING);
+            Assertions.assertFalse(condition);
             info("(true as expected)", Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -647,8 +648,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
 
     public void assertFalse(boolean condition, String message) {
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertFalse(condition);
+            reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -678,43 +679,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
 
     public void assertFalse(BooleanSupplier condition, String message) {
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertFalse(condition);
+            reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
-            throw err;
-        } catch (Throwable unexpectedErr) {
-            showThrowable(unexpectedErr);
-            throw unexpectedErr;
-        }
-    }
-
-    public void assertEquals(Object expected, Object actual, String message) {
-        try {
-            reportCondition(Status.PASSING);
-            Assertions.assertEquals(expected, actual);
-            info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
-            reportCondition(Status.FAILING);
-            info(message, Constants.EMOJI_FAILING_TEST);
-            throw err;
-        } catch (Throwable unexpectedErr) {
-            showThrowable(unexpectedErr);
-            throw unexpectedErr;
-        }
-    }
-
-    public void assertEquals(Object expected, Object actual) {
-        final String msg = "Assert Objects are Equals";
-        try {
-            reportCondition(Status.PASSING);
-            Assertions.assertEquals(expected, actual);
-            info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
-            reportCondition(Status.FAILING);
-            info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
         } catch (Throwable unexpectedErr) {
             showThrowable(unexpectedErr);
@@ -724,8 +694,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
 
     public void assertNotEquals(Object expected, Object actual, String message) {
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertNotEquals(expected, actual);
+            reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -740,8 +710,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public void assertNotEquals(Object expected, Object actual) {
         final String msg = "Assert Objects are not Equals";
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertNotEquals(expected, actual);
+            reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -756,8 +726,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public void assertLinesMatch(List<String> expectedLines, List<String> actualLines) {
         final String msg = "Assert Lines Match";
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertLinesMatch(expectedLines, actualLines);
+            reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -771,8 +741,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
 
     public void assertIterableEquals(Iterable<?> expected, Iterable<?> actual, String message) {
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertIterableEquals(expected, actual);
+            reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -787,8 +757,8 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public void assertIterableEquals(Iterable<?> expected, Iterable<?> actual) {
         final String msg = "Assert Iterables are Equal";
         try {
-            reportCondition(Status.PASSING);
             Assertions.assertIterableEquals(expected, actual);
+            reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
         } catch (AssertionError err) {
             reportCondition(Status.FAILING);
@@ -797,6 +767,570 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         } catch (Throwable unexpectedErr) {
             showThrowable(unexpectedErr);
             throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(Object expected, Object actual, String message) {
+        try {
+            Assertions.assertEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(Object expected, Object actual) {
+        final String msg = "Assert Objects are Equals";
+        try {
+            Assertions.assertEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(byte expected, byte actual, String message) {
+        try {
+            Assertions.assertEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(byte expected, byte actual) {
+        final String msg = "Assert bytes are Equals";
+        try {
+            Assertions.assertEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(char expected, char actual, String message) {
+        try {
+            Assertions.assertEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(char expected, char actual) {
+        final String msg = "Assert chars are Equals";
+        try {
+            Assertions.assertEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(double expected, double actual, String message) {
+        try {
+            Assertions.assertEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(double expected, double actual) {
+        final String msg = "Assert doubles are Equals";
+        try {
+            Assertions.assertEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(float expected, float actual, String message) {
+        try {
+            Assertions.assertEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(float expected, float actual) {
+        final String msg = "Assert floats are Equals";
+        try {
+            Assertions.assertEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(int expected, int actual, String message) {
+        try {
+            Assertions.assertEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(int expected, int actual) {
+        final String msg = "Assert ints are Equals";
+        try {
+            Assertions.assertEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(long expected, long actual, String message) {
+        try {
+            Assertions.assertEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(long expected, long actual) {
+        final String msg = "Assert longs are Equals";
+        try {
+            Assertions.assertEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(short expected, short actual, String message) {
+        try {
+            Assertions.assertEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(short expected, short actual) {
+        final String msg = "Assert shorts are Equals";
+        try {
+            Assertions.assertEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertArrayEquals(Object[] expected, Object[] actual, String message) {
+        try {
+            Assertions.assertArrayEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertArrayEquals(Object[] expected, Object[] actual) {
+        final String msg = "Assert Arrays of Objects are Equals";
+        try {
+            Assertions.assertArrayEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertArrayEquals(byte[] expected, byte[] actual, String message) {
+        try {
+            Assertions.assertArrayEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertArrayEquals(byte[] expected, byte[] actual) {
+        final String msg = "Assert Arrays of bytes are Equals";
+        try {
+            Assertions.assertArrayEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertArrayEquals(char[] expected, char[] actual, String message) {
+        try {
+            Assertions.assertArrayEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertArrayEquals(char[] expected, char[] actual) {
+        final String msg = "Assert Arrays of chars are Equals";
+        try {
+            Assertions.assertArrayEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertArrayEquals(double[] expected, double[] actual, String message) {
+        try {
+            Assertions.assertArrayEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertArrayEquals(double[] expected, double[] actual) {
+        final String msg = "Assert Arrays of doubles are Equals";
+        try {
+            Assertions.assertArrayEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertArrayEquals(float[] expected, float[] actual, String message) {
+        try {
+            Assertions.assertArrayEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertArrayEquals(float[] expected, float[] actual) {
+        final String msg = "Assert Arrays of floats are Equals";
+        try {
+            Assertions.assertArrayEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertArrayEquals(int[] expected, int[] actual, String message) {
+        try {
+            Assertions.assertArrayEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertArrayEquals(int[] expected, int[] actual) {
+        final String msg = "Assert Arrays of ints are Equals";
+        try {
+            Assertions.assertArrayEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertArrayEquals(long[] expected, long[] actual, String message) {
+        try {
+            Assertions.assertArrayEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertArrayEquals(long[] expected, long[] actual) {
+        final String msg = "Assert Arrays of longs are Equals";
+        try {
+            Assertions.assertArrayEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertArrayEquals(short[] expected, short[] actual, String message) {
+        try {
+            Assertions.assertArrayEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertArrayEquals(short[] expected, short[] actual) {
+        final String msg = "Assert Arrays of shorts are Equals";
+        try {
+            Assertions.assertArrayEquals(expected, actual);
+            reportCondition(Status.PASSING);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertAll(Executable... executables) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            Assertions.assertAll(executables);
+            reportCondition(Status.PASSING);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            emoji = Constants.EMOJI_FAILING_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info("Assert all supplied executables don't throw exceptions", emoji);
+        }
+    }
+
+    public void assertAll(Stream<Executable> executables) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            Assertions.assertAll(executables);
+            reportCondition(Status.PASSING);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            emoji = Constants.EMOJI_FAILING_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info("Assert all supplied executables don't throw exceptions", emoji);
+        }
+    }
+
+    public void assertAll(String heading, Executable... executables) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            Assertions.assertAll(heading, executables);
+            reportCondition(Status.PASSING);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            emoji = Constants.EMOJI_FAILING_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info("Assert all supplied executables don't throw exceptions", emoji);
+        }
+    }
+
+    public void assertAll(String heading, Stream<Executable> executables) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            Assertions.assertAll(heading, executables);
+            reportCondition(Status.PASSING);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            emoji = Constants.EMOJI_FAILING_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info("Assert all supplied executables don't throw exceptions", emoji);
         }
     }
 
