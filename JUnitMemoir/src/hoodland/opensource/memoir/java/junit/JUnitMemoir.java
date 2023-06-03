@@ -1,11 +1,16 @@
 package hoodland.opensource.memoir.java.junit;
 
 import java.io.PrintWriter;
+import java.time.Duration;
+import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import hoodland.opensource.memoir.java.Constants;
 import hoodland.opensource.memoir.java.HeaderFunction;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.api.function.ThrowingSupplier;
 
 public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public enum Status { PASSING, INCONCLUSIVE, FAILING, UNSET };
@@ -299,18 +304,514 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    public void assertTrue(BooleanSupplier condition) {
+        try {
+            Assertions.assertTrue(condition);
+            reportCondition(Status.PASSING);
+            info("(true as expected)", Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info("A supplied condition expected to be true was false.", Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            reportCondition(Status.FAILING);
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
 
+    public void assertTrue(BooleanSupplier condition, String message) {
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertTrue(condition);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
 
+    public <T> T assertTimeoutPreemptively(Duration timeout, ThrowingSupplier<T> supplier, String message) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            reportCondition(Status.PASSING);
+            return Assertions.assertTimeoutPreemptively(timeout, supplier, message);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            emoji = Constants.EMOJI_FAILING_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info(message, emoji);
+        }
+    }
+
+    public <T> T assertTimeoutPreemptively(Duration timeout, ThrowingSupplier<T> supplier) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            reportCondition(Status.PASSING);
+            return Assertions.assertTimeoutPreemptively(timeout, supplier);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            emoji = Constants.EMOJI_FAILING_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info("Assert Timeout Preemptively", emoji);
+        }
+    }
+
+    public void assertTimeoutPreemptively(Duration timeout, Executable executable, String message) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertTimeoutPreemptively(timeout, executable, message);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            emoji = Constants.EMOJI_FAILING_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info(message, emoji);
+        }
+    }
+
+    public void assertTimeoutPreemptively(Duration timeout, Executable executable) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertTimeoutPreemptively(timeout, executable);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            emoji = Constants.EMOJI_FAILING_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info("Assert Timeout Preemptively", emoji);
+        }
+    }
+
+    public <T> T assertTimeout(Duration timeout, ThrowingSupplier<T> supplier, String message) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            reportCondition(Status.PASSING);
+            return Assertions.assertTimeout(timeout, supplier, message);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            emoji = Constants.EMOJI_FAILING_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info(message, emoji);
+        }
+    }
+
+    public <T> T assertTimeout(Duration timeout, ThrowingSupplier<T> supplier) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            reportCondition(Status.PASSING);
+            return Assertions.assertTimeout(timeout, supplier);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            emoji = Constants.EMOJI_FAILING_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info("Assert Timeout", emoji);
+        }
+    }
+
+    public void assertTimeout(Duration timeout, Executable executable, String message) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertTimeout(timeout, executable, message);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            emoji = Constants.EMOJI_FAILING_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info(message, emoji);
+        }
+    }
+
+    public void assertTimeout(Duration timeout, Executable executable) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertTimeout(timeout, executable);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            emoji = Constants.EMOJI_FAILING_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info("Assert Timeout", emoji);
+        }
+    }
+
+    public <T extends Throwable> T assertThrows(Class<T> expectedType, Executable executable, String message) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            reportCondition(Status.PASSING);
+            return Assertions.assertThrows(expectedType, executable, message);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            emoji = Constants.EMOJI_FAILING_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info(message, emoji);
+        }
+    }
+
+    public <T extends Throwable> T assertThrows(Class<T> expectedType, Executable executable) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            reportCondition(Status.PASSING);
+            return Assertions.assertThrows(expectedType, executable);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            emoji = Constants.EMOJI_FAILING_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info("Expected to throw " + expectedType.getSimpleName(), emoji);
+        }
+    }
+
+    public void assertSame(Object expected, Object actual, String message) {
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertSame(expected, actual);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertSame(Object expected, Object actual) {
+        final String msg = "Assert Objects are Same";
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertSame(expected, actual);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertNotSame(Object expected, Object actual, String message) {
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertNotSame(expected, actual);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertNotSame(Object expected, Object actual) {
+        final String msg = "Assert Objects are not Same";
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertNotSame(expected, actual);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertNull(Object actual, String message) {
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertNull(actual);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertNull(Object actual) {
+        final String msg = "Assert Object is Null";
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertNull(actual);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertNotNull(Object actual, String message) {
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertNotNull(actual);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertNotNull(Object actual) {
+        final String msg = "Assert Object is Null";
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertNotNull(actual);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertFalse(boolean condition) {
+        try {
+            Assertions.assertFalse(condition);
+            reportCondition(Status.PASSING);
+            info("(true as expected)", Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info("A condition expected to be false was true.", Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            reportCondition(Status.FAILING);
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertFalse(boolean condition, String message) {
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertFalse(condition);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertFalse(BooleanSupplier condition) {
+        try {
+            Assertions.assertFalse(condition);
+            reportCondition(Status.PASSING);
+            info("(true as expected)", Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info("A supplied condition expected to be false was true.", Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            reportCondition(Status.FAILING);
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertFalse(BooleanSupplier condition, String message) {
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertFalse(condition);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(Object expected, Object actual, String message) {
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertEquals(expected, actual);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertEquals(Object expected, Object actual) {
+        final String msg = "Assert Objects are Equals";
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertEquals(expected, actual);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertNotEquals(Object expected, Object actual, String message) {
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertNotEquals(expected, actual);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertNotEquals(Object expected, Object actual) {
+        final String msg = "Assert Objects are not Equals";
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertNotEquals(expected, actual);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertLinesMatch(List<String> expectedLines, List<String> actualLines) {
+        final String msg = "Assert Lines Match";
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertLinesMatch(expectedLines, actualLines);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertIterableEquals(Iterable<?> expected, Iterable<?> actual, String message) {
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertIterableEquals(expected, actual);
+            info(message, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(message, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
+
+    public void assertIterableEquals(Iterable<?> expected, Iterable<?> actual) {
+        final String msg = "Assert Iterables are Equal";
+        try {
+            reportCondition(Status.PASSING);
+            Assertions.assertIterableEquals(expected, actual);
+            info(msg, Constants.EMOJI_PASSING_TEST);
+        } catch (AssertionError err) {
+            reportCondition(Status.FAILING);
+            info(msg, Constants.EMOJI_FAILING_TEST);
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        }
+    }
 
 
 
 
     /*
     // For now, not implementing wrappers for any of the
-    // functions that take Supplier<*> until I'm familiar with
-    // how they work. If it's possible and frequent for them
-    // to return a different item with get() each time then
-    // implementing the wrappers could be complicated.
+    // functions with Supplier<String> messageSupplier
+    // until I'm familiar with how they work. If it's
+    // possible and frequent for them to return a
+    // different item with get() each time then
+    // implementing the wrappers could be complicated
+    // because I'd need to get a message but still preserve
+    // it for JUnit Assertions to consume.
     public <V> V fail(Supplier<String> messageSupplier) {
         try {
             return Assertions.fail(messageSupplier);
