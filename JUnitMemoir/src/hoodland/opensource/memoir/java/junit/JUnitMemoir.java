@@ -4,12 +4,14 @@ import java.io.PrintWriter;
 import java.time.Duration;
 import java.util.List;
 import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import hoodland.opensource.memoir.java.Constants;
 import hoodland.opensource.memoir.java.HeaderFunction;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
+import org.opentest4j.AssertionFailedError;
+import org.opentest4j.TestAbortedException;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.api.function.ThrowingSupplier;
 
@@ -219,7 +221,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public <V> V fail() {
         try {
             return Assertions.fail();
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info("(programmer forced failure)", Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -233,7 +235,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public <V> V fail(String message) {
         try {
             return Assertions.fail(message);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -247,7 +249,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public <V> V fail(Throwable cause) {
         try {
             return Assertions.fail(cause);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info("Failed because the following was thrown...", Constants.EMOJI_FAILING_TEST);
             showThrowable(cause);
@@ -262,7 +264,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public <V> V fail(String message, Throwable cause) {
         try {
             return Assertions.fail(cause);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             showThrowable(cause);
@@ -279,7 +281,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             reportCondition(Status.PASSING);
             Assertions.assertTrue(condition);
             info("(true as expected)", Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info("A condition expected to be true was false.", Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -295,7 +297,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertTrue(condition);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -310,7 +312,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertTrue(condition);
             reportCondition(Status.PASSING);
             info("(true as expected)", Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info("A supplied condition expected to be true was false.", Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -326,7 +328,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertTrue(condition);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -341,7 +343,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         try {
             reportCondition(Status.PASSING);
             return Assertions.assertTimeoutPreemptively(timeout, supplier, message);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
             throw err;
@@ -358,7 +360,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         try {
             reportCondition(Status.PASSING);
             return Assertions.assertTimeoutPreemptively(timeout, supplier);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
             throw err;
@@ -375,7 +377,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         try {
             Assertions.assertTimeoutPreemptively(timeout, executable, message);
             reportCondition(Status.PASSING);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
             throw err;
@@ -392,7 +394,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         try {
             Assertions.assertTimeoutPreemptively(timeout, executable);
             reportCondition(Status.PASSING);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
             throw err;
@@ -409,7 +411,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         try {
             reportCondition(Status.PASSING);
             return Assertions.assertTimeout(timeout, supplier, message);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
             throw err;
@@ -426,7 +428,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         try {
             reportCondition(Status.PASSING);
             return Assertions.assertTimeout(timeout, supplier);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
             throw err;
@@ -443,7 +445,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         try {
             Assertions.assertTimeout(timeout, executable, message);
             reportCondition(Status.PASSING);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
             throw err;
@@ -460,7 +462,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         try {
             Assertions.assertTimeout(timeout, executable);
             reportCondition(Status.PASSING);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
             throw err;
@@ -477,7 +479,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         try {
             reportCondition(Status.PASSING);
             return Assertions.assertThrows(expectedType, executable, message);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
             throw err;
@@ -494,7 +496,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         try {
             reportCondition(Status.PASSING);
             return Assertions.assertThrows(expectedType, executable);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
             throw err;
@@ -511,7 +513,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertSame(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -527,7 +529,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertSame(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -542,7 +544,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertNotSame(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -558,7 +560,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertNotSame(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -573,7 +575,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertNull(actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -589,7 +591,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertNull(actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -604,7 +606,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertNotNull(actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -620,7 +622,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertNotNull(actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -635,7 +637,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             reportCondition(Status.PASSING);
             Assertions.assertFalse(condition);
             info("(true as expected)", Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info("A condition expected to be false was true.", Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -651,7 +653,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertFalse(condition);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -666,7 +668,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertFalse(condition);
             reportCondition(Status.PASSING);
             info("(true as expected)", Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info("A supplied condition expected to be false was true.", Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -682,7 +684,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertFalse(condition);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -697,7 +699,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertNotEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -713,7 +715,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertNotEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -729,7 +731,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertLinesMatch(expectedLines, actualLines);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -744,7 +746,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertIterableEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -760,7 +762,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertIterableEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -775,7 +777,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -791,7 +793,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -806,7 +808,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -822,7 +824,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -837,7 +839,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -853,7 +855,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -868,7 +870,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -884,7 +886,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -899,7 +901,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -915,7 +917,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -930,7 +932,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -946,7 +948,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -961,7 +963,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -977,7 +979,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -992,7 +994,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1008,7 +1010,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1023,7 +1025,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertArrayEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1039,7 +1041,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertArrayEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1054,7 +1056,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertArrayEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1070,7 +1072,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertArrayEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1085,7 +1087,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertArrayEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1101,7 +1103,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertArrayEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1116,7 +1118,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertArrayEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1132,7 +1134,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertArrayEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1147,7 +1149,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertArrayEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1163,7 +1165,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertArrayEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1178,7 +1180,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertArrayEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1194,7 +1196,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertArrayEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1209,7 +1211,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertArrayEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1225,7 +1227,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertArrayEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1240,7 +1242,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertArrayEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(message, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(message, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1256,7 +1258,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             Assertions.assertArrayEquals(expected, actual);
             reportCondition(Status.PASSING);
             info(msg, Constants.EMOJI_PASSING_TEST);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             info(msg, Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1271,7 +1273,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         try {
             Assertions.assertAll(executables);
             reportCondition(Status.PASSING);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
             throw err;
@@ -1288,7 +1290,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         try {
             Assertions.assertAll(executables);
             reportCondition(Status.PASSING);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
             throw err;
@@ -1305,7 +1307,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         try {
             Assertions.assertAll(heading, executables);
             reportCondition(Status.PASSING);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
             throw err;
@@ -1322,7 +1324,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         try {
             Assertions.assertAll(heading, executables);
             reportCondition(Status.PASSING);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             reportCondition(Status.FAILING);
             emoji = Constants.EMOJI_FAILING_TEST;
             throw err;
@@ -1349,7 +1351,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public <V> V fail(Supplier<String> messageSupplier) {
         try {
             return Assertions.fail(messageSupplier);
-        } catch (AssertionError err) {
+        } catch (AssertionFailedError err) {
             isFailing = true;
             info(messageSupplier.get(), Constants.EMOJI_FAILING_TEST);
             throw err;
@@ -1359,4 +1361,179 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
     */
+
+    // ASSUMPTIONS
+    // ===========
+
+    public void assumeFalse(boolean assumption) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            Assumptions.assumeFalse(assumption);
+            reportCondition(Status.PASSING);
+        } catch (TestAbortedException err) {
+            reportCondition(Status.INCONCLUSIVE);
+            emoji = Constants.EMOJI_INCONCLUSIVE_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info("A condition assumed false was true instead", emoji);
+        }
+    }
+
+    public void assumeFalse(boolean assumption, String message) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            Assumptions.assumeFalse(assumption, message);
+            reportCondition(Status.PASSING);
+        } catch (TestAbortedException err) {
+            reportCondition(Status.INCONCLUSIVE);
+            emoji = Constants.EMOJI_INCONCLUSIVE_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info(message, emoji);
+        }
+    }
+
+    public void assumeFalse(BooleanSupplier assumptionSupplier) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            Assumptions.assumeFalse(assumptionSupplier);
+            reportCondition(Status.PASSING);
+        } catch (TestAbortedException err) {
+            reportCondition(Status.INCONCLUSIVE);
+            emoji = Constants.EMOJI_INCONCLUSIVE_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info("A condition assumed false was true instead", emoji);
+        }
+    }
+
+    public void assumeFalse(BooleanSupplier assumptionSupplier, String message) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            Assumptions.assumeFalse(assumptionSupplier, message);
+            reportCondition(Status.PASSING);
+        } catch (TestAbortedException err) {
+            reportCondition(Status.INCONCLUSIVE);
+            emoji = Constants.EMOJI_INCONCLUSIVE_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info(message, emoji);
+        }
+    }
+
+    public void assumeTrue(boolean assumption) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            Assumptions.assumeTrue(assumption);
+            reportCondition(Status.PASSING);
+        } catch (TestAbortedException err) {
+            reportCondition(Status.INCONCLUSIVE);
+            emoji = Constants.EMOJI_INCONCLUSIVE_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info("A condition assumed true was false instead", emoji);
+        }
+    }
+
+    public void assumeTrue(boolean assumption, String message) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            Assumptions.assumeTrue(assumption, message);
+            reportCondition(Status.PASSING);
+        } catch (TestAbortedException err) {
+            reportCondition(Status.INCONCLUSIVE);
+            emoji = Constants.EMOJI_INCONCLUSIVE_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info(message, emoji);
+        }
+    }
+
+    public void assumeTrue(BooleanSupplier assumptionSupplier) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            Assumptions.assumeTrue(assumptionSupplier);
+            reportCondition(Status.PASSING);
+        } catch (TestAbortedException err) {
+            reportCondition(Status.INCONCLUSIVE);
+            emoji = Constants.EMOJI_INCONCLUSIVE_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info("A condition assumed true was false instead", emoji);
+        }
+    }
+
+    public void assumeTrue(BooleanSupplier assumptionSupplier, String message) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            Assumptions.assumeTrue(assumptionSupplier, message);
+            reportCondition(Status.PASSING);
+        } catch (TestAbortedException err) {
+            reportCondition(Status.INCONCLUSIVE);
+            emoji = Constants.EMOJI_INCONCLUSIVE_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info(message, emoji);
+        }
+    }
+
+    public void assumingThat(boolean assumption, Executable executable) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            Assumptions.assumingThat(assumption, executable);
+            reportCondition(Status.PASSING);
+        } catch (TestAbortedException err) {
+            reportCondition(Status.INCONCLUSIVE);
+            emoji = Constants.EMOJI_INCONCLUSIVE_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info("Assumption not valid; Executable not run", emoji);
+        }
+    }
+
+    public void assumingThat(BooleanSupplier assumptionSupplier, Executable executable) {
+        String emoji = Constants.EMOJI_PASSING_TEST;
+        try {
+            Assumptions.assumingThat(assumptionSupplier, executable);
+            reportCondition(Status.PASSING);
+        } catch (TestAbortedException err) {
+            reportCondition(Status.INCONCLUSIVE);
+            emoji = Constants.EMOJI_INCONCLUSIVE_TEST;
+            throw err;
+        } catch (Throwable unexpectedErr) {
+            showThrowable(unexpectedErr);
+            throw unexpectedErr;
+        } finally {
+            info("Assumption not valid; Executable not run", emoji);
+        }
+    }
+
+
 }
