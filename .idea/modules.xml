@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/A1J2_JUnitMemoir_Example/A1J2_JUnitMemoir_Example.iml" filepath="$PROJECT_DIR$/A1J2_JUnitMemoir_Example/A1J2_JUnitMemoir_Example.iml" />
       <module fileurl="file://$PROJECT_DIR$/A1J_Memoir_Java_Example/A1J_Memoir_Java_Example.iml" filepath="$PROJECT_DIR$/A1J_Memoir_Java_Example/A1J_Memoir_Java_Example.iml" />
       <module fileurl="file://$PROJECT_DIR$/A1_Memoir_Example/A1_Memoir_Example.iml" filepath="$PROJECT_DIR$/A1_Memoir_Example/A1_Memoir_Example.iml" />
       <module fileurl="file://$PROJECT_DIR$/A2J_Koarse_Grind_Java_Example/A2J_Koarse_Grind_Java_Example.iml" filepath="$PROJECT_DIR$/A2J_Koarse_Grind_Java_Example/A2J_Koarse_Grind_Java_Example.iml" />

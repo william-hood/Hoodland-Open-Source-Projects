@@ -536,11 +536,11 @@ public class Memoir {
      * @param callbackFunction Optional: Supply a callback function to make on-the-fly changes to certain fields, such as decoding Base64 or pretty-printing JSON. This will be applied to BOTH the request and response.
      * @return The java.net.http.HttpResponse that was logged and returned.
      */
-    public void showHttpTransaction(HttpRequest request, String bodyContentAsString, HttpFieldProcessingFunction callbackFunction) {
+    public HttpResponse<? extends Object> showHttpTransaction(HttpRequest request, String bodyContentAsString, HttpFieldProcessingFunction callbackFunction) {
         if (callbackFunction == null) {
-            ShowHttpMessagesKt.showHttpTransaction(KMemoir, request, bodyContentAsString, null);
+            return ShowHttpMessagesKt.showHttpTransaction(KMemoir, request, bodyContentAsString, null);
         } else {
-            ShowHttpMessagesKt.showHttpTransaction(KMemoir, request, bodyContentAsString, callbackFunction::processField);
+            return ShowHttpMessagesKt.showHttpTransaction(KMemoir, request, bodyContentAsString, callbackFunction::processField);
         }
     }
 
@@ -557,8 +557,8 @@ public class Memoir {
      * @param bodyContentAsString It is impossible to get the string content of HttpRequest.BodyPublishers.ofString(). Echo the string content here if you want Memoir to display the outgoing content.
      * @return The java.net.http.HttpResponse that was logged and returned.
      */
-    public void showHttpTransaction(HttpRequest request, String bodyContentAsString) {
-        showHttpTransaction(request, bodyContentAsString, null);
+    public HttpResponse<? extends Object> showHttpTransaction(HttpRequest request, String bodyContentAsString) {
+        return showHttpTransaction(request, bodyContentAsString, null);
     }
 
     /**
@@ -575,8 +575,8 @@ public class Memoir {
      * @param callbackFunction Optional: Supply a callback function to make on-the-fly changes to certain fields, such as decoding Base64 or pretty-printing JSON. This will be applied to BOTH the request and response.
      * @return The java.net.http.HttpResponse that was logged and returned.
      */
-    public void showHttpTransaction(HttpRequest request, HttpFieldProcessingFunction callbackFunction) {
-        showHttpTransaction(request, null, callbackFunction);
+    public HttpResponse<? extends Object> showHttpTransaction(HttpRequest request, HttpFieldProcessingFunction callbackFunction) {
+        return showHttpTransaction(request, null, callbackFunction);
     }
 
     /**
@@ -591,8 +591,8 @@ public class Memoir {
      * @param request The java.net.http.HttpRequest to be logged and sent.
      * @return The java.net.http.HttpResponse that was logged and returned.
      */
-    public void showHttpTransaction(HttpRequest request) {
-        showHttpTransaction(request, null, null);
+    public HttpResponse<? extends Object> showHttpTransaction(HttpRequest request) {
+        return showHttpTransaction(request, null, null);
     }
 
     //=== ShowThrowable

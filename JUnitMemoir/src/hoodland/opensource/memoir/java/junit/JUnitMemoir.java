@@ -20,7 +20,7 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
 
     public Status status = Status.UNSET;
 
-    private void reportCondition(Status thisCondition) {
+    public void reportCondition(Status thisCondition) {
         switch (thisCondition) {
             case PASSING:
                 if (status == Status.UNSET) {
