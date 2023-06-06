@@ -59,7 +59,7 @@ Here's what sets it apart from other test frameworks:
 
 ## Usage & Known Issues
 - Clone the repository and open the root directory in IntelliJ IDEA CE.
-- For JUnitMemoir to compile, hover over any import statement for org.junit.jupiter. Do not download JUnit4; instead select "More Actions" and download a version of JUnit 5 ("Jupiter", 5.8.1 as of this writing).
+- For JUnitMemoir to compile, hover over any import statement for org.junit.jupiter. Do not download JUnit4; instead select "More Actions" and download a version of JUnit 5 ("Jupiter", 5.8.1 as of this writing). You will also need to move it to "Global Libraries", and set scope to "Compile", from the Dependencies tab (in Module Settings) of the module you downloaded it for.
 - There is an example project for the Memoir logging system when used as a stand-alone module.
 - A second example program exists for Koarse Grind, which uses Memoir for its logging.
 - There is also a partial start on a set of Koarse Grind tests for the other Hoodland projects which also serves as an example.
