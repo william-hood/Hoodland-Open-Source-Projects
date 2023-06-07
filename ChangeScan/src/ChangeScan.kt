@@ -33,10 +33,11 @@ fun main(args: Array<String>) {
     }
 
     if (args[0].uppercase() == "LICENSE") showLicense()
+    if ((args[0].uppercase() == "EXAMPLES") || (args[0].uppercase() == "EXAMPLE"))showExamples()
 
     val workOrder = interpretArgs(args)
     val errorLog = Memoir("Errors Encountered During Scanning")
-    val activityLog = Memoir("ChangeScan $COPYRIGHT 2020 William Hood", stdout)
+    val activityLog = Memoir("ChangeScan $COPYRIGHT 2020, 2023 William Hood", stdout)
     val report = ReportGenerator(workOrder.reportPath)
 
     try {

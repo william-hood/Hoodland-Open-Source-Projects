@@ -47,7 +47,12 @@ internal class WorkOrder {
         get() = snapshotComparisonPath !== UNSET_STRING
 
     val reportRequested: Boolean
-        get() = reportPath !== UNSET_STRING
+        get() {
+            if (reportPath == UNSET_STRING) return false
+            if (reportPath.trim() == ".html") return false
+            if (reportPath.trim() == "") return false
+            return true
+        }
 
     /**
      * excludes()
@@ -66,8 +71,8 @@ internal class WorkOrder {
     fun describeTo(log: Memoir) {
         if (isScanlessComparison) {
             log.info("Comparing two baseline files. No scan is being performed.", "⚠️")
-            log.info("• $snapshotComparisonPath")
-            log.info("• $snapshotSavePath")
+            log.info("• NEWER: $snapshotComparisonPath")
+            log.info("• OLDER: $snapshotSavePath")
         } else {
             log.info("Scanning file system from $startingDirectory", "\uD83D\uDD0D")
             log.info("Saving the scan results as a baseline file: $snapshotSavePath")
@@ -84,6 +89,11 @@ internal class WorkOrder {
 }
 
 internal fun interpretArgs(args: Array<String>): WorkOrder {
+    var sawUse = false
+    var sawSave = false
+    var sawCompare = false
+    var sawReport = false
+    var sawRoot = false
     val result = WorkOrder()
     result.exclusions.add(FilesystemExclusion(Categories.Pattern, "\$Recycle.Bin"))
     if (getOperatingSystemName().contains("Win")) result.startingDirectory = "C:\\"
@@ -93,46 +103,81 @@ internal fun interpretArgs(args: Array<String>): WorkOrder {
     while (index < args.size) {
         when (args[index].uppercase()) {
             "USE" -> {
+                if (sawUse) {
+                    System.out.println("⛔ The 'USE' argument was seen more than once.")
+                    showUsage()
+                }
+
+                sawUse = true
                 result.isScanlessComparison = true
                 index++
                 result.snapshotSavePath = args[index]
             }
             "SAVE" -> if (result.isScanlessComparison) {
-                System.out.println("Can't save a scanned baseline when comparing one baseline to another.")
+                System.out.println("⛔ Can't save a scanned baseline when comparing one baseline to another.")
                 showUsage()
             } else {
+                if (sawSave) {
+                    System.out.println("⛔ The 'SAVE' argument was seen more than once.")
+                    showUsage()
+                }
+
+                sawSave = true
                 index++
                 result.snapshotSavePath = args[index]
             }
             "COMPARE" -> {
+                if (sawCompare) {
+                    System.out.println("⛔ The 'COMPARE' argument was seen more than once.")
+                    showUsage()
+                }
+
+                sawCompare = true
                 index++
                 result.snapshotComparisonPath = args[index]
             }
             "REPORT" -> {
+                if (sawReport) {
+                    System.out.println("⛔ The 'REPORT' argument was seen more than once.")
+                    showUsage()
+                }
+
+                sawReport = true
                 index++
                 result.reportPath = args[index]
                 if (!result.reportPath.uppercase().endsWith(".HTML")) result.reportPath += ".html"
             }
             "ROOT" -> if (result.isScanlessComparison) {
-                System.out.println("Can't accept a root directory for scanning when comparing one baseline to another.")
+                System.out.println("⛔ Can't accept a root directory for scanning when comparing one baseline to another.")
                 showUsage()
             } else {
+                if (sawRoot) {
+                    System.out.println("⛔ The 'ROOT' argument was seen more than once.")
+                    showUsage()
+                }
+
+                sawRoot = true
                 index++
                 result.startingDirectory = args[index]
             }
             "EXCLUDE" -> {
                 index++
                 var whichCategory = when (args[index]) {
-                    "FILE" -> Categories.Pattern
+                    "FILE" -> Categories.File
                     "DIRECTORY", "FOLDER" -> Categories.Directory
-                    else -> Categories.Pattern
+                    "PATTERN" -> Categories.Pattern
+                    else -> Categories.UNSET
+                }
+                if (whichCategory == Categories.UNSET) {
+                    System.out.println("⛔ EXCLUDE must be followed by FILE, PATTERN, DIRECTORY or FOLDER")
+                    showUsage()
                 }
                 index++
                 val markedExclude = args[index]
                 result.exclusions.add(FilesystemExclusion(whichCategory, markedExclude))
             }
             else -> {
-                System.out.println("Unrecognized command line argument.")
+                System.out.println("⛔ Unrecognized command line argument: ${args[index]}")
                 showUsage()
             }
         }
@@ -140,16 +185,21 @@ internal fun interpretArgs(args: Array<String>): WorkOrder {
         index++
     }
 
-    // TODO: Do not allow the end user to request a comparison without generating a report.
-
-    // TODO: Do not allow the end user to perform a baseline scan without saving it.
-    /*
-    if (! result.saveRequested) {
-        if (! result.isScanlessComparison) {
-            System.out.println("Can't perform a baseline scan without saving it.")
+    // Do not allow the end user to request a comparison without generating a report.
+    if (result.comparisonRequested) {
+        if (! result.reportRequested) {
+            System.out.println("⛔ If you request any kind of comparison, you must also save a report.")
             showUsage()
         }
     }
-     */
+
+    // Do not allow the end user to perform a baseline scan without saving it.
+    if (! result.saveRequested) {
+        if (! result.isScanlessComparison) {
+            System.out.println("⛔ Can't perform a baseline scan without saving it.")
+            showUsage()
+        }
+    }
+
     return result
 }

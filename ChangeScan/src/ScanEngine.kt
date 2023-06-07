@@ -32,7 +32,7 @@ internal object ScanEngine {
         try {
             var scannedFileSystem: FileSystemDescription
             if (workOrder.isScanlessComparison) {
-                activityLog.info("Loading baseline file ${workOrder.snapshotSavePath} into memory and treating as the scan for comparison.")
+                activityLog.info("Loading baseline file ${workOrder.snapshotSavePath} into memory and treating as the newer scan.")
                 scannedFileSystem = FileSystemDescription.loadInstance(workOrder.snapshotSavePath)
             } else {
                 scannedFileSystem = FileSystemDescription()
@@ -46,7 +46,7 @@ internal object ScanEngine {
             }
 
             if (workOrder.comparisonRequested) {
-                activityLog.info("Loading baseline file ${workOrder.snapshotComparisonPath}")
+                activityLog.info("Loading baseline file ${workOrder.snapshotComparisonPath} as the older scan.")
                 val originalFileSystem = FileSystemDescription.loadInstance(workOrder.snapshotComparisonPath)
 
                 activityLog.info("Comparing scan data to baseline file ${workOrder.snapshotComparisonPath}")
