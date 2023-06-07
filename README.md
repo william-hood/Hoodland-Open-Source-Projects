@@ -1,18 +1,11 @@
-##### Release 2.1
+##### Release 2.2
 
-On the Kotlin side not much has changed, save for updates to the latest version of Kotlin, efforts to cull
-down the number of warnings, and efforts to increase the documentation comments. Source code is now included
-in all JAR files to provide for better "intellisense" completions.
+This release is a minor bugfix release for the Kotlin side.
+On the Java side, there is now a JUnit integrated version of the Java wrapper for Memoir, meaning that
+Memoir now plays nice with JUnit. An example module will be included in the IntelliJ project. An
+example of using Memoir with JUnit in Eclipse will be included as pat of the release.
 
-The big news for this release are Java wrappers for Memoir, Toolbox and Koarse Grind. For those who haven't
-noticed, trying to use Kotlin from Java can sometimes get... er... messy. --Much more so than the other way around, using Java
-from Kotlin. I'd actually had hopes to be able to use these projects from Java when I first created them, so
-for this release I decided to focus on making that happen.
-I've taken the time to produce full Java wrappers for all of Memoir and Toolbox. Some parts of Koarse Grind,
-and all of the "Descriptions" module, have been left as unwrapped Kotlin since it is usable as it is.
-New examples for the Java bits have been provided, and some testing in Java was also done with the Eclipse IDE.
-
-Testing was done against Linux Mint 21.1, and Windows 11.
+Testing was done against Linux Mint 21.1, macOS Monterey, and Windows 11.
 
 ---
 
@@ -29,7 +22,9 @@ many years ago using "ascii art" to improve readability of the text-based output
 of programs I created for several previous clients. Eventually it made more
 sense to output to HTML. Class objects, HTTP Transactions, JVM Exceptions and
 embedded log segments are cleanly presented in "manager friendly" click-to-expand
-fashion to a single, self-contained HTML file.
+fashion to a single, self-contained HTML file. In addition to being the integrated
+logging system for Koarse Grind (see below) a wrapper class is provided to make
+Memoir easy to use with JUnit.
 - **ChangeScan** - A program that can tell you what has changed on a computer's
 file system. It is the spiritual successor of a JavaScript program I created for
 a client to test their installer. Scan all or part of the filesystem; perform
@@ -64,12 +59,13 @@ Here's what sets it apart from other test frameworks:
 
 ## Usage & Known Issues
 - Clone the repository and open the root directory in IntelliJ IDEA CE.
+- For JUnitMemoir to compile, hover over any import statement for org.junit.jupiter. Do not download JUnit4; instead select "More Actions" and download a version of JUnit 5 ("Jupiter", 5.8.1 as of this writing). You will also need to move it to "Global Libraries", and set scope to "Compile", from the Dependencies tab (in Module Settings) of the module you downloaded it for.
 - There is an example project for the Memoir logging system when used as a stand-alone module.
 - A second example program exists for Koarse Grind, which uses Memoir for its logging.
 - There is also a partial start on a set of Koarse Grind tests for the other Hoodland projects which also serves as an example.
 - The HTML-based output logs will appear in a folder titled "Test Results" off of your Documents directory. The root output folder can be changed from $/Documents/TestResults to the directory of your choice by setting defaultParentFolder before calling TestProgram.run().
 - Known Koarse Grind Issue: If a module, or its directory, has a space in its name any tests it contains will not be found and will not run. Don't put spaces in module names. Use an underscore instead.
-- The Kotlin code and the overall project is intended for use with IntelliJ IDEA CE. Eclipse is supported for using the Java wrappers in their compiled binary form (KoarseGrindJava.jar, MemoirJava.jar and ToolboxJava.jar). Feel free to adapt the code to any other IDE or Editor you're comfortable with, with the understanding that I don't officially support such use.
+- The Kotlin code and the overall project is intended for use with IntelliJ IDEA CE. Eclipse is supported for using the Java wrappers in their compiled binary form (KoarseGrindJava.jar, MemoirJava.jar, JUnitMemoir.jar and ToolboxJava.jar). Feel free to adapt the code to any other IDE or Editor you're comfortable with, with the understanding that I don't officially support such use.
 - All projects are "Kotlin First". Use from Java is supported by way of the Java wrapper Jar files, and only using the Kotlin bits when a Java wrapping is not available.
 
 ## Released under the terms of the MIT License
