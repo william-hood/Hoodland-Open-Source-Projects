@@ -9,7 +9,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="JUnitMemoir" />
     <orderEntry type="module" module-name="ToolboxJava" />
-    <orderEntry type="library" name="JUnit5.8.1" level="application" />
     <orderEntry type="module" module-name="MemoirJava" />
+    <orderEntry type="library" name="JUnit5.8.1" level="application" />
   </component>
 </module>

@@ -25,8 +25,23 @@ import hoodland.opensource.memoir.Memoir
 import hoodland.opensource.memoir.showThrowable
 import hoodland.opensource.toolbox.COPYRIGHT
 import hoodland.opensource.toolbox.stdout
+import java.io.FileDescriptor
+import java.io.FileOutputStream
+import java.io.PrintStream
+import java.io.UnsupportedEncodingException
+
 
 fun main(args: Array<String>) {
+    // Force a workaround so at least the HTML output is correct when running on Windows.
+    System.setProperty("file.encoding", "UTF-8")
+
+    try {
+        System.setOut(PrintStream(FileOutputStream(FileDescriptor.out), true, "UTF-8"))
+    } catch (e: UnsupportedEncodingException) {
+        throw InternalError("VM does not support mandatory encoding UTF-8")
+    }
+
+
     if (args.size < 1) {
         //System.out.println("No arguments given.")
         showUsage()

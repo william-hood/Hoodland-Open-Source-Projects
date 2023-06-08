@@ -47,8 +47,8 @@ Index 46378 out of bounds for length 4
 * TestDepictFailure.kt line 66 in method setup() of class hoodland.opensource.testsuite.TestDepictFailure
 * Test.kt line 364 in method runSetup${'$'}KoarseGrind() of class hoodland.opensource.koarsegrind.Test
 * Test.kt line 415 in method runTest${'$'}KoarseGrind() of class hoodland.opensource.koarsegrind.Test
-* TestCategory.kt line 175 in method invoke() of class hoodland.opensource.koarsegrind.TestCategory${'$'}run${'$'}4
-* TestCategory.kt line 57 in method invoke() of class hoodland.opensource.koarsegrind.TestCategory${'$'}run${'$'}4
+* TestCategory.kt line 174 in method invoke() of class hoodland.opensource.koarsegrind.TestCategory${'$'}run${'$'}4
+* TestCategory.kt line 174 in method invoke() of class hoodland.opensource.koarsegrind.TestCategory${'$'}run${'$'}4
 * Thread.kt line 30 in method run() of class kotlin.concurrent.ThreadsKt${'$'}thread${'$'}thread${'$'}1
 
    Exception
@@ -56,8 +56,8 @@ Index 46378 out of bounds for length 4
    * TestDepictFailure.kt line 68 in method setup() of class hoodland.opensource.testsuite.TestDepictFailure
    * Test.kt line 364 in method runSetup${'$'}KoarseGrind() of class hoodland.opensource.koarsegrind.Test
    * Test.kt line 415 in method runTest${'$'}KoarseGrind() of class hoodland.opensource.koarsegrind.Test
-   * TestCategory.kt line 175 in method invoke() of class hoodland.opensource.koarsegrind.TestCategory${'$'}run${'$'}4
-   * TestCategory.kt line 57 in method invoke() of class hoodland.opensource.koarsegrind.TestCategory${'$'}run${'$'}4
+   * TestCategory.kt line 174 in method invoke() of class hoodland.opensource.koarsegrind.TestCategory${'$'}run${'$'}4
+   * TestCategory.kt line 174 in method invoke() of class hoodland.opensource.koarsegrind.TestCategory${'$'}run${'$'}4
    * Thread.kt line 30 in method run() of class kotlin.concurrent.ThreadsKt${'$'}thread${'$'}thread${'$'}1"""
 
     override fun setup() {
