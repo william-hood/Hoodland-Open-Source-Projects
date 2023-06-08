@@ -7,6 +7,9 @@ example of using Memoir with JUnit in Eclipse will be included as pat of the rel
 
 Testing was done against Linux Mint 21.1, macOS Monterey, and Windows 11.
 
+**WINDOWS USERS FOLLOW THESE STEPS TO PROPERLY DISPLAY EMOJIS IN THE CONSOLE**
+https://akr.am/blog/posts/using-utf-8-in-the-windows-terminal
+
 ---
 
 # Hoodland Open Source Projects
