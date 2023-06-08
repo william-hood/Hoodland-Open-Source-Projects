@@ -922,6 +922,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual objects are NOT equal in value.
+     * @param expected The object you expect.
+     * @param actual The actual object you are testing.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertNotEquals(Object expected, Object actual, String message) {
         try {
             Assertions.assertNotEquals(expected, actual);
@@ -937,6 +943,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual objects are equal in value.
+     * @param expected The object you expect.
+     * @param actual The actual object you are testing.
+     */
     public void assertNotEquals(Object expected, Object actual) {
         final String msg = "Assert Objects are not Equals";
         try {
@@ -953,6 +964,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual lists of Strings match each other.
+     * @param expectedLines The expected list of Strings.
+     * @param actualLines The actual list of Strings being tested.
+     */
     public void assertLinesMatch(List<String> expectedLines, List<String> actualLines) {
         final String msg = "Assert Lines Match";
         try {
@@ -969,6 +985,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual iterables are deeply equal.
+     * @param expected The expected iterable taken as "known good."
+     * @param actual The actual iterable being tested.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertIterableEquals(Iterable<?> expected, Iterable<?> actual, String message) {
         try {
             Assertions.assertIterableEquals(expected, actual);
@@ -984,6 +1006,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual iterables are deeply equal.
+     * @param expected The expected iterable taken as "known good."
+     * @param actual The actual iterable being tested.
+     */
     public void assertIterableEquals(Iterable<?> expected, Iterable<?> actual) {
         final String msg = "Assert Iterables are Equal";
         try {
@@ -1000,6 +1027,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual objects are equal in value.
+     * @param expected The object you expect.
+     * @param actual The actual object you are testing.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertEquals(Object expected, Object actual, String message) {
         try {
             Assertions.assertEquals(expected, actual);
@@ -1015,6 +1048,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual objects are equal in value.
+     * @param expected The object you expect.
+     * @param actual The actual object you are testing.
+     */
     public void assertEquals(Object expected, Object actual) {
         final String msg = "Assert Objects are Equals";
         try {
@@ -1031,6 +1069,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual bytes are equal in value.
+     * @param expected The byte you expect.
+     * @param actual The actual byte you are testing.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertEquals(byte expected, byte actual, String message) {
         try {
             Assertions.assertEquals(expected, actual);
@@ -1046,6 +1090,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual bytes are equal in value.
+     * @param expected The byte you expect.
+     * @param actual The actual byte you are testing.
+     */
     public void assertEquals(byte expected, byte actual) {
         final String msg = "Assert bytes are Equals";
         try {
@@ -1062,6 +1111,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual chars are equal in value.
+     * @param expected The char you expect.
+     * @param actual The actual char you are testing.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertEquals(char expected, char actual, String message) {
         try {
             Assertions.assertEquals(expected, actual);
@@ -1077,6 +1132,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual chars are equal in value.
+     * @param expected The char you expect.
+     * @param actual The actual char you are testing.
+     */
     public void assertEquals(char expected, char actual) {
         final String msg = "Assert chars are Equals";
         try {
@@ -1093,6 +1153,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual doubles are equal in value.
+     * @param expected The double you expect.
+     * @param actual The actual double you are testing.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertEquals(double expected, double actual, String message) {
         try {
             Assertions.assertEquals(expected, actual);
@@ -1108,6 +1174,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual doubles are equal in value.
+     * @param expected The double you expect.
+     * @param actual The actual double you are testing.
+     */
     public void assertEquals(double expected, double actual) {
         final String msg = "Assert doubles are Equals";
         try {
@@ -1124,6 +1195,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual floats are equal in value.
+     * @param expected The float you expect.
+     * @param actual The actual float you are testing.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertEquals(float expected, float actual, String message) {
         try {
             Assertions.assertEquals(expected, actual);
@@ -1139,6 +1216,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual floats are equal in value.
+     * @param expected The float you expect.
+     * @param actual The actual float you are testing.
+     */
     public void assertEquals(float expected, float actual) {
         final String msg = "Assert floats are Equals";
         try {
@@ -1155,6 +1237,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual ints are equal in value.
+     * @param expected The int you expect.
+     * @param actual The actual int you are testing.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertEquals(int expected, int actual, String message) {
         try {
             Assertions.assertEquals(expected, actual);
@@ -1170,6 +1258,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual ints are equal in value.
+     * @param expected The int you expect.
+     * @param actual The actual int you are testing.
+     */
     public void assertEquals(int expected, int actual) {
         final String msg = "Assert ints are Equals";
         try {
@@ -1186,6 +1279,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual longs are equal in value.
+     * @param expected The long you expect.
+     * @param actual The actual long you are testing.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertEquals(long expected, long actual, String message) {
         try {
             Assertions.assertEquals(expected, actual);
@@ -1201,6 +1300,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual longs are equal in value.
+     * @param expected The long you expect.
+     * @param actual The actual long you are testing.
+     */
     public void assertEquals(long expected, long actual) {
         final String msg = "Assert longs are Equals";
         try {
@@ -1217,6 +1321,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual shorts are equal in value.
+     * @param expected The short you expect.
+     * @param actual The actual short you are testing.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertEquals(short expected, short actual, String message) {
         try {
             Assertions.assertEquals(expected, actual);
@@ -1232,6 +1342,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual shorts are equal in value.
+     * @param expected The short you expect.
+     * @param actual The actual short you are testing.
+     */
     public void assertEquals(short expected, short actual) {
         final String msg = "Assert shorts are Equals";
         try {
@@ -1248,6 +1363,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual arrays are equal.
+     * @param expected The expected "known good" array.
+     * @param actual The actual array being tested.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertArrayEquals(Object[] expected, Object[] actual, String message) {
         try {
             Assertions.assertArrayEquals(expected, actual);
@@ -1263,6 +1384,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual arrays are equal.
+     * @param expected The expected "known good" array.
+     * @param actual The actual array being tested.
+     */
     public void assertArrayEquals(Object[] expected, Object[] actual) {
         final String msg = "Assert Arrays of Objects are Equals";
         try {
@@ -1279,6 +1405,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual arrays are equal.
+     * @param expected The expected "known good" array.
+     * @param actual The actual array being tested.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertArrayEquals(byte[] expected, byte[] actual, String message) {
         try {
             Assertions.assertArrayEquals(expected, actual);
@@ -1294,6 +1426,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual arrays are equal.
+     * @param expected The expected "known good" array.
+     * @param actual The actual array being tested.
+     */
     public void assertArrayEquals(byte[] expected, byte[] actual) {
         final String msg = "Assert Arrays of bytes are Equals";
         try {
@@ -1310,6 +1447,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual arrays are equal.
+     * @param expected The expected "known good" array.
+     * @param actual The actual array being tested.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertArrayEquals(char[] expected, char[] actual, String message) {
         try {
             Assertions.assertArrayEquals(expected, actual);
@@ -1325,6 +1468,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual arrays are equal.
+     * @param expected The expected "known good" array.
+     * @param actual The actual array being tested.
+     */
     public void assertArrayEquals(char[] expected, char[] actual) {
         final String msg = "Assert Arrays of chars are Equals";
         try {
@@ -1341,6 +1489,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual arrays are equal.
+     * @param expected The expected "known good" array.
+     * @param actual The actual array being tested.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertArrayEquals(double[] expected, double[] actual, String message) {
         try {
             Assertions.assertArrayEquals(expected, actual);
@@ -1356,6 +1510,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual arrays are equal.
+     * @param expected The expected "known good" array.
+     * @param actual The actual array being tested.
+     */
     public void assertArrayEquals(double[] expected, double[] actual) {
         final String msg = "Assert Arrays of doubles are Equals";
         try {
@@ -1372,6 +1531,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual arrays are equal.
+     * @param expected The expected "known good" array.
+     * @param actual The actual array being tested.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertArrayEquals(float[] expected, float[] actual, String message) {
         try {
             Assertions.assertArrayEquals(expected, actual);
@@ -1387,6 +1552,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual arrays are equal.
+     * @param expected The expected "known good" array.
+     * @param actual The actual array being tested.
+     */
     public void assertArrayEquals(float[] expected, float[] actual) {
         final String msg = "Assert Arrays of floats are Equals";
         try {
@@ -1403,6 +1573,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual arrays are equal.
+     * @param expected The expected "known good" array.
+     * @param actual The actual array being tested.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertArrayEquals(int[] expected, int[] actual, String message) {
         try {
             Assertions.assertArrayEquals(expected, actual);
@@ -1418,6 +1594,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual arrays are equal.
+     * @param expected The expected "known good" array.
+     * @param actual The actual array being tested.
+     */
     public void assertArrayEquals(int[] expected, int[] actual) {
         final String msg = "Assert Arrays of ints are Equals";
         try {
@@ -1434,6 +1615,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual arrays are equal.
+     * @param expected The expected "known good" array.
+     * @param actual The actual array being tested.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertArrayEquals(long[] expected, long[] actual, String message) {
         try {
             Assertions.assertArrayEquals(expected, actual);
@@ -1449,6 +1636,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual arrays are equal.
+     * @param expected The expected "known good" array.
+     * @param actual The actual array being tested.
+     */
     public void assertArrayEquals(long[] expected, long[] actual) {
         final String msg = "Assert Arrays of longs are Equals";
         try {
@@ -1465,6 +1657,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual arrays are equal.
+     * @param expected The expected "known good" array.
+     * @param actual The actual array being tested.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertArrayEquals(short[] expected, short[] actual, String message) {
         try {
             Assertions.assertArrayEquals(expected, actual);
@@ -1480,6 +1678,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual arrays are equal.
+     * @param expected The expected "known good" array.
+     * @param actual The actual array being tested.
+     */
     public void assertArrayEquals(short[] expected, short[] actual) {
         final String msg = "Assert Arrays of shorts are Equals";
         try {
@@ -1513,6 +1716,10 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that all supplied executables do NOT throw exceptions.
+     * @param executables The supplied executables in a Stream.
+     */
     public void assertAll(Stream<Executable> executables) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -1530,6 +1737,10 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that all supplied executables do NOT throw exceptions.
+     * @param executables The supplied executables in a vararg.
+     */
     public void assertAll(String heading, Executable... executables) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -1547,6 +1758,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that all supplied executables do NOT throw exceptions.
+     * @param executables The supplied executables in a Stream.
+     * @param heading Will be included in the message string for the MultipleFailuresError.
+     */
     public void assertAll(String heading, Stream<Executable> executables) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -1593,6 +1809,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     // ASSUMPTIONS
     // ===========
 
+    /**
+     * Through JUnit tests if the boolean assumption condition is false.
+     * If it's not false a TestAbortedException is thrown. (This does
+     * not explicitly fail the test.)
+     * @param assumption The boolean condition being tested.
+     */
     public void assumeFalse(boolean assumption) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -1610,6 +1832,13 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit tests if the boolean assumption condition is false.
+     * If it's not false a TestAbortedException is thrown. (This does
+     * not explicitly fail the test.)
+     * @param assumption The boolean condition being tested.
+     * @param message State in plain language what the test assumes.
+     */
     public void assumeFalse(boolean assumption, String message) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -1627,6 +1856,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit tests if the supply of boolean assumption conditions are false.
+     * If it's not false a TestAbortedException is thrown. (This does
+     * not explicitly fail the test.)
+     * @param assumptionSupplier The supply of boolean conditions being tested.
+     */
     public void assumeFalse(BooleanSupplier assumptionSupplier) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -1644,6 +1879,13 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit tests if the supply of boolean assumption conditions are false.
+     * If it's not false a TestAbortedException is thrown. (This does
+     * not explicitly fail the test.)
+     * @param assumptionSupplier The supply of boolean conditions being tested.
+     * @param message State in plain language what the test assumes.
+     */
     public void assumeFalse(BooleanSupplier assumptionSupplier, String message) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -1661,6 +1903,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit tests if the boolean assumption condition is true.
+     * If it's not true a TestAbortedException is thrown. (This does
+     * not explicitly fail the test.)
+     * @param assumption The boolean condition being tested.
+     */
     public void assumeTrue(boolean assumption) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -1678,6 +1926,13 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit tests if the boolean assumption condition is true.
+     * If it's not true a TestAbortedException is thrown. (This does
+     * not explicitly fail the test.)
+     * @param assumption The boolean condition being tested.
+     * @param message State in plain language what the test assumes.
+     */
     public void assumeTrue(boolean assumption, String message) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -1695,6 +1950,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit tests if the supply of boolean assumption conditions are true.
+     * If it's not true a TestAbortedException is thrown. (This does
+     * not explicitly fail the test.)
+     * @param assumptionSupplier The supply of boolean conditions being tested.
+     */
     public void assumeTrue(BooleanSupplier assumptionSupplier) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -1712,6 +1973,13 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit tests if the supply of boolean assumption conditions are true.
+     * If it's not true a TestAbortedException is thrown. (This does
+     * not explicitly fail the test.)
+     * @param assumptionSupplier The supply of boolean conditions being tested.
+     * @param message State in plain language what the test assumes.
+     */
     public void assumeTrue(BooleanSupplier assumptionSupplier, String message) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -1729,6 +1997,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Esecutes the supplied executable, but ONLY if the assumption is true.
+     * Unlike other assumption methods, this will NOT abort the test if it fails.
+     * @param assumption The boolean condition being tested.
+     * @param executable The executable to run if the assumption is true.
+     */
     public void assumingThat(boolean assumption, Executable executable) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -1746,6 +2020,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Esecutes the supplied executable, but ONLY if the assumption is true.
+     * Unlike other assumption methods, this will NOT abort the test if it fails.
+     * @param assumptionSupplier The supply of boolean conditions being tested.
+     * @param executable The executable to run if the assumption is true.
+     */
     public void assumingThat(BooleanSupplier assumptionSupplier, Executable executable) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -1762,6 +2042,4 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
             info("Assumption not valid; Executable not run", emoji);
         }
     }
-
-
 }
