@@ -18,8 +18,29 @@ import org.junit.jupiter.api.function.ThrowingSupplier;
 public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
     public enum Status { PASSING, INCONCLUSIVE, FAILING, UNSET };
 
+    /**
+     * Reflect the color coding of this Memoir, when embedded in another Memoir such as
+     * a top-level or higher level log, is determined by its status. PASSING ->
+     * Green; FAILING -> Red; INCONCLUSIVE or UNSET -> Yellow. The default Status
+     * is UNSET. You should let the reportCondition() method be the only thing
+     * that sets this field unless you know what you're doing and why.
+     */
     public Status status = Status.UNSET;
 
+    /**
+     * The color coding of this Memoir, when embedded in another Memoir such as
+     * a top-level or higher level log, is determined by its status. PASSING ->
+     * Green; FAILING -> Red; INCONCLUSIVE or UNSET -> Yellow. When an assertion
+     * through this Memoir instance is carried out, it reports its status via
+     * this function. The status starts as UNSET. One or more passing tests moves
+     * the status to PASSING. One or more failing tests makes the status
+     * FAILING and this Memoir can no longer become Passing unless the programmer
+     * forces it via the 'status' field. If an assumption fails, the status
+     * becomes INCONCLUSIVE. Again this Memoir's status can not become Passing
+     * or Failing again unless the programmer forces it by directly setting
+     * the 'status' field.
+     * @param thisCondition
+     */
     public void reportCondition(Status thisCondition) {
         switch (thisCondition) {
             case PASSING:
@@ -196,6 +217,15 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         this(title, null, null, showTimestamps, showEmojis, headerFunction);
     }
 
+    /**
+     * Use this function to embed another JUnitMemoir within this one. The embedded
+     * JUnitMemoir will be color coded according to its status.
+     * @param subordinate The JUnitMemoir you wish to embed in this one. The subordinate
+     *                    JUnitMemoir will be concluded once you embed it and it
+     *                    will no lnge rbe possible to write to it.
+     * @return Returns HTML text representing the embedded JUnitMemoir. Ignore
+     * the return value unless you know what you're doing and why.
+     */
     public String showJUnitMemoir(JUnitMemoir subordinate) {
         String style;
         String emoji;
@@ -218,6 +248,13 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         return showMemoir(subordinate, emoji, style);
     }
 
+    /**
+     * This will call on JUnit's Assertions.fail() to fail the test without
+     * supplying a message. The log will show "(programmer forced failure)".
+     * @return According to JUnit's documentation, the generic return type
+     * allows this method to be used
+     * directly as a single-statement lambda expression.
+     */
     public <V> V fail() {
         try {
             return Assertions.fail();
@@ -232,6 +269,14 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * This will call on JUnit's Assertions.fail() with the message you supply.
+     * The log will show that message.
+     * @param message - The message to show in the log.
+     * @return According to JUnit's documentation, the generic return type
+     *      allows this method to be used
+     *      directly as a single-statement lambda expression.
+     */
     public <V> V fail(String message) {
         try {
             return Assertions.fail(message);
@@ -246,6 +291,15 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * This will call on JUnit's Assertions.fail() to fail the test
+     * with the given exception as the cause. Memoir will display the
+     * cause with its showThrowable() function.
+     * @param cause The exception or throwable causing the failure.
+     * @return According to JUnit's documentation, the generic return type
+     * allows this method to be used directly as a single-statement
+     * lambda expression.
+     */
     public <V> V fail(Throwable cause) {
         try {
             return Assertions.fail(cause);
@@ -261,6 +315,17 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * This will call on JUnit's Assertions.fail() to fail the test
+     * with the given exception as the cause. Memoir will display the
+     * cause with its showThrowable() function after first logging
+     * the message.
+     * @param message State in plain language why the test is failing.
+     * @param cause The exception or throwable causing the failure.
+     * @return According to JUnit's documentation, the generic return type
+     * allows this method to be used directly as a single-statement
+     * lambda expression.
+     */
     public <V> V fail(String message, Throwable cause) {
         try {
             return Assertions.fail(cause);
@@ -276,6 +341,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the supplied boolean condition is true.
+     * The pass fail status will be logged.
+     * @param condition A boolean condition that must be true to pass the assertion.
+     */
     public void assertTrue(boolean condition) {
         try {
             reportCondition(Status.PASSING);
@@ -292,6 +362,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the supplied boolean condition is true.
+     * The message will be logged, along with an emoji to indicate pass fail status.
+     * @param condition A boolean condition that must be true to pass the assertion.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertTrue(boolean condition, String message) {
         try {
             Assertions.assertTrue(condition);
@@ -307,6 +383,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the supplied boolean condition is true.
+     * The pass fail status will be logged.
+     * @param condition A boolean condition that must be true to pass the assertion.
+     */
     public void assertTrue(BooleanSupplier condition) {
         try {
             Assertions.assertTrue(condition);
@@ -323,6 +404,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the supplied boolean condition is true.
+     * The message will be logged, along with an emoji to indicate pass fail status.
+     * @param condition A boolean condition that must be true to pass the assertion.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertTrue(BooleanSupplier condition, String message) {
         try {
             Assertions.assertTrue(condition);
@@ -338,6 +425,14 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that execution of the supplied ThrowingSupplier
+     * completes before the given timeout is exceeded.
+     * @param timeout Duration within which execution must first complete.
+     * @param supplier Will be executed in a different thread than the calling code.
+     * @param message State in plain language what you are asserting.
+     * @return If the assertion passes then the supplier's result is returned.
+     */
     public <T> T assertTimeoutPreemptively(Duration timeout, ThrowingSupplier<T> supplier, String message) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -355,6 +450,13 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that execution of the supplied ThrowingSupplier
+     * completes before the given timeout is exceeded.
+     * @param timeout Duration within which execution must first complete.
+     * @param supplier Will be executed in a different thread than the calling code.
+     * @return If the assertion passes then the supplier's result is returned.
+     */
     public <T> T assertTimeoutPreemptively(Duration timeout, ThrowingSupplier<T> supplier) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -372,6 +474,14 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that execution of the supplied Executable
+     * completes before the given timeout is exceeded.
+     * @param timeout Duration within which execution must first complete.
+     * @param executable Will be executed in a different thread than the calling code.
+     * @param message State in plain language what you are asserting.
+     * @return If the assertion passes then the supplier's result is returned.
+     */
     public void assertTimeoutPreemptively(Duration timeout, Executable executable, String message) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -389,6 +499,13 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that execution of the supplied Executable
+     * completes before the given timeout is exceeded.
+     * @param timeout Duration within which execution must first complete.
+     * @param executable Will be executed in a different thread than the calling code.
+     * @return If the assertion passes then the supplier's result is returned.
+     */
     public void assertTimeoutPreemptively(Duration timeout, Executable executable) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -406,6 +523,15 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that execution of the supplied ThrowingSupplier
+     * completes before the given timeout is exceeded.
+     * @param timeout Duration within which execution must first complete.
+     * @param supplier Will be executed in the SAME thread as the calling code. Thus
+     *                 will NOT be aborted if the timeout is exceeded.
+     * @param message State in plain language what you are asserting.
+     * @return If the assertion passes then the supplier's result is returned.
+     */
     public <T> T assertTimeout(Duration timeout, ThrowingSupplier<T> supplier, String message) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -423,6 +549,14 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that execution of the supplied ThrowingSupplier
+     * completes before the given timeout is exceeded.
+     * @param timeout Duration within which execution must first complete.
+     * @param supplier Will be executed in the SAME thread as the calling code. Thus
+     *                 will NOT be aborted if the timeout is exceeded.
+     * @return If the assertion passes then the supplier's result is returned.
+     */
     public <T> T assertTimeout(Duration timeout, ThrowingSupplier<T> supplier) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -440,6 +574,15 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that execution of the supplied Executable
+     * completes before the given timeout is exceeded.
+     * @param timeout Duration within which execution must first complete.
+     * @param executable Will be executed in the SAME thread as the calling code. Thus
+     *                 will NOT be aborted if the timeout is exceeded.
+     * @param message State in plain language what you are asserting.
+     * @return If the assertion passes then the supplier's result is returned.
+     */
     public void assertTimeout(Duration timeout, Executable executable, String message) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -457,6 +600,14 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that execution of the supplied Executable
+     * completes before the given timeout is exceeded.
+     * @param timeout Duration within which execution must first complete.
+     * @param executable Will be executed in the SAME thread as the calling code. Thus
+     *                 will NOT be aborted if the timeout is exceeded.
+     * @return If the assertion passes then the supplier's result is returned.
+     */
     public void assertTimeout(Duration timeout, Executable executable) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
