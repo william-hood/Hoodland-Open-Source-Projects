@@ -625,6 +625,14 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that execution of the supplied Executable throws
+     * the expected exception type.
+     * @param expectedType The type of exception that should be thrown.
+     * @param executable Will be executed either to completion or the throwing of an exception.
+     * @param message State in plain language what you are asserting.
+     * @return The actual exception thrown will be returned.
+     */
     public <T extends Throwable> T assertThrows(Class<T> expectedType, Executable executable, String message) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -642,6 +650,13 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that execution of the supplied Executable throws
+     * the expected exception type.
+     * @param expectedType The type of exception that should be thrown.
+     * @param executable Will be executed either to completion or the throwing of an exception.
+     * @return The actual exception thrown will be returned.
+     */
     public <T extends Throwable> T assertThrows(Class<T> expectedType, Executable executable) {
         String emoji = Constants.EMOJI_PASSING_TEST;
         try {
@@ -659,6 +674,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual are the same object.
+     * @param expected The object you expect to get.
+     * @param actual The object you actually got.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertSame(Object expected, Object actual, String message) {
         try {
             Assertions.assertSame(expected, actual);
@@ -674,6 +695,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual are the same object.
+     * @param expected The object you expect to get.
+     * @param actual The object you actually got.
+     */
     public void assertSame(Object expected, Object actual) {
         final String msg = "Assert Objects are Same";
         try {
@@ -690,6 +716,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual are NOT the same object.
+     * @param expected The object you expect to NOT get.
+     * @param actual The object you actually got.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertNotSame(Object expected, Object actual, String message) {
         try {
             Assertions.assertNotSame(expected, actual);
@@ -705,6 +737,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the expected and actual are NOT the same object.
+     * @param expected The object you expect to NOT get.
+     * @param actual The object you actually got.
+     */
     public void assertNotSame(Object expected, Object actual) {
         final String msg = "Assert Objects are not Same";
         try {
@@ -721,6 +758,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the object in question is null.
+     * @param actual The object you actually got.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertNull(Object actual, String message) {
         try {
             Assertions.assertNull(actual);
@@ -736,6 +778,10 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the object in question is null.
+     * @param actual The object you actually got.
+     */
     public void assertNull(Object actual) {
         final String msg = "Assert Object is Null";
         try {
@@ -752,6 +798,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the object in question is NOT null.
+     * @param actual The object you actually got.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertNotNull(Object actual, String message) {
         try {
             Assertions.assertNotNull(actual);
@@ -767,6 +818,10 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the object in question is NOT null.
+     * @param actual The object you actually got.
+     */
     public void assertNotNull(Object actual) {
         final String msg = "Assert Object is Null";
         try {
@@ -783,6 +838,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the supplied boolean condition is false.
+     * The pass fail status will be logged.
+     * @param condition A boolean condition that must be true to pass the assertion.
+     */
     public void assertFalse(boolean condition) {
         try {
             reportCondition(Status.PASSING);
@@ -799,6 +859,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the supplied boolean condition is false.
+     * The message will be logged, along with an emoji to indicate pass fail status.
+     * @param condition A boolean condition that must be true to pass the assertion.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertFalse(boolean condition, String message) {
         try {
             Assertions.assertFalse(condition);
@@ -814,6 +880,11 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the supplied boolean condition is false.
+     * The pass fail status will be logged.
+     * @param condition A boolean condition that must be true to pass the assertion.
+     */
     public void assertFalse(BooleanSupplier condition) {
         try {
             Assertions.assertFalse(condition);
@@ -830,6 +901,12 @@ public class JUnitMemoir extends hoodland.opensource.memoir.java.Memoir {
         }
     }
 
+    /**
+     * Through JUnit asserts that the supplied boolean condition is false.
+     * The message will be logged, along with an emoji to indicate pass fail status.
+     * @param condition A boolean condition that must be true to pass the assertion.
+     * @param message State in plain language what you are asserting.
+     */
     public void assertFalse(BooleanSupplier condition, String message) {
         try {
             Assertions.assertFalse(condition);
