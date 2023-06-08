@@ -82,7 +82,7 @@ public class MemoirJavaExample {
             log.showMemoir(subLog(check, inner));
 
             log.debug("One caveat: If you .conclude() a Memoir, it's done. That function closes any output streams and makes it read-only.");
-            log.info("A Memoir also gets concluded if you embed it in another memoir with either the .show() or .showMemoir() functions.");
+            log.info("A Memoir also gets concluded if you embed it in another memoir with the .showMemoir() function.");
             log.skipLine();
             log.info("Well, that's the demo. Go forth and do great things!");
         } catch (Throwable thisProblem) {
