@@ -162,7 +162,7 @@ internal fun interpretArgs(args: Array<String>): WorkOrder {
             }
             "EXCLUDE" -> {
                 index++
-                var whichCategory = when (args[index]) {
+                var whichCategory = when (args[index].uppercase()) {
                     "FILE" -> Categories.File
                     "DIRECTORY", "FOLDER" -> Categories.Directory
                     "PATTERN" -> Categories.Pattern
