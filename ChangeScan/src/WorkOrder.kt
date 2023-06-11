@@ -88,6 +88,10 @@ internal class WorkOrder {
     }
 }
 
+private fun String.removeTrailingSeparator(): String {
+    return this.trimEnd(File.separatorChar)
+}
+
 internal fun interpretArgs(args: Array<String>): WorkOrder {
     var sawUse = false
     var sawSave = false
@@ -158,7 +162,7 @@ internal fun interpretArgs(args: Array<String>): WorkOrder {
 
                 sawRoot = true
                 index++
-                result.startingDirectory = args[index]
+                result.startingDirectory = args[index].removeTrailingSeparator()
             }
             "EXCLUDE" -> {
                 index++
@@ -173,7 +177,12 @@ internal fun interpretArgs(args: Array<String>): WorkOrder {
                     showUsage()
                 }
                 index++
-                val markedExclude = args[index]
+                var markedExclude = args[index]
+
+                if (whichCategory == Categories.Directory) {
+                    markedExclude = markedExclude.removeTrailingSeparator()
+                }
+
                 result.exclusions.add(FilesystemExclusion(whichCategory, markedExclude))
             }
             else -> {
