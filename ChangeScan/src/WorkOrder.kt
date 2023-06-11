@@ -204,7 +204,7 @@ internal fun interpretArgs(args: Array<String>): WorkOrder {
 
     // Do not allow the end user to perform a baseline scan without saving it.
     if (! result.saveRequested) {
-        if (! result.isScanlessComparison) {
+        if ((! result.isScanlessComparison) && (! result.comparisonRequested)) {
             System.out.println("⛔ Can't perform a baseline scan without saving it.")
             showUsage()
         }
