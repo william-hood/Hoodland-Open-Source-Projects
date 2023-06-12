@@ -45,7 +45,7 @@ RUN THIS PROGRAM WITH ADMINISTRAIVE PRIVILEDGES.
   between two already existing baselines.
 * Report is HTML format.
 * Exclude items using EXCLUDE <DIRECTORY|FILE|PATTERN> <excluded item>
-* Use verbose output with VERBOSE""")
+* Save the console output with LOG <output filename>""")
 
     System.exit(0)
 }

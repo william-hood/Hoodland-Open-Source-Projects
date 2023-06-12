@@ -46,7 +46,7 @@ class FilesystemExclusion(ChosenCategory: Categories, Description: String) {
     }
 
     override fun toString(): String {
-        return specifics
+        return "$category $specifics"
     }
 
     init {

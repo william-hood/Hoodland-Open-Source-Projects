@@ -24,11 +24,9 @@ package hoodland.opensource.changescan
 import hoodland.opensource.memoir.Memoir
 import hoodland.opensource.memoir.showThrowable
 import hoodland.opensource.toolbox.COPYRIGHT
+import hoodland.opensource.toolbox.UNSET_STRING
 import hoodland.opensource.toolbox.stdout
-import java.io.FileDescriptor
-import java.io.FileOutputStream
-import java.io.PrintStream
-import java.io.UnsupportedEncodingException
+import java.io.*
 
 
 fun main(args: Array<String>) {
@@ -52,7 +50,13 @@ fun main(args: Array<String>) {
 
     val workOrder = interpretArgs(args)
     val errorLog = Memoir("Errors Encountered During Scanning")
-    val activityLog = Memoir("ChangeScan $COPYRIGHT 2020, 2023 William Hood", stdout)
+
+    var activityLogPath: PrintWriter? = null
+    if (workOrder.logPath != UNSET_STRING) {
+        activityLogPath = File(workOrder.logPath).printWriter()
+    }
+
+    val activityLog = Memoir("ChangeScan $COPYRIGHT 2020, 2023 William Hood", stdout, activityLogPath)
     val report = ReportGenerator(workOrder.reportPath)
 
     try {
@@ -62,7 +66,8 @@ fun main(args: Array<String>) {
     } catch (thisException: Throwable) {
         errorLog.showThrowable(thisException)
         activityLog.showThrowable(thisException)
+    } finally {
+        report.conclude(errorLog)
+        activityLog.conclude()
     }
-
-    report.conclude(errorLog)
 }

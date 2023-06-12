@@ -38,6 +38,7 @@ internal class WorkOrder {
     var snapshotSavePath = UNSET_STRING
     var snapshotComparisonPath = UNSET_STRING
     var reportPath = getCurrentWorkingDirectory() + File.separator + DEFAULT_REPORT_FILE_NAME
+    var logPath = UNSET_STRING
     val exclusions = ArrayList<FilesystemExclusion>()
 
     val saveRequested: Boolean
@@ -75,6 +76,11 @@ internal class WorkOrder {
             log.info("• OLDER: $snapshotSavePath")
         } else {
             log.info("Scanning file system from $startingDirectory", "\uD83D\uDD0D")
+
+            for (thisExclusion in exclusions) {
+                log.info("• Excluding ${thisExclusion.toString()}")
+            }
+
             log.info("Saving the scan results as a baseline file: $snapshotSavePath")
 
             if (comparisonRequested) {
@@ -97,6 +103,7 @@ internal fun interpretArgs(args: Array<String>): WorkOrder {
     var sawSave = false
     var sawCompare = false
     var sawReport = false
+    var sawLog = false
     var sawRoot = false
     val result = WorkOrder()
     result.exclusions.add(FilesystemExclusion(Categories.Pattern, "\$Recycle.Bin"))
@@ -150,6 +157,17 @@ internal fun interpretArgs(args: Array<String>): WorkOrder {
                 index++
                 result.reportPath = args[index]
                 if (!result.reportPath.uppercase().endsWith(".HTML")) result.reportPath += ".html"
+            }
+            "LOG", "LOGTO", "SAVELOG", "KEEPLOG" -> {
+                if (sawLog) {
+                    System.out.println("⛔ The 'LOG' argument was seen more than once.")
+                    showUsage()
+                }
+
+                sawLog = true
+                index++
+                result.logPath = args[index]
+                if (!result.logPath.uppercase().endsWith(".HTML")) result.logPath += ".html"
             }
             "ROOT" -> if (result.isScanlessComparison) {
                 System.out.println("⛔ Can't accept a root directory for scanning when comparing one baseline to another.")
