@@ -63,7 +63,7 @@ internal class WorkOrder {
      */
     fun excludes(candidate: String): Boolean {
         for (thisExclusion in exclusions) {
-            if (thisExclusion.Excludes(candidate)) return true
+            if (thisExclusion.excludes(candidate)) return true
         }
 
         return false

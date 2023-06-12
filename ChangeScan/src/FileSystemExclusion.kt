@@ -28,19 +28,19 @@ import java.io.File
 class FilesystemExclusion(ChosenCategory: Categories, Description: String) {
     private var category = Categories.UNSET
     private var specifics: String = UNSET_STRING
-    fun Excludes(Candidate: String): Boolean {
+    fun excludes(candidate: String): Boolean {
         when (category) {
-            Categories.Directory -> if (File(Candidate).isDirectory) {
-                if (Candidate === specifics) {
+            Categories.Directory -> if (File(candidate).isDirectory) {
+                if (candidate == specifics) {
                     return true
                 }
             }
-            Categories.File -> if (File(Candidate).isFile) {
-                if (Candidate === specifics) {
+            Categories.File -> if (File(candidate).isFile) {
+                if (candidate == specifics) {
                     return true
                 }
             }
-            else -> return Candidate.contains(specifics)
+            else -> return candidate.contains(specifics)
         }
         return false
     }

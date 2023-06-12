@@ -73,7 +73,7 @@ internal object ScanEngine {
         try {
             if (workOrder.excludes(rootDirectory)) {
                 // This folder is excluded.
-                activityLog.info("Excluding folder $rootDirectory", "⛔️")
+                activityLog.info("Excluding this folder $rootDirectory", "⛔️")
                 return
             }
 
@@ -119,6 +119,9 @@ internal object ScanEngine {
                         if (it.isDirectory) {
                             if (! workOrder.excludes(it.toString())) {
                                 scan(activityLog, errorLog, workOrder, it.toString(), thisFileSystem)
+                            } else {
+                                // This folder is excluded.
+                                activityLog.info("Excluding folder $rootDirectory", "⛔️")
                             }
                         }
                     }
