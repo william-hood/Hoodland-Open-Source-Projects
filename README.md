@@ -4,7 +4,7 @@ This release fixes bugs in the Kotlin libraries and the Java wrapper for Memoir.
 some robustness improvements to Change Scan.
 On the Java side, there is now a JUnit integrated version of the Java wrapper for Memoir, meaning that
 Memoir now plays nice with JUnit. An example module will be included in the IntelliJ project. An
-example of using Memoir with JUnit in Eclipse will be included as pat of the release.
+example of using Memoir with JUnit in Eclipse will be included as part of the release.
 
 Testing was done against Linux Mint 21.1, macOS Monterey, and Windows 11.
 
