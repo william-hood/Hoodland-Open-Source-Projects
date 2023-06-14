@@ -63,7 +63,7 @@ internal object ScanEngine {
         }
 
         if (encounteredAdminFault) {
-            val msg = "YOU MAY NEED TO RE-RUN WITH ADMINISTRATIVE PRIVILEDGES!"
+            val msg = "YOU MAY NEED TO RE-RUN WITH ADMINISTRATIVE PRIVILEGES!"
             errorLog.error(msg)
             activityLog.error(msg)
         }
@@ -82,7 +82,7 @@ internal object ScanEngine {
                 val files = File(rootDirectory).list() //Will need to filter out directories//Directory.GetFiles(RootDirectory);
                 if (files == null) {
                     encounteredAdminFault = true
-                    val msg = "Denied access to folder $rootDirectory. You may need to re-run the scan with admin priviledges."
+                    val msg = "Denied access to folder $rootDirectory. You may need to re-run the scan with admin privileges."
                     errorLog.error(msg)
                     activityLog.error(msg)
                 } else {
