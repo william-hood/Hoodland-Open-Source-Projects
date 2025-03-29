@@ -1,9 +1,6 @@
 
 .idea/.DS_Store
 .DS_Store
-out/artifacts/MemoirExample_jar/MemoirExample.jar
+out/
 *.class
-out/production/Memoir/META-INF/Memoir.kotlin_module
-out/production/MemoirExample/META-INF/MANIFEST.MF
-out/production/MemoirExample/META-INF/MemoirExample.kotlin_module
 *.kotlin_module
