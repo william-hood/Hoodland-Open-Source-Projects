@@ -1,0 +1,15 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="BoologJava:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/BoologJava_jar</output-path>
+    <root id="archive" name="BoologJava.jar">
+      <element id="module-output" name="BoologJava" />
+      <element id="module-output" name="Boolog" />
+      <element id="module-output" name="Toolbox" />
+      <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-stdlib.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-reflect.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-stdlib-jdk7.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-stdlib-jdk8.jar" path-in-jar="/" />
+      <element id="module-source" name="BoologJava" />
+    </root>
+  </artifact>
+</component>
