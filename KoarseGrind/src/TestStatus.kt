@@ -1,4 +1,4 @@
-// Copyright (c) 2020, 2023 William Arthur Hood
+// Copyright (c) 2020, 2023, 2025 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,11 +19,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-// C#/Java Log() is replaced by extension function Memoir.ShowTestStatus()
+// C#/Java Log() is replaced by extension function Boolog.ShowTestStatus()
 
 package hoodland.opensource.koarsegrind
 
-import hoodland.opensource.memoir.*
+import hoodland.opensource.boolog.*
 
 /**
  * TestStatus: Used to indicate whether a test result is passing, failing, inconclusive or subjective.
@@ -39,8 +39,8 @@ enum class TestStatus {
      * checks) will also be considered INCONCLUSIVE.
      */
     INCONCLUSIVE {
-        override val memoirIcon = EMOJI_INCONCLUSIVE_TEST
-        override val memoirStyle = "inconclusive_test_result"
+        override val boologIcon = EMOJI_INCONCLUSIVE_TEST
+        override val boologStyle = "inconclusive_test_result"
     },
 
     /**
@@ -51,8 +51,8 @@ enum class TestStatus {
      * Use the "assert" check (an "assertion") to produce FAIL status if the check does not succeed.
      */
     FAIL {
-        override val memoirIcon = EMOJI_FAILING_TEST
-        override val memoirStyle = "failing_test_result"
+        override val boologIcon = EMOJI_FAILING_TEST
+        override val boologStyle = "failing_test_result"
     },
 
     /**
@@ -62,8 +62,8 @@ enum class TestStatus {
      * renders the test inconclusive.
      */
     SUBJECTIVE {
-        override val memoirIcon = EMOJI_SUBJECTIVE_TEST
-        override val memoirStyle = "old_parchment"
+        override val boologIcon = EMOJI_SUBJECTIVE_TEST
+        override val boologStyle = "old_parchment"
     },
 
     /**
@@ -72,12 +72,12 @@ enum class TestStatus {
      * results at all, it is INCONCLUSIVE rather than passing.
      */
     PASS {
-        override val memoirIcon = EMOJI_PASSING_TEST
-        override val memoirStyle = "passing_test_result"
+        override val boologIcon = EMOJI_PASSING_TEST
+        override val boologStyle = "passing_test_result"
     };
 
-    abstract val memoirIcon: String
-    abstract val memoirStyle: String
+    abstract val boologIcon: String
+    abstract val boologStyle: String
 
     fun isPassing(): Boolean {
         return this == PASS
@@ -115,12 +115,12 @@ enum class TestStatus {
 }
 
 /**
- * showTestStatus: An extension method that allows any Memoir (the HTML logger) in Koarse Grind to properly display a TestStatus.
+ * showTestStatus: An extension method that allows any Boolog (the HTML logger) in Koarse Grind to properly display a TestStatus.
  *
  * @param message Any information relevant as to what caused this status. Typically this is the description property of a TestResult.
  */
-fun Memoir.showTestStatus(thisStatus: TestStatus, message: String) {
-    this.info(message, thisStatus.memoirIcon)
+fun Boolog.showTestStatus(thisStatus: TestStatus, message: String) {
+    this.info(message, thisStatus.boologIcon)
 }
 
 /**

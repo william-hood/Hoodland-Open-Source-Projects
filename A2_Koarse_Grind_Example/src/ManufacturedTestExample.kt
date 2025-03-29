@@ -21,7 +21,7 @@ import hoodland.opensource.descriptions.StringFieldTargets
 import hoodland.opensource.koarsegrind.ManufacturedTest
 import hoodland.opensource.koarsegrind.Outfitter
 import hoodland.opensource.koarsegrind.TestFactory
-import hoodland.opensource.memoir.treatAsCode
+import hoodland.opensource.boolog.treatAsCode
 import hoodland.opensource.toolbox.SubnameFactory
 
 private const val CATEGORY = "Manufactured Test Example"

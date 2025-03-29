@@ -1,4 +1,4 @@
-// Copyright (c) 2020, 2023 William Arthur Hood
+// Copyright (c) 2020, 2023, 2025 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -253,7 +253,7 @@ fun getShortFileName(completeFilePath: String): String? {
 }
  */
 
-// Obsoleting this in favor of a namesake function in Memoir
+// Obsoleting this in favor of a namesake function in Boolog
 /*
 fun depictFailure(thisFailure: Throwable): String? {
     val stacktraceWriter = StringWriter()

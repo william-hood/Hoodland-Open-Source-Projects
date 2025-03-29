@@ -1,4 +1,4 @@
-// Copyright (c) 2020, 2023 William Arthur Hood
+// Copyright (c) 2020, 2023, 2025 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +21,8 @@
 
 package hoodland.opensource.changescan
 
-import hoodland.opensource.memoir.Memoir
-import hoodland.opensource.memoir.showThrowable
+import hoodland.opensource.boolog.Boolog
+import hoodland.opensource.boolog.showThrowable
 import hoodland.opensource.toolbox.COPYRIGHT
 import hoodland.opensource.toolbox.UNSET_STRING
 import hoodland.opensource.toolbox.stdout
@@ -49,14 +49,14 @@ fun main(args: Array<String>) {
     if ((args[0].uppercase() == "EXAMPLES") || (args[0].uppercase() == "EXAMPLE"))showExamples()
 
     val workOrder = interpretArgs(args)
-    val errorLog = Memoir("Errors Encountered During Scanning")
+    val errorLog = Boolog("Errors Encountered During Scanning")
 
     var activityLogPath: PrintWriter? = null
     if (workOrder.logPath != UNSET_STRING) {
         activityLogPath = File(workOrder.logPath).printWriter()
     }
 
-    val activityLog = Memoir("ChangeScan $COPYRIGHT 2020, 2023 William Hood", stdout, activityLogPath)
+    val activityLog = Boolog("ChangeScan $COPYRIGHT 2020, 2023 William Hood", stdout, activityLogPath)
     val report = ReportGenerator(workOrder.reportPath)
 
     try {

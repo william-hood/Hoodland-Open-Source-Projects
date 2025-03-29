@@ -1,4 +1,4 @@
-// Copyright (c) 2023 William Arthur Hood
+// Copyright (c) 2023, 2025 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -102,13 +102,13 @@ internal class Collector(
     }
 
     private fun recursiveCollect(candidate: File) {
-        //debuggingMemoir.info("PATH ${candidate.absolutePath}")
+        //debuggingBoolog.info("PATH ${candidate.absolutePath}")
 
         if (candidate.exists()) {
-            //debuggingMemoir.info("Candidate ${candidate.absolutePath} exists")
+            //debuggingBoolog.info("Candidate ${candidate.absolutePath} exists")
             val check = candidate.listFiles()
             check.forEach {
-                //debuggingMemoir.info("Considering ${it.absolutePath}")
+                //debuggingBoolog.info("Considering ${it.absolutePath}")
                 if (it.isDirectory) {
                     if (!it.name.contains(".")) {
                         recursiveCollect(it)
@@ -118,21 +118,21 @@ internal class Collector(
                     do {
                         attemptName = attemptName.substringAfter('.')
                         try {
-                            //debuggingMemoir.info("Attempting to load $attemptName")
+                            //debuggingBoolog.info("Attempting to load $attemptName")
                             val foundClass = testLoader.loadClass(attemptName.substring(0, attemptName.length - 6))
                             attemptName = "" // Prevent another loop iteration
-                            //debuggingMemoir.info("foundClass.kotlin.isSubclassOf(Test::class) == ${foundClass.kotlin.isSubclassOf(Test::class)}")
+                            //debuggingBoolog.info("foundClass.kotlin.isSubclassOf(Test::class) == ${foundClass.kotlin.isSubclassOf(Test::class)}")
                             if (foundClass.kotlin.isSubclassOf(Test::class)) {
-                                //debuggingMemoir.debug("Identified ${foundClass.kotlin} as extending a KG Test")
+                                //debuggingBoolog.debug("Identified ${foundClass.kotlin} as extending a KG Test")
                                 if (!(foundClass.kotlin.isSubclassOf(ManufacturedTest::class))) {
-                                    //debuggingMemoir.debug("Identified ${foundClass.kotlin} as NOT extending MaufacturedTest")
+                                    //debuggingBoolog.debug("Identified ${foundClass.kotlin} as NOT extending MaufacturedTest")
                                     val foundTestInstance: Test = foundClass.getDeclaredConstructor().newInstance() as Test
                                     foundTests.add(foundTestInstance)
                                     addName(foundTestInstance.name)
                                     addIdentifier(foundTestInstance.identifier)
                                 } else {
                                     if (foundClass.kotlin.isSubclassOf(Outfitter::class)) {
-                                        //debuggingMemoir.debug("Identified ${foundClass.kotlin} as extending an Outfitter")
+                                        //debuggingBoolog.debug("Identified ${foundClass.kotlin} as extending an Outfitter")
                                         val foundOutfitterInstance: Outfitter = foundClass.getDeclaredConstructor().newInstance() as Outfitter
                                         foundOutfitters.add(foundOutfitterInstance)
                                     }
@@ -146,11 +146,11 @@ internal class Collector(
                                 }
                             }
                         } catch (materialFailure: InvocationTargetException) {
-                            //debuggingMemoir.showThrowable(materialFailure)
-                            //debuggingMemoir.debug("MATERIAL FAILURE")
+                            //debuggingBoolog.showThrowable(materialFailure)
+                            //debuggingBoolog.debug("MATERIAL FAILURE")
                             preclusions.add(materialFailure)
                         } catch (dontCare: Throwable) {
-                            //debuggingMemoir.showThrowable(dontCare)
+                            //debuggingBoolog.showThrowable(dontCare)
                             // DELIBERATE NO-OP
                             // Kotlin will hemorrhage exceptions during the process of identifying legitimate tests.
                             // Use the line below if there is need to identify failures that matter.
@@ -160,7 +160,7 @@ internal class Collector(
                 }
             }
         }/* else {
-            debuggingMemoir.info("Candidate ${candidate.absolutePath} does not exist")
+            debuggingBoolog.info("Candidate ${candidate.absolutePath} does not exist")
         }*/
     }
 

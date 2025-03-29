@@ -1,3 +1,7 @@
+##### Release 3.1 🚧 WORK IN PROGRESS 🚧
+
+The "Memoir" Direct-to-HTML Rich Logging System has been renamed Boolog. Changes are underway to bring it the same themes as the Go and Rust versions.
+
 ##### Release 3.0
 
 This release fixes bugs in the Kotlin libraries and the Java wrapper for Memoir. It also implements

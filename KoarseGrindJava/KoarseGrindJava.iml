@@ -8,7 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="KoarseGrind" exported="" />
-    <orderEntry type="module" module-name="MemoirJava" exported="" />
+    <orderEntry type="module" module-name="BoologJava" exported="" />
     <orderEntry type="module" module-name="ToolboxJava" exported="" />
   </component>
 </module>

@@ -1,4 +1,4 @@
-// Copyright (c) 2020, 2023 William Arthur Hood
+// Copyright (c) 2020, 2023, 2025 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,12 +22,12 @@
 package hoodland.opensource.testsuite
 
 import hoodland.opensource.koarsegrind.Test
-import hoodland.opensource.memoir.*
+import hoodland.opensource.boolog.*
 
 class TestDepictFailure : Test(
     "Depict Failure",
-    "Verify that the Memoir-based depictFailure() function produces the expected string result. It should be properly indented, contain no superfluous text, and not contain the end-of-log emojis.",
-    "Memoir",
+    "Verify that the Boolog-based depictFailure() function produces the expected string result. It should be properly indented, contain no superfluous text, and not contain the end-of-log emojis.",
+    "Boolog",
     "MR-DF-01"
 ) {
     lateinit var target: Throwable

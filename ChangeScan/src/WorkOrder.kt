@@ -1,4 +1,4 @@
-// Copyright (c) 2020, 2023 William Arthur Hood
+// Copyright (c) 2020, 2023, 2025 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
 
 package hoodland.opensource.changescan
 
-import hoodland.opensource.memoir.Memoir
+import hoodland.opensource.boolog.Boolog
 import hoodland.opensource.toolbox.*
 import java.io.File
 import java.util.*
@@ -69,7 +69,7 @@ internal class WorkOrder {
         return false
     }
 
-    fun describeTo(log: Memoir) {
+    fun describeTo(log: Boolog) {
         if (isScanlessComparison) {
             log.info("Comparing two baseline files. No scan is being performed.", "⚠️")
             log.info("• NEWER: $snapshotComparisonPath")

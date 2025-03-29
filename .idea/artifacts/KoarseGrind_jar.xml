@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/KoarseGrind_jar</output-path>
     <root id="archive" name="KoarseGrind.jar">
       <element id="module-output" name="KoarseGrind" />
-      <element id="module-output" name="Memoir" />
+      <element id="module-output" name="Boolog" />
       <element id="module-output" name="Toolbox" />
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-stdlib.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-reflect.jar" path-in-jar="/" />
@@ -11,7 +11,7 @@
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-stdlib-jdk8.jar" path-in-jar="/" />
       <element id="module-output" name="Descriptions" />
       <element id="module-source" name="KoarseGrind" />
-      <element id="module-source" name="Memoir" />
+      <element id="module-source" name="Boolog" />
       <element id="module-source" name="Toolbox" />
     </root>
   </artifact>

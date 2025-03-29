@@ -1,4 +1,4 @@
-// Copyright (c) 2020, 2023 William Arthur Hood
+// Copyright (c) 2020, 2023, 2025 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,13 +19,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-// C#/Java Log() is replaced by extension function Memoir.ShowTestResult()
+// C#/Java Log() is replaced by extension function Boolog.ShowTestResult()
 // Workflow Change: In Java/C# you would use TestResult.From<whatever>. In Kotlin use <whatever>.toTestResult()
 
 package hoodland.opensource.koarsegrind
 
-import hoodland.opensource.memoir.Memoir
-import hoodland.opensource.memoir.showThrowable
+import hoodland.opensource.boolog.Boolog
+import hoodland.opensource.boolog.showThrowable
 
 val SUMMARY_HEADERS = arrayOf("Criterion", "Status", "Artifacts", "Failures")
 
@@ -93,19 +93,19 @@ class TestResult (var status: TestStatus = TestStatus.INCONCLUSIVE, var descript
 
 /**
  * showTestResult:
- * An extension method that allows any Memoir (the HTML logger) in Koarse Grind to properly display a TestResult.
+ * An extension method that allows any Boolog (the HTML logger) in Koarse Grind to properly display a TestResult.
  * If there are exceptions, or other throwables, associated with the result it will show as a subsection rather than at
  * the root level.
  */
-fun Memoir.showTestResult(thisResult: TestResult) {
-    // If there are throwables associated with this, use a subordinate memoir
+fun Boolog.showTestResult(thisResult: TestResult) {
+    // If there are throwables associated with this, use a subordinate boolog
     if (thisResult.failures.size > 0) {
-        val subordinate = Memoir(thisResult.description)
+        val subordinate = Boolog(thisResult.description)
         thisResult.failures.forEach {
             subordinate.showThrowable(it)
         }
 
-        this.showMemoir(subordinate, thisResult.status.memoirIcon, thisResult.status.memoirStyle)
+        this.showBoolog(subordinate, thisResult.status.boologIcon, thisResult.status.boologStyle)
     } else {
         this.showTestStatus(thisResult.status, thisResult.description)
     }

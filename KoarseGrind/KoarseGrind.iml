@@ -8,7 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
-    <orderEntry type="module" module-name="Memoir" exported="" />
+    <orderEntry type="module" module-name="Boolog" exported="" />
     <orderEntry type="module" module-name="Toolbox" exported="" />
     <orderEntry type="module" module-name="Descriptions" exported="" />
   </component>

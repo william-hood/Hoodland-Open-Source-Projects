@@ -4,7 +4,7 @@
     <root id="archive" name="ChangeScan.jar">
       <element id="module-output" name="ChangeScan" />
       <element id="module-output" name="Toolbox" />
-      <element id="module-output" name="Memoir" />
+      <element id="module-output" name="Boolog" />
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-stdlib.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-reflect.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-test.jar" path-in-jar="/" />

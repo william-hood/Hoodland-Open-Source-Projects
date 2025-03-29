@@ -1,4 +1,4 @@
-// Copyright (c) 2020, 2023 William Arthur Hood
+// Copyright (c) 2020, 2023, 2025 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,7 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-// C#/Java Log() is replaced by extension function Memoir.ShowTestResult()
+// C#/Java Log() is replaced by extension function Boolog.ShowTestResult()
 // Workflow Change: In Java/C# you would use TestResult.From<whatever>. In Kotlin use <whatever>.toTestResult()
 
 package hoodland.opensource.koarsegrind
@@ -36,7 +36,7 @@ import java.nio.file.LinkOption
 // In C#/Java there is a CoarseGrind static class they belong to.
 // In Kotlin it makes more sense to just have these be properly global with internal scope.
 
-// public static string DateFormatString = "yyyy-MM-dd HH-mm-ss.ffff"; - This matches the one in Memoir
+// public static string DateFormatString = "yyyy-MM-dd HH-mm-ss.ffff"; - This matches the one in Boolog
 internal const val SUMMARY_FILE = "SUMMARY"
 internal const val SUMMARY_FILE_EXTENSION = ".csv"
 internal const val SUMMARY_FILE_NAME = SUMMARY_FILE + SUMMARY_FILE_EXTENSION
