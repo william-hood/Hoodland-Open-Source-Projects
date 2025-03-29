@@ -2,9 +2,9 @@
   <artifact type="jar" build-on-make="true" name="JUnitMemoir:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/JUnitMemoir_jar</output-path>
     <root id="archive" name="JUnitMemoir.jar">
-      <element id="module-output" name="JUnitMemoir" />
-      <element id="module-output" name="MemoirJava" />
-      <element id="module-output" name="Memoir" />
+      <element id="module-output" name="JUnitBoolog" />
+      <element id="module-output" name="BoologJava" />
+      <element id="module-output" name="Boolog" />
       <element id="module-output" name="Toolbox" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter/5.8.1/junit-jupiter-5.8.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-api/5.8.1/junit-jupiter-api-5.8.1.jar" path-in-jar="/" />
@@ -18,9 +18,9 @@
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-reflect.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-stdlib-jdk7.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$KOTLIN_BUNDLED$/lib/kotlin-stdlib-jdk8.jar" path-in-jar="/" />
-      <element id="module-source" name="JUnitMemoir" />
-      <element id="module-source" name="Memoir" />
-      <element id="module-source" name="MemoirJava" />
+      <element id="module-source" name="JUnitBoolog" />
+      <element id="module-source" name="Boolog" />
+      <element id="module-source" name="BoologJava" />
       <element id="module-source" name="Toolbox" />
     </root>
   </artifact>

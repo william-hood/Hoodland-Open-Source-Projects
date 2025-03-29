@@ -1,4 +1,4 @@
-// Copyright (c) 2020, 2023 William Arthur Hood
+// Copyright (c) 2020, 2023, 2025 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,14 @@
 
 package hoodland.opensource.koarsegrind
 
-import hoodland.opensource.memoir.*
+import hoodland.opensource.boolog.*
 import hoodland.opensource.toolbox.UNSET_STRING
 import hoodland.opensource.toolbox.stdout
 import java.io.File
 import java.io.PrintWriter
 import kotlin.concurrent.thread
 
-internal class TestPhaseContext(val memoir: Memoir, val emoji: String = EMOJI_MEMOIR) {
+internal class TestPhaseContext(val boolog: Boolog, val emoji: String = EMOJI_BOOLOG) {
     val results = ArrayList<TestResult>()
 
     val overallStatus: TestStatus
@@ -42,10 +42,10 @@ internal class TestPhaseContext(val memoir: Memoir, val emoji: String = EMOJI_ME
             return finalValue;
         }
 
-    fun showWithStyle(targetMemoir: Memoir, preferredEmoji: String = emoji) {
+    fun showWithStyle(targetBoolog: Boolog, preferredEmoji: String = emoji) {
         var style = "implied_bad"
         if (overallStatus.isPassing()) { style = "implied_good" }
-        targetMemoir.showMemoir(memoir, preferredEmoji, style)
+        targetBoolog.showBoolog(boolog, preferredEmoji, style)
     }
 }
 
@@ -73,8 +73,8 @@ abstract class Test (
         private val detailedDescription: String = UNSET_DESCRIPTION,
         val categoryPath: String? = null,
         internal val identifier: String = ""): Inquiry {
-        internal val setupContext = TestPhaseContext(Memoir("Setup - $identifiedName", stdout), EMOJI_SETUP)
-        internal val cleanupContext = TestPhaseContext(Memoir("Cleanup - $identifiedName", stdout), EMOJI_CLEANUP)
+        internal val setupContext = TestPhaseContext(Boolog("Setup - $identifiedName", stdout), EMOJI_SETUP)
+        internal val cleanupContext = TestPhaseContext(Boolog("Cleanup - $identifiedName", stdout), EMOJI_CLEANUP)
         internal var testContext: TestPhaseContext? = null
         private var parentArtifactsDirectory = UNSET_STRING
         private var executionThread: Thread? = null
@@ -142,8 +142,8 @@ abstract class Test (
      * determined whether to use the setup, cleanup, or normal portion of the test's log. Log files will appear in a
      * time-stamped folder in a directory named "Test Results" which is automatically created off of your Documents folder.
      */
-    val log: Memoir
-     get() = currentContext.memoir
+    val log: Boolog
+     get() = currentContext.boolog
 
     /**
      * results: This contains the results of every assertion, requirement, or consideration. Results should also
@@ -179,7 +179,7 @@ abstract class Test (
     fun addResult(thisResult: TestResult) {
         // For some reason in the C# version this was open/virtual
         val context = currentContext
-        context.memoir.showTestResult((thisResult))
+        context.boolog.showTestResult((thisResult))
         context.results.add(thisResult)
     }
 
@@ -367,8 +367,8 @@ abstract class Test (
         } finally {
             wasSetup = true
             testContext?.let {
-                if (setupContext.memoir.wasUsed) {
-                    setupContext.showWithStyle(it.memoir)
+                if (setupContext.boolog.wasUsed) {
+                    setupContext.showWithStyle(it.boolog)
                 }
             }
         }
@@ -383,8 +383,8 @@ abstract class Test (
             addResult(getResultForFailureInCleanup(thisFailure))
         } finally {
             testContext?.let {
-                if (cleanupContext.memoir.wasUsed) {
-                    cleanupContext.showWithStyle(it.memoir)
+                if (cleanupContext.boolog.wasUsed) {
+                    cleanupContext.showWithStyle(it.boolog)
                 }
             }
         }
@@ -404,13 +404,13 @@ abstract class Test (
             // Force the parent directory to exist...
             File(expectedFileName).parentFile.mkdirs()
 
-            testContext = TestPhaseContext(Memoir(identifiedName, stdout, PrintWriter(expectedFileName), true, true, ::logHeader))
+            testContext = TestPhaseContext(Boolog(identifiedName, stdout, PrintWriter(expectedFileName), true, true, ::logHeader))
 
             if (detailedDescription != UNSET_DESCRIPTION) {
-                testContext?.let { it.memoir.writeToHTML("<small><i>$detailedDescription</i></small>", EMOJI_TEXT_BLANK_LINE) }
+                testContext?.let { it.boolog.writeToHTML("<small><i>$detailedDescription</i></small>", EMOJI_TEXT_BLANK_LINE) }
             }
 
-            testContext?.let { it.memoir.skipLine() }
+            testContext?.let { it.boolog.skipLine() }
 
             runSetup()
 
@@ -432,7 +432,7 @@ abstract class Test (
             } else {
                 val thisResult = TestResult(TestStatus.INCONCLUSIVE, "Declining to perform test case $identifiedName because setup method failed.")
                 testContext?.let {
-                    it.memoir.showTestResult((thisResult))
+                    it.boolog.showTestResult((thisResult))
                     it.results.add(thisResult)
                 }
             }
@@ -440,11 +440,11 @@ abstract class Test (
             runCleanup()
 
             val overall = overallStatus.toString()
-            val emoji = overallStatus.memoirIcon
+            val emoji = overallStatus.boologIcon
             testContext?.let {
-                it.memoir.writeToHTML("<h2>Overall Status: $overall</h2>", emoji)
-                it.memoir.echoPlainText("Overall Status: $overall", emoji)
-                it.memoir.conclude()
+                it.boolog.writeToHTML("<h2>Overall Status: $overall</h2>", emoji)
+                it.boolog.echoPlainText("Overall Status: $overall", emoji)
+                it.boolog.conclude()
             }
         }
     }

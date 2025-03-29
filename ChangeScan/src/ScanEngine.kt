@@ -1,4 +1,4 @@
-// Copyright (c) 2020, 2023 William Arthur Hood
+// Copyright (c) 2020, 2023, 2025 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,14 @@
 
 package hoodland.opensource.changescan
 
-import hoodland.opensource.memoir.Memoir
-import hoodland.opensource.memoir.showThrowable
+import hoodland.opensource.boolog.Boolog
+import hoodland.opensource.boolog.showThrowable
 import java.io.File
 
 internal object ScanEngine {
     private var encounteredAdminFault = false
 
-    fun run(activityLog: Memoir, errorLog: Memoir, workOrder: WorkOrder, report: ReportGenerator) {
+    fun run(activityLog: Boolog, errorLog: Boolog, workOrder: WorkOrder, report: ReportGenerator) {
         try {
             var scannedFileSystem: FileSystemDescription
             if (workOrder.isScanlessComparison) {
@@ -69,7 +69,7 @@ internal object ScanEngine {
         }
     }
 
-    private fun scan(activityLog: Memoir, errorLog: Memoir, workOrder: WorkOrder, rootDirectory: String, thisFileSystem: FileSystemDescription) {
+    private fun scan(activityLog: Boolog, errorLog: Boolog, workOrder: WorkOrder, rootDirectory: String, thisFileSystem: FileSystemDescription) {
         try {
             if (workOrder.excludes(rootDirectory)) {
                 // This folder is excluded.
@@ -126,7 +126,7 @@ internal object ScanEngine {
                         }
                     }
 
-                    //log.showMemoir(subLog, "\uD83D\uDCC2")
+                    //log.showBoolog(subLog, "\uD83D\uDCC2")
                 }
             } else {
                 // This folder did not exist.

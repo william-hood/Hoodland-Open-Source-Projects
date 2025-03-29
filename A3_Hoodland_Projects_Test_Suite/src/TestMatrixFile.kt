@@ -1,4 +1,4 @@
-// Copyright (c) 2020, 2023 William Arthur Hood
+// Copyright (c) 2020, 2023, 2025 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 package hoodland.opensource.testsuite
 
 import hoodland.opensource.koarsegrind.Test
-import hoodland.opensource.memoir.showObject
+import hoodland.opensource.boolog.showObject
 import hoodland.opensource.toolbox.*
 import java.io.File
 

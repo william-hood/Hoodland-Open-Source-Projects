@@ -42,7 +42,7 @@ public class ExampleTest extends Test {
 
 	@Override
 	public void performTest() {
-		// The Kotlin versions of KG & Memoir may need to at least be aware of their java counterparts.
+		// The Kotlin versions of KG & Boolog may need to at least be aware of their java counterparts.
         log().info("There are three kinds of conditional checks your test can perform.");
         log().info("Usually you will use a normal assertion, which makes the test fail if it doesn't pass.");
         log().info("There are also requirements, which make the test inconclusive upon failure.");

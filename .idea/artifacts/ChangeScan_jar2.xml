@@ -4,7 +4,7 @@
     <root id="archive" name="ChangeScan.jar">
       <element id="module-output" name="ChangeScan" />
       <element id="module-output" name="Toolbox" />
-      <element id="module-output" name="Memoir" />
+      <element id="module-output" name="Boolog" />
     </root>
   </artifact>
 </component>

@@ -1,4 +1,4 @@
-// Copyright (c) 2020, 2023 William Arthur Hood
+// Copyright (c) 2020, 2023, 2025 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +21,8 @@
 
 package hoodland.opensource.koarsegrind
 
-import hoodland.opensource.memoir.Memoir
-import hoodland.opensource.memoir.showThrowable
+import hoodland.opensource.boolog.Boolog
+import hoodland.opensource.boolog.showThrowable
 import hoodland.opensource.toolbox.*
 import java.io.File
 import java.io.PrintWriter
@@ -115,7 +115,7 @@ internal class TestCategory(override val name: String): ArrayList<Test>(), Inqui
         return null
     }
 
-    internal fun run(filters: FilterSet? = null, preclusiveFailures: ArrayList<Throwable>? = null) : Memoir {
+    internal fun run(filters: FilterSet? = null, preclusiveFailures: ArrayList<Throwable>? = null) : Boolog {
         filterSet = filters
         var logFileName = "$name.html"
         if (rootDirectory === UNSET_STRING) {
@@ -128,7 +128,7 @@ internal class TestCategory(override val name: String): ArrayList<Test>(), Inqui
         // Force the parent directory to exist...
         File(logFileFullPath).parentFile.mkdirs()
 
-        val overlog = Memoir(name, stdout, PrintWriter(logFileFullPath), true, true, ::logHeader)
+        val overlog = Boolog(name, stdout, PrintWriter(logFileFullPath), true, true, ::logHeader)
         if (preclusiveFailures != null) {
             if (preclusiveFailures.size > 0) {
                 overlog.error("Failures were indicated while starting Koarse Grind! The suite will not be allowed to run.")
@@ -178,7 +178,7 @@ internal class TestCategory(override val name: String): ArrayList<Test>(), Inqui
                             _currentTest!!.addResult(_currentTest!!.getResultForPreclusionInSetup(thisFailure))
                         } finally {
                             executionThread = null
-                            overlog.showMemoir(_currentTest!!.testContext!!.memoir, _currentTest!!.overallStatus.memoirIcon, _currentTest!!.overallStatus.memoirStyle)
+                            overlog.showBoolog(_currentTest!!.testContext!!.boolog, _currentTest!!.overallStatus.boologIcon, _currentTest!!.overallStatus.boologStyle)
 
                             // Prefix the test's artifacts directory with its overall status
                             try {
@@ -202,10 +202,10 @@ internal class TestCategory(override val name: String): ArrayList<Test>(), Inqui
 
                     val subLog = it.run(filterSet)
                     if (subLog.wasUsed) {
-                        overlog.showMemoir(
+                        overlog.showBoolog(
                             subLog,
-                            it.overallStatus.memoirIcon,
-                            it.overallStatus.memoirStyle
+                            it.overallStatus.boologIcon,
+                            it.overallStatus.boologStyle
                         )
                     }
 

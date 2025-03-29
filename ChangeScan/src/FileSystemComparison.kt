@@ -1,4 +1,4 @@
-// Copyright (c) 2020, 2023 William Arthur Hood
+// Copyright (c) 2020, 2023, 2025 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,12 @@
 
 package hoodland.opensource.changescan
 
-import hoodland.opensource.memoir.Memoir
+import hoodland.opensource.boolog.Boolog
 import hoodland.opensource.toolbox.stdout
 import java.util.*
 
 
-internal class FileSystemComparison(activityLog: Memoir, original: FileSystemDescription, candidate: FileSystemDescription) {
+internal class FileSystemComparison(activityLog: Boolog, original: FileSystemDescription, candidate: FileSystemDescription) {
     // New To Candidate
     val newToCandidate = ArrayList<FileDescription>()
 

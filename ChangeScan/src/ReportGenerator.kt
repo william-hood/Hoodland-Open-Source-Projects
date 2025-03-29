@@ -1,4 +1,4 @@
-// Copyright (c) 2020, 2023 William Arthur Hood
+// Copyright (c) 2020, 2023, 2025 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,15 +21,15 @@
 
 package hoodland.opensource.changescan
 
-import hoodland.opensource.memoir.Memoir
+import hoodland.opensource.boolog.Boolog
 import java.io.PrintWriter
 
 internal class ReportGenerator(val savePath: String) {
     // TODO: Test on Windows
-    var reportFile: Memoir? = null
+    var reportFile: Boolog? = null
 
     fun prepare(targetData: FileSystemComparison) {
-        reportFile = Memoir("Change Report",
+        reportFile = Boolog("Change Report",
                 null,
                 PrintWriter(savePath),
                 false,
@@ -40,14 +40,14 @@ internal class ReportGenerator(val savePath: String) {
             // New
             if (targetData.newToCandidate.size > 0) {
                 targetData.newToCandidate.sort()
-                val newToCandidateReport = Memoir("${targetData.newToCandidate.size} New", null, null, false)
+                val newToCandidateReport = Boolog("${targetData.newToCandidate.size} New", null, null, false)
 
                 for (thisFile in targetData.newToCandidate) {
                     newToCandidateReport.info(thisFile.fullyQualifiedPath, "\uD83C\uDD95")
                 }
 
                 if (newToCandidateReport.wasUsed) {
-                    report.showMemoir(newToCandidateReport, NEW_FILES_HEADER_ICON, "passing_test_result")
+                    report.showBoolog(newToCandidateReport, NEW_FILES_HEADER_ICON, "passing_test_result")
                 }
             }
 
@@ -55,13 +55,13 @@ internal class ReportGenerator(val savePath: String) {
             // Removed
             if (targetData.removedInCandidate.size > 0) {
                 targetData.removedInCandidate.sort()
-                val missingFromOriginalReport = Memoir("${targetData.removedInCandidate.size} Missing", null, null, false)
+                val missingFromOriginalReport = Boolog("${targetData.removedInCandidate.size} Missing", null, null, false)
                 for (thisFile in targetData.removedInCandidate) {
                     missingFromOriginalReport.info(thisFile.fullyQualifiedPath, "\uD83D\uDEAB")
                 }
 
                 if (missingFromOriginalReport.wasUsed) {
-                    report.showMemoir(missingFromOriginalReport, MISSING_FILES_HEADER_ICON, "failing_test_result")
+                    report.showBoolog(missingFromOriginalReport, MISSING_FILES_HEADER_ICON, "failing_test_result")
                 }
             }
 
@@ -69,14 +69,14 @@ internal class ReportGenerator(val savePath: String) {
             // Moved
             if (targetData.movedInCandidate.size > 0) {
                 targetData.movedInCandidate.sort()
-                val movedInCandidateReport = Memoir("${targetData.movedInCandidate.size} Moved", null, null, false)
+                val movedInCandidateReport = Boolog("${targetData.movedInCandidate.size} Moved", null, null, false)
 
                 for (thisFile in targetData.movedInCandidate) {
                     movedInCandidateReport.info("${thisFile.fullyQualifiedPath}<br><small>&nbsp;&nbsp;&nbsp;• Previous location ${thisFile.formerDirectory}</small>", "\uD83D\uDCC2")
                 }
 
                 if (movedInCandidateReport.wasUsed) {
-                    report.showMemoir(movedInCandidateReport, MOVED_FILES_HEADER_ICON, "plate")
+                    report.showBoolog(movedInCandidateReport, MOVED_FILES_HEADER_ICON, "plate")
                 }
             }
 
@@ -86,7 +86,7 @@ internal class ReportGenerator(val savePath: String) {
             if (targetData.contentDifferences.size > 0) {
                 val sortedContentChangeData = targetData.contentDifferences.keys.toTypedArray()
                 sortedContentChangeData.sort()
-                val contentChangesReport = Memoir("${sortedContentChangeData.size} Content Changes", null, null, false)
+                val contentChangesReport = Boolog("${sortedContentChangeData.size} Content Changes", null, null, false)
                 sortedContentChangeData.forEach {
                     val change = targetData.contentDifferences[it]
                     change?.let { thisChange ->
@@ -95,7 +95,7 @@ internal class ReportGenerator(val savePath: String) {
                 }
 
                 if (contentChangesReport.wasUsed) {
-                    report.showMemoir(contentChangesReport, CONTENT_CHANGED_HEADER_ICON, "inconclusive_test_result")
+                    report.showBoolog(contentChangesReport, CONTENT_CHANGED_HEADER_ICON, "inconclusive_test_result")
                 }
             }
 
@@ -105,7 +105,7 @@ internal class ReportGenerator(val savePath: String) {
             if (targetData.timestampDifferences.size > 0) {
                 val sortedTimestampChangeData = targetData.timestampDifferences.keys.toTypedArray()
                 sortedTimestampChangeData.sort()
-                val timestampChangesReport = Memoir("${sortedTimestampChangeData.size} Timestamp Changes", null, null, false)
+                val timestampChangesReport = Boolog("${sortedTimestampChangeData.size} Timestamp Changes", null, null, false)
                 sortedTimestampChangeData.forEach {
                     val change = targetData.timestampDifferences[it]
                     change?.let { thisChange ->
@@ -114,16 +114,16 @@ internal class ReportGenerator(val savePath: String) {
                 }
 
                 if (timestampChangesReport.wasUsed)  {
-                    report.showMemoir(timestampChangesReport, TIMESTAMP_CHANGED_HEADER_ICON, "implied_caution")
+                    report.showBoolog(timestampChangesReport, TIMESTAMP_CHANGED_HEADER_ICON, "implied_caution")
                 }
             }
         }
     }
 
-    fun conclude(errorLog: Memoir) {
+    fun conclude(errorLog: Boolog) {
         reportFile?.let { report ->
             if (errorLog.wasUsed) {
-                report.showMemoir(errorLog, ERROR_LOG_HEADER_ICON, "highlighted")
+                report.showBoolog(errorLog, ERROR_LOG_HEADER_ICON, "highlighted")
             }
 
             report.conclude()

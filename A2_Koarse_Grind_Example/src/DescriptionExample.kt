@@ -25,8 +25,8 @@ package com.mycompany.testing
 import hoodland.opensource.descriptions.*
 import hoodland.opensource.koarsegrind.ManufacturedTest
 import hoodland.opensource.koarsegrind.TestFactory
-import hoodland.opensource.memoir.showObject
-import hoodland.opensource.memoir.showThrowable
+import hoodland.opensource.boolog.showObject
+import hoodland.opensource.boolog.showThrowable
 import hoodland.opensource.toolbox.SubnameFactory
 import java.lang.IllegalStateException
 import java.time.LocalDate

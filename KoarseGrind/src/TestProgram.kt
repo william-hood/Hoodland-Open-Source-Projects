@@ -21,9 +21,9 @@
 
 package hoodland.opensource.koarsegrind
 
-import hoodland.opensource.memoir.Memoir
-import hoodland.opensource.memoir.UNKNOWN
-import hoodland.opensource.memoir.showThrowable
+import hoodland.opensource.boolog.Boolog
+import hoodland.opensource.boolog.UNKNOWN
+import hoodland.opensource.boolog.showThrowable
 import hoodland.opensource.toolbox.MatrixFile
 import hoodland.opensource.toolbox.QuantumTextFile
 import hoodland.opensource.toolbox.StringParser
@@ -40,7 +40,7 @@ private val testLoader = Thread.currentThread().getContextClassLoader()
 private val preclusions = ArrayList<Throwable>()
 
  //private val debugFile = File("${System.getProperty("user.home")}${File.separator}Documents${File.separator}Test Results${File.separator}KGDEBUG.html")
- //private val debuggingMemoir = Memoir("\uD83D\uDC1E DEBUG", null, debugFile.printWriter() )
+ //private val debuggingBoolog = Boolog("\uD83D\uDC1E DEBUG", null, debugFile.printWriter() )
 
 /**
  * TestProgram
@@ -70,12 +70,12 @@ object TestProgram {
         val rootLog = topLevel.run(filterSet, preclusions)
         createSummaryReport(topLevel, rootLog)
         rootLog.conclude()
-        //debuggingMemoir.conclude()
+        //debuggingBoolog.conclude()
     }
 
-    private fun createSummaryReport(topLevel: TestCategory, memoir: Memoir = Memoir(forPlainText = stdout)) {
+    private fun createSummaryReport(topLevel: TestCategory, boolog: Boolog = Boolog(forPlainText = stdout)) {
         val fullyQualifiedSummaryFileName = topLevel.rootDirectory + File.separatorChar + SUMMARY_FILE_NAME
-        memoir.info("Creating Test Suite Summary Report ($fullyQualifiedSummaryFileName)")
+        boolog.info("Creating Test Suite Summary Report ($fullyQualifiedSummaryFileName)")
         var summaryReport = MatrixFile<String>("Category", "Test ID", "Name", "Description", "Status", "Reasons")
 
         try {
@@ -100,8 +100,8 @@ object TestProgram {
             textFile.flush()
             textFile.close() // Shouldn't need a getter because this is a val
         } catch (thisFailure: Throwable) {
-            memoir.error("Did not successfully create the overall status text file $fullyQualifiedSummaryTextFileName")
-            memoir.showThrowable(thisFailure)
+            boolog.error("Did not successfully create the overall status text file $fullyQualifiedSummaryTextFileName")
+            boolog.showThrowable(thisFailure)
         }
     }
 

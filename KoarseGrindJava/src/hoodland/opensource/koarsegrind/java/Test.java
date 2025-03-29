@@ -1,4 +1,4 @@
-// Copyright (c) 2023 William Arthur Hood
+// Copyright (c) 2023, 2025 William Arthur Hood
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
 
 package hoodland.opensource.koarsegrind.java;
 
-import hoodland.opensource.memoir.java.Memoir;
+import hoodland.opensource.boolog.java.Boolog;
 
 /**
  * The base class for any kind of Koarse Grind Test. Any class that extends this, but is not also a derivative of
@@ -46,8 +46,8 @@ public abstract class Test extends hoodland.opensource.koarsegrind.Test {
         super (name, detailedDescription, categoryPath, identifier);
     }
 
-    public hoodland.opensource.memoir.java.Memoir log() {
-        return new Memoir(getLog());
+    public hoodland.opensource.boolog.java.Boolog log() {
+        return new Boolog(getLog());
     }
 
     public hoodland.opensource.koarsegrind.Enforcer assertion() {

@@ -15,7 +15,7 @@ may have as many parameters as you like in their constructor.
 */
 
 import hoodland.opensource.koarsegrind.java.ManufacturedTest;
-import hoodland.opensource.memoir.java.StringHandler;
+import hoodland.opensource.boolog.java.StringHandler;
 import hoodland.opensource.toolbox.java.Tools;
 
 public class ManufacturedTestExample extends ManufacturedTest {
