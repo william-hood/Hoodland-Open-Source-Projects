@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 public class TopLevel extends JUnitBoolog {
-	private static final String TEST_SUITE_NAME = "My Awesome Test Suite";
+	private static final String TEST_SUITE_NAME = "JUnit Boolog Example Test Suite";
     private static String homeFolder = System.getProperty("user.home");
     private static File outputFile = new File(homeFolder + File.separator + "Documents" + File.separator + "Test Results" + File.separator + TEST_SUITE_NAME + ".html");
 	
