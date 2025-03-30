@@ -81,6 +81,7 @@ public class JUnitBoolog extends hoodland.opensource.boolog.java.Boolog {
      * @param forHTML This is the main log file. It may be left out when used as a subsection of another Boolog.
      * @param showTimestamps If you don't want time stamps with every line of the log, set this to false.
      * @param showEmojis Set this to false and no lines will display an Emoji even if one is supplied.
+     * @param theme Set this to one of the supported themes. You can use THEME_DEFAULT if you don't know which to choose. If there is no HTML stream, or the HTML is not going tp its own file, THEME_NONE is the best choice.
      * @param headerFunction Use this to override the default header and make your own. Implement the displayHeader() method in a HeaderFunction interface.
      */
     public JUnitBoolog(String title,
@@ -88,11 +89,36 @@ public class JUnitBoolog extends hoodland.opensource.boolog.java.Boolog {
                   PrintWriter forHTML,
                   Boolean showTimestamps,
                   Boolean showEmojis,
+                  String theme,
                   HeaderFunction headerFunction) {
-        super(title, forPlainText, forHTML, showTimestamps, showEmojis, headerFunction);
+        super(title, forPlainText, forHTML, showTimestamps, showEmojis, theme, headerFunction);
     }
 
     //=== Alternate Constructors
+
+    /**
+     * Alternate constructor for the JUnit extended Boolog Java Wrapper that assumes the default theme. This contains a Kotlin Boolog but does not extend it nor expose it in any way.
+     * This version contains extra wrapper functions to make working with JUnit easier.
+     * Boolog is a logging system designed to produce rich, readable HTML-based output with appropriate
+     * console output accompanying it. A Boolog may be a root-level log file, a subsection of another Boolog, or both.
+     * It includes methods to render objects, HTTP transactions, exceptions, collections and other Boologs
+     * in click-to-expand fashion.
+     *
+     * @param title This will be indicated at the top of the file in the header if this is a root-level Boolog. For a subsection it appears in bold above the click-to-expand portion.
+     * @param forPlainText Typically this is pointed at stdout for console output. This can also be pointed at a plain text file.
+     * @param forHTML This is the main log file. It may be left out when used as a subsection of another Boolog.
+     * @param showTimestamps If you don't want time stamps with every line of the log, set this to false.
+     * @param showEmojis Set this to false and no lines will display an Emoji even if one is supplied.
+     * @param headerFunction Use this to override the default header and make your own. Implement the displayHeader() method in a HeaderFunction interface.
+     */
+    public JUnitBoolog(String title,
+                       PrintWriter forPlainText,
+                       PrintWriter forHTML,
+                       Boolean showTimestamps,
+                       Boolean showEmojis,
+                       HeaderFunction headerFunction) {
+        super(title, forPlainText, forHTML, showTimestamps, showEmojis, THEME_DEFAULT, headerFunction);
+    }
 
     /**
      * Alternate constructor for the JUnit extended Boolog Java Wrapper that assumes showing emojis & timestamps, no headerFunction and no output for plain text or HTML.
@@ -104,7 +130,7 @@ public class JUnitBoolog extends hoodland.opensource.boolog.java.Boolog {
      *
      */
     public JUnitBoolog() {
-        this(Constants.UNKNOWN, null, null, true, true, null);
+        this(Constants.UNKNOWN, null, null, true, true, THEME_NONE, null);
     }
 
     /**
@@ -119,7 +145,7 @@ public class JUnitBoolog extends hoodland.opensource.boolog.java.Boolog {
      * @param headerFunction Use this to override the default header and make your own. Implement the displayHeader() method in a HeaderFunction interface.
      */
     public JUnitBoolog(HeaderFunction headerFunction) {
-        this(Constants.UNKNOWN, null, null, true, true, headerFunction);
+        this(Constants.UNKNOWN, null, null, true, true, THEME_NONE, headerFunction);
     }
 
     /**
@@ -133,7 +159,7 @@ public class JUnitBoolog extends hoodland.opensource.boolog.java.Boolog {
      * @param title This will be indicated at the top of the file in the header if this is a root-level Boolog. For a subsection it appears in bold above the click-to-expand portion.
      */
     public JUnitBoolog(String title) {
-        this(title, null, null, true, true, null);
+        this(title, null, null, true, true, THEME_NONE, null);
     }
 
     /**
@@ -148,7 +174,24 @@ public class JUnitBoolog extends hoodland.opensource.boolog.java.Boolog {
      * @param headerFunction Use this to override the default header and make your own. Implement the displayHeader() method in a HeaderFunction interface.
      */
     public JUnitBoolog(String title, HeaderFunction headerFunction) {
-        this(title, null, null, true, true, headerFunction);
+        this(title, null, null, true, true, THEME_NONE, headerFunction);
+    }
+
+    /**
+     * Alternate constructor for the JUnit extended Boolog Java Wrapper that assumes showing timestamps and emojis but no header function.
+     * This contains a Kotlin Boolog but does not extend it nor expose it in any way.
+     * Boolog is a logging system designed to produce rich, readable HTML-based output with appropriate
+     * console output accompanying it. A Boolog may be a root-level log file, a subsection of another Boolog, or both.
+     * It includes methods to render objects, HTTP transactions, exceptions, collections and other Boologs
+     * in click-to-expand fashion.
+     *
+     * @param title This will be indicated at the top of the file in the header if this is a root-level Boolog. For a subsection it appears in bold above the click-to-expand portion.
+     * @param forPlainText Typically this is pointed at stdout for console output. This can also be pointed at a plain text file.
+     * @param forHTML This is the main log file. It may be left out when used as a subsection of another Boolog.
+     * @param theme Set this to one of the supported themes. You can use THEME_DEFAULT if you don't know which to choose. If there is no HTML stream, or the HTML is not going tp its own file, THEME_NONE is the best choice.
+     */
+    public JUnitBoolog(String title, PrintWriter forPlainText, PrintWriter forHTML, String theme) {
+        this(title, forPlainText, forHTML, true, true, theme, null);
     }
 
     /**
@@ -164,7 +207,25 @@ public class JUnitBoolog extends hoodland.opensource.boolog.java.Boolog {
      * @param forHTML This is the main log file. It may be left out when used as a subsection of another Boolog.
      */
     public JUnitBoolog(String title, PrintWriter forPlainText, PrintWriter forHTML) {
-        this(title, forPlainText, forHTML, true, true, null);
+        this(title, forPlainText, forHTML, true, true, THEME_DEFAULT, null);
+    }
+
+    /**
+     * Alternate constructor for the JUnit extended Boolog Java Wrapper that assumes showing timestamps and emojis.
+     * This contains a Kotlin Boolog but does not extend it nor expose it in any way.
+     * Boolog is a logging system designed to produce rich, readable HTML-based output with appropriate
+     * console output accompanying it. A Boolog may be a root-level log file, a subsection of another Boolog, or both.
+     * It includes methods to render objects, HTTP transactions, exceptions, collections and other Boologs
+     * in click-to-expand fashion.
+     *
+     * @param title This will be indicated at the top of the file in the header if this is a root-level Boolog. For a subsection it appears in bold above the click-to-expand portion.
+     * @param forPlainText Typically this is pointed at stdout for console output. This can also be pointed at a plain text file.
+     * @param forHTML This is the main log file. It may be left out when used as a subsection of another Boolog.
+     * @param theme Set this to one of the supported themes. You can use THEME_DEFAULT if you don't know which to choose. If there is no HTML stream, or the HTML is not going tp its own file, THEME_NONE is the best choice.
+     * @param headerFunction Use this to override the default header and make your own. Implement the displayHeader() method in a HeaderFunction interface.
+     */
+    public JUnitBoolog(String title, PrintWriter forPlainText, PrintWriter forHTML, String theme, HeaderFunction headerFunction) {
+        this(title, forPlainText, forHTML, true, true, theme, headerFunction);
     }
 
     /**
@@ -181,7 +242,7 @@ public class JUnitBoolog extends hoodland.opensource.boolog.java.Boolog {
      * @param headerFunction Use this to override the default header and make your own. Implement the displayHeader() method in a HeaderFunction interface.
      */
     public JUnitBoolog(String title, PrintWriter forPlainText, PrintWriter forHTML, HeaderFunction headerFunction) {
-        this(title, forPlainText, forHTML, true, true, headerFunction);
+        this(title, forPlainText, forHTML, true, true, THEME_DEFAULT, headerFunction);
     }
 
     /**
@@ -197,7 +258,7 @@ public class JUnitBoolog extends hoodland.opensource.boolog.java.Boolog {
      * @param showEmojis Set this to false and no lines will display an Emoji even if one is supplied.
      */
     public JUnitBoolog(String title, Boolean showTimestamps, Boolean showEmojis) {
-        this(title, null, null, showTimestamps, showEmojis, null);
+        this(title, null, null, showTimestamps, showEmojis, THEME_NONE, null);
     }
 
     /**
@@ -214,7 +275,7 @@ public class JUnitBoolog extends hoodland.opensource.boolog.java.Boolog {
      * @param headerFunction Use this to override the default header and make your own. Implement the displayHeader() method in a HeaderFunction interface.
      */
     public JUnitBoolog(String title, Boolean showTimestamps, Boolean showEmojis, HeaderFunction headerFunction) {
-        this(title, null, null, showTimestamps, showEmojis, headerFunction);
+        this(title, null, null, showTimestamps, showEmojis, THEME_NONE, headerFunction);
     }
 
     /**

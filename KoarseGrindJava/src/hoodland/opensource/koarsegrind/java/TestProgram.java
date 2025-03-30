@@ -20,12 +20,19 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 package hoodland.opensource.koarsegrind.java;
+
+
+import hoodland.opensource.boolog.java.Boolog;
+
 /**
  * This is the root class to run a Koarse Grind test suite.
  *
  */
 public class TestProgram {
     public static void run(String name, String[] args) {
-        hoodland.opensource.koarsegrind.TestProgram.INSTANCE.run(name, args);
+        TestProgram.run(name, Boolog.THEME_DEFAULT, args);
+    }
+    public static void run(String name, String theme, String[] args) {
+        hoodland.opensource.koarsegrind.TestProgram.INSTANCE.run(name, theme, args);
     }
 }

@@ -22,6 +22,7 @@
 package hoodland.opensource.koarsegrind
 
 import hoodland.opensource.boolog.Boolog
+import hoodland.opensource.boolog.THEME_DEFAULT
 import hoodland.opensource.boolog.UNKNOWN
 import hoodland.opensource.boolog.showThrowable
 import hoodland.opensource.toolbox.MatrixFile
@@ -29,10 +30,6 @@ import hoodland.opensource.toolbox.QuantumTextFile
 import hoodland.opensource.toolbox.StringParser
 import hoodland.opensource.toolbox.stdout
 import java.io.File
-import java.lang.reflect.InvocationTargetException
-import java.net.URLDecoder
-import java.nio.charset.Charset
-import kotlin.reflect.full.isSubclassOf
 
 
 // Based on https://dzone.com/articles/get-all-classes-within-package
@@ -63,11 +60,11 @@ object TestProgram {
      * @param name A full descriptive name for the root collection of tests. This will be at the top of the log. Example: "Test Suite - Hoodland Open Source Projects"
      * @param args Pass in the args from main(). These will be analyzed to filter which tests will be run.
      */
-    fun run(name: String = UNKNOWN, args: Array<String> = Array<String>(0) { "" }) {
+    fun run(name: String = UNKNOWN, theme: String = THEME_DEFAULT, args: Array<String> = Array<String>(0) { "" }) {
         val filterSet = parseArguments(args)
         val topLevel = Collector(TestCategory(name), testLoader, preclusions).assembledCollection
 
-        val rootLog = topLevel.run(filterSet, preclusions)
+        val rootLog = topLevel.run(theme, filterSet, preclusions)
         createSummaryReport(topLevel, rootLog)
         rootLog.conclude()
         //debuggingBoolog.conclude()

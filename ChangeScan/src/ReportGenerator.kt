@@ -22,6 +22,7 @@
 package hoodland.opensource.changescan
 
 import hoodland.opensource.boolog.Boolog
+import hoodland.opensource.boolog.THEME_CLASSIC
 import java.io.PrintWriter
 
 internal class ReportGenerator(val savePath: String) {
@@ -34,6 +35,7 @@ internal class ReportGenerator(val savePath: String) {
                 PrintWriter(savePath),
                 false,
                 true,
+                THEME_CLASSIC,
                 ::logHeader)
 
         reportFile?.let { report ->

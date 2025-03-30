@@ -115,7 +115,7 @@ internal class TestCategory(override val name: String): ArrayList<Test>(), Inqui
         return null
     }
 
-    internal fun run(filters: FilterSet? = null, preclusiveFailures: ArrayList<Throwable>? = null) : Boolog {
+    internal fun run(theme: String, filters: FilterSet? = null, preclusiveFailures: ArrayList<Throwable>? = null) : Boolog {
         filterSet = filters
         var logFileName = "$name.html"
         if (rootDirectory === UNSET_STRING) {
@@ -128,7 +128,7 @@ internal class TestCategory(override val name: String): ArrayList<Test>(), Inqui
         // Force the parent directory to exist...
         File(logFileFullPath).parentFile.mkdirs()
 
-        val overlog = Boolog(name, stdout, PrintWriter(logFileFullPath), true, true, ::logHeader)
+        val overlog = Boolog(name, stdout, PrintWriter(logFileFullPath), true, true, theme, ::logHeader)
         if (preclusiveFailures != null) {
             if (preclusiveFailures.size > 0) {
                 overlog.error("Failures were indicated while starting Koarse Grind! The suite will not be allowed to run.")
@@ -171,7 +171,7 @@ internal class TestCategory(override val name: String): ArrayList<Test>(), Inqui
                     if (shouldRun(nextItem)) {
                         _currentTest = nextItem
                         try {
-                            executionThread = thread(start = true) { _currentTest!!.runTest(currentArtifactsDirectory) } // C# used the public Run() function
+                            executionThread = thread(start = true) { _currentTest!!.runTest(currentArtifactsDirectory, theme) } // C# used the public Run() function
                             executionThread!!.join()
                         } catch (thisFailure: Throwable) {
                             // Uncertain why specifically calling GetResultForPreclusionInSetup()
@@ -200,7 +200,7 @@ internal class TestCategory(override val name: String): ArrayList<Test>(), Inqui
                     it.rootDirectory =
                         "$currentArtifactsDirectory${File.separatorChar}(collection '${it.name}' in progress)"
 
-                    val subLog = it.run(filterSet)
+                    val subLog = it.run(theme, filterSet)
                     if (subLog.wasUsed) {
                         overlog.showBoolog(
                             subLog,

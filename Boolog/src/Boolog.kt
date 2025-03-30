@@ -59,6 +59,7 @@ class BoologConcludedException: Exception(ALREADY_CONCLUDED_MESSAGE) { }
  * @property showEmojis Set this to false and no lines will display an Emoji even if one is supplied.
  * @constructor
  *
+ * @param theme Set this to one of the supported themes. You can use THEME_DEFAULT if you don't know which to choose. If there is no HTML stream, or the HTML is not going tp its own file, THEME_NONE is the best choice.
  * @param headerFunction Use this to override the default header and make your own.
  */
 open class Boolog (
@@ -67,6 +68,7 @@ open class Boolog (
         val forHTML: PrintWriter? = null,
         val showTimestamps: Boolean = true,
         val showEmojis: Boolean = true,
+        theme: String = THEME_DEFAULT,
         headerFunction: (String)->String = ::defaultHeader) {
     private val printWriter_HTML: PrintWriter? = forHTML
     private val printWriter_PlainText: PrintWriter? = forPlainText
@@ -77,7 +79,7 @@ open class Boolog (
     init {
         if (printWriter_HTML != null) {
             printWriter_HTML.print("<html>\r\n<meta charset=\"UTF-8\">\r\n<head>\r\n<title>$title</title>\r\n")
-            printWriter_HTML.print(BOOLOG_LOG_STYLING)
+            printWriter_HTML.print(theme)
             printWriter_HTML.print("</head>\r\n<body>\r\n")
             printWriter_HTML.print(headerFunction(title))
         }

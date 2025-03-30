@@ -391,7 +391,7 @@ abstract class Test (
     }
 
     // This was virtual/open in the C# version
-    internal fun runTest(rootDirectory: String) {
+    internal fun runTest(rootDirectory: String, theme: String) {
         if (KILL_SWITCH) {
             // Decline to run
             // Deliberate NO-OP
@@ -404,7 +404,7 @@ abstract class Test (
             // Force the parent directory to exist...
             File(expectedFileName).parentFile.mkdirs()
 
-            testContext = TestPhaseContext(Boolog(identifiedName, stdout, PrintWriter(expectedFileName), true, true, ::logHeader))
+            testContext = TestPhaseContext(Boolog(identifiedName, stdout, PrintWriter(expectedFileName), true, true, theme, ::logHeader))
 
             if (detailedDescription != UNSET_DESCRIPTION) {
                 testContext?.let { it.boolog.writeToHTML("<small><i>$detailedDescription</i></small>", EMOJI_TEXT_BLANK_LINE) }

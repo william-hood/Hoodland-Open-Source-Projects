@@ -16,6 +16,7 @@ the test results, and PASS/FAIL prefixed artifact directories for each test that
 // ‼️ IMPORTANT ‼️ If a module name, or the name of its directory, contains a space tests in it will not be run.
 // So don't do that!
 
+import hoodland.opensource.boolog.java.Boolog;
 import hoodland.opensource.koarsegrind.*;
 
 public class Main {
@@ -39,6 +40,6 @@ public class Main {
         // your tests. Koarse Grind will automatically locate all
         // Test & TestFactory classes in the classpath, instantiate
         // and run one of each it finds.
-        TestProgram.INSTANCE.run("Koarse Grind in Java", args);
+        TestProgram.INSTANCE.run("Koarse Grind in Java", Boolog.THEME_DEFAULT, args);
     }
 }
