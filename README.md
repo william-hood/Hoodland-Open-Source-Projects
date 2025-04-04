@@ -181,6 +181,6 @@ OTHER DEALINGS IN THE SOFTWARE.*
 
 
 ## Contact Information
-https://www.linkedin.com/in/william-a-hood-sdet-pdx/
+https://www.linkedin.com/in/william-a-hood-pdx/
 
 william.arthur.hood@gmail.com
