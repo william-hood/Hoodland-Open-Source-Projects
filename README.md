@@ -1,13 +1,13 @@
-<center><img src="Archived.png"></center>
+<img src="Archived.png">
 
 ##### Release 3.1
 
 The "Hoodland Open Source Projects" are now what they always should have been: Several individual Maven projects!
 This repository is now read only and will soon disappear.
 The "Memoir" Direct-to-HTML Rich Logging System has been renamed "Boolog". It now sports 6 different themes, 3 light and 3 dark, and there are now versions for both Go and Rust.
-
 All projects are now Maven projects, and there is no need for a separate IntelliJ and Eclipse release.
 The Maven projects are now the official ones, and there will be no further development against this code base.
+
 ---
 ## Boolog
 - for [Kotlin](https://github.com/william-hood/boolog-kotlin)
