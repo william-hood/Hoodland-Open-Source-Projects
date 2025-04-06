@@ -1,17 +1,32 @@
-##### Release 3.1 🚧 WORK IN PROGRESS 🚧
+<center><img src="Archived.png"></center>
 
-The "Memoir" Direct-to-HTML Rich Logging System has been renamed Boolog. Changes are underway to bring it the same themes as the Go and Rust versions.
+##### Release 3.1
 
-##### Release 3.0
+The "Hoodland Open Source Projects" are now what they always should have been: Several individual Maven projects!
+This repository is now read only and will soon disappear.
+The "Memoir" Direct-to-HTML Rich Logging System has been renamed "Boolog". It now sports 6 different themes, 3 light and 3 dark, and there are now versions for both Go and Rust.
 
-This release fixes bugs in the Kotlin libraries and the Java wrapper for Memoir. It also implements
-some robustness improvements to Change Scan.
-On the Java side, there is now a JUnit integrated version of the Java wrapper for Memoir, meaning that
-Memoir now plays nice with JUnit. An example module will be included in the IntelliJ project. An
-example of using Memoir with JUnit in Eclipse will be included as part of the release.
-
-Testing was done against Linux Mint 21.1, macOS Monterey, and Windows 11.
-
+All projects are now Maven projects, and there is no need for a separate IntelliJ and Eclipse release.
+The Maven projects are now the official ones, and there will be no further development against this code base.
+---
+## Boolog
+- for [Kotlin](https://github.com/william-hood/boolog-kotlin)
+- for [Java](https://github.com/william-hood/boolog-java)
+- for [JUnit](https://github.com/william-hood/boolog-junit) Testing
+- for [Go](https://github.com/william-hood/boolog-go)
+- for [Rust](https://github.com/william-hood/boolog-rust)
+---
+## Koarse Grind Test Framework
+- for [Kotlin](https://github.com/william-hood/koarse-grind-kotlin)
+- for [Java](https://github.com/william-hood/koarse-grind-java)
+---
+## [Change Scan](https://github.com/william-hood/ChangeScan), a program for testing installers, processes, or procedures that cause changes to the file system
+---
+## The [Descriptions](https://github.com/william-hood/descriptions-kotlin) library for test object creation
+---
+## Hoodland Toolbox, an assorted miscellany of tools and toys, which all other projects depend on.
+- for [Kotlin](https://github.com/william-hood/toolbox-kotlin)
+- for [Java](https://github.com/william-hood/toolbox-java)
 ---
 ## Quick Start
 
